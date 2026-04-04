@@ -31,3 +31,4 @@ D:\CODE\C\backend\BackendAPI\obj\Debug\net10.0\refint\BackendAPI.dll
 D:\CODE\C\backend\BackendAPI\obj\Debug\net10.0\BackendAPI.pdb
 D:\CODE\C\backend\BackendAPI\obj\Debug\net10.0\BackendAPI.genruntimeconfig.cache
 D:\CODE\C\backend\BackendAPI\obj\Debug\net10.0\ref\BackendAPI.dll
+D:\CODE\C\backend\BackendAPI\obj\Debug\net10.0\BackendAPI.sourcelink.json
