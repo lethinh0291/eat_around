@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using BackendAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Data;
 
@@ -11,4 +11,3 @@ public class AppDbContext : DbContext
 
     public DbSet<POI> POIs { get; set; }
 }
-g
