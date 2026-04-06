@@ -21,4 +21,11 @@ public class POI
     [Required(ErrorMessage = "Kinh độ không được để trống")]
     [Range(-180, 180, ErrorMessage = "Kinh độ phải nằm trong khoảng -180 đến 180")]
     public double Longitude { get; set; }
+
+
+
+    public double Radius { get; set; } // Mặc định bán kính là 100 mét
+    public int Priority { get; set; } // Mặc định độ ưu tiên
+    public string? ImageUrl { get; set; } // URL hình ảnh đại diện cho POI
+    public string? AudioUrl { get; set; } // URL file âm thanh hướng dẫn
 }
