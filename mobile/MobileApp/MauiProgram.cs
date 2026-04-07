@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using MobileApp.Services; // Nhớ thêm dòng này để nó nhận diện thư mục Services
+using ZesTour.Views;
 
 namespace MobileApp;
 
@@ -15,13 +17,19 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
-#if DEBUG
-		builder.Logging.AddDebug();
-		// Trong file MauiProgram.cs
+		// --- ĐĂNG KÝ CÁC DỊCH VỤ (SERVICES) Ở ĐÂY ---
+
+		// Dùng Singleton cho các Service chạy suốt vòng đời App
 		builder.Services.AddSingleton<DatabaseService>();
 		builder.Services.AddSingleton<ApiService>();
 		builder.Services.AddSingleton<LocationService>();
-		builder.Services.AddTransient<MainPage>();
+
+		// Đăng ký MainPage để hệ thống tự "bơm" (Inject) các Service vào Constructor
+		builder.Services.AddSingleton<MainPage>();
+
+		// --- CẤU HÌNH DEBUG ---
+#if DEBUG
+		builder.Logging.AddDebug();
 #endif
 
 		return builder.Build();

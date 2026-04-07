@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZesTour.Views.MainPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#0F1623">
+
+       <Grid RowDefinitions="Auto,*">
+              <Border Grid.Row="0"
+                      Margin="12,8,12,0"
+                      Padding="14,12"
+                      BackgroundColor="#DE7D2C"
+                      StrokeThickness="0"
+                      StrokeShape="RoundRectangle 0,0,16,16">
+                     <Grid ColumnDefinitions="Auto,*,Auto"
+                           ColumnSpacing="8">
+                            <Label Text="◰"
+                                   Grid.Column="0"
+                                   FontSize="20"
+                                   TextColor="White"
+                                   VerticalTextAlignment="Center">
+                                   <Label.GestureRecognizers>
+                                          <TapGestureRecognizer Tapped="OnMenuTapped"/>
+                                   </Label.GestureRecognizers>
+                            </Label>
+                            <Label Text="PHỐ ẨM THỰC"
+                                   Grid.Column="1"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"/>
+                            <Label Text="◉"
+                                   Grid.Column="2"
+                                   FontSize="18"
+                                   TextColor="White"
+                                   HorizontalTextAlignment="End"
+                                   VerticalTextAlignment="Center">
+                                   <Label.GestureRecognizers>
+                                          <TapGestureRecognizer Tapped="OnNotificationTapped"/>
+                                   </Label.GestureRecognizers>
+                            </Label>
+                     </Grid>
+              </Border>
+
+              <Grid Grid.Row="1"
+                    Margin="12,10,12,10">
+                     <Border StrokeThickness="0"
+                             StrokeShape="RoundRectangle 0,0,26,26">
+                            <Grid Padding="8">
+                                   <WebView x:Name="LeafletMapView"
+                                            Navigating="OnMapNavigating"
+                                            VerticalOptions="Fill"
+                                            HorizontalOptions="Fill"
+                                            BackgroundColor="Transparent"/>
+
+                                   <Border BackgroundColor="#E46033"
+                                           StrokeThickness="0"
+                                           Padding="8,4"
+                                           Margin="148,68,0,0"
+                                           HorizontalOptions="Start"
+                                           VerticalOptions="Start"
+                                           StrokeShape="RoundRectangle 14">
+                                          <Label x:Name="MapPoiLabel"
+                                                 Text="Bánh Mì Huỳnh Hoa"
+                                                 FontSize="11"
+                                                 TextColor="White">
+                                                 <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnNearbyCardTapped"/>
+                                                 </Label.GestureRecognizers>
+                                          </Label>
+                                   </Border>
+
+                                   <Border BackgroundColor="#FFFFFF"
+                                           StrokeThickness="0"
+                                           WidthRequest="30"
+                                           HeightRequest="30"
+                                           Margin="0,16,10,0"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start"
+                                           StrokeShape="RoundRectangle 15">
+                                          <Label Text="i"
+                                                 FontSize="15"
+                                                 TextColor="#334155"
+                                                 HorizontalTextAlignment="Center"
+                                                 VerticalTextAlignment="Center">
+                                                 <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnInfoTapped"/>
+                                                 </Label.GestureRecognizers>
+                                          </Label>
+                                   </Border>
+
+                                   <Border BackgroundColor="#FFFFFF"
+                                           StrokeThickness="0"
+                                           WidthRequest="30"
+                                           HeightRequest="30"
+                                           Margin="0,56,10,0"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start"
+                                           StrokeShape="RoundRectangle 15">
+                                          <Label Text="⌖"
+                                                 FontSize="16"
+                                                 TextColor="#334155"
+                                                 HorizontalTextAlignment="Center"
+                                                 VerticalTextAlignment="Center">
+                                                 <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnRecenterTapped"/>
+                                                 </Label.GestureRecognizers>
+                                          </Label>
+                                   </Border>
+                            </Grid>
+                     </Border>
+
+                     <VerticalStackLayout VerticalOptions="End"
+                                          Spacing="10"
+                                          Margin="8,0,8,10">
+                            <Border BackgroundColor="White"
+                                    StrokeThickness="0"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 14">
+                                   <Border.GestureRecognizers>
+                                          <TapGestureRecognizer Tapped="OnNearbyCardTapped"/>
+                                   </Border.GestureRecognizers>
+                                   <Grid ColumnDefinitions="78,*"
+                                         ColumnSpacing="10">
+                                          <Border Grid.Column="0"
+                                                  BackgroundColor="#F2D7AA"
+                                                  StrokeThickness="0"
+                                                  StrokeShape="RoundRectangle 10">
+                                                 <Label x:Name="PoiBadgeLabel"
+                                                        Text="BANH MI"
+                                                        FontAttributes="Bold"
+                                                        TextColor="#7A4718"
+                                                        FontSize="11"
+                                                        HorizontalTextAlignment="Center"
+                                                        VerticalTextAlignment="Center"/>
+                                          </Border>
+
+                                          <VerticalStackLayout Grid.Column="1"
+                                                               Spacing="2">
+                                                 <Label x:Name="NearbyIntroLabel"
+                                                        Text="Địa điểm gần bạn (Geofencing kích hoạt):"
+                                                        FontSize="11"
+                                                        TextColor="#4B5563"/>
+                                                 <Label x:Name="PoiNameLabel"
+                                                        Text="BÁNH MÌ HUỲNH HOA"
+                                                        FontSize="16"
+                                                        FontAttributes="Bold"
+                                                        TextColor="#111827"/>
+                                                 <Label x:Name="PoiRatingLabel"
+                                                        Text="4.8 ★★★★★"
+                                                        FontSize="12"
+                                                        TextColor="#E6A400"/>
+                                                 <Label x:Name="PoiDescriptionLabel"
+                                                        Text="Bánh mì nóng giòn thơm bơ, nhân đầy đặn và nước sốt đậm vị."
+                                                        FontSize="11"
+                                                        TextColor="#6B7280"
+                                                        MaxLines="2"
+                                                        LineBreakMode="TailTruncation"/>
+                                          </VerticalStackLayout>
+                                   </Grid>
+                            </Border>
+
+                            <Border BackgroundColor="#103B58"
+                                    StrokeThickness="0"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 14">
+                                   <VerticalStackLayout Spacing="12">
+                                          <Label x:Name="NowPlayingLabel"
+                                                 Text="ĐANG PHÁT: BÁNH MÌ HUỲNH HOA (Nội dung tự động)"
+                                                 FontSize="12"
+                                                 FontAttributes="Bold"
+                                                 TextColor="#DAEEFF"/>
+
+                                          <Grid ColumnDefinitions="Auto,*"
+                                                ColumnSpacing="10">
+                                                 <Label Text="Phương tiện"
+                                                        TextColor="#E2EEFA"
+                                                        FontSize="12"
+                                                        VerticalTextAlignment="Center"/>
+                                                 <Picker x:Name="TransportPicker"
+                                                         Grid.Column="1"
+                                                         Title="Chọn phương tiện"
+                                                         SelectedIndex="1"
+                                                         TextColor="White"
+                                                         BackgroundColor="#0F2F46"
+                                                         SelectedIndexChanged="OnTransportChanged">
+                                                        <Picker.Items>
+                                                               <x:String>Đi bộ</x:String>
+                                                               <x:String>Xe máy</x:String>
+                                                               <x:String>Ô tô</x:String>
+                                                        </Picker.Items>
+                                                 </Picker>
+                                          </Grid>
+
+                                          <Grid ColumnDefinitions="*,*"
+                                                ColumnSpacing="16">
+                                                 <Grid Grid.Column="0"
+                                                       ColumnDefinitions="*,Auto"
+                                                       VerticalOptions="Center">
+                                                        <Label Text="Tự Động Phát"
+                                                               TextColor="#E2EEFA"
+                                                               FontSize="12"
+                                                               VerticalTextAlignment="Center"/>
+                                                        <Switch Grid.Column="1"
+                                                                IsToggled="True"
+                                                                Toggled="OnAutoPlayToggled"
+                                                                OnColor="#22C55E"
+                                                                ThumbColor="White"/>
+                                                 </Grid>
+
+                                                 <Grid Grid.Column="1"
+                                                       ColumnDefinitions="*,Auto"
+                                                       VerticalOptions="Center">
+                                                        <Label Text="Tối Ưu Pin"
+                                                               TextColor="#E2EEFA"
+                                                               FontSize="12"
+                                                               VerticalTextAlignment="Center"/>
+                                                        <Switch Grid.Column="1"
+                                                                IsToggled="False"
+                                                                Toggled="OnBatteryOptimizedToggled"
+                                                                OnColor="#22C55E"
+                                                                ThumbColor="White"/>
+                                                 </Grid>
+                                          </Grid>
+                                   </VerticalStackLayout>
+                            </Border>
+                     </VerticalStackLayout>
+
+              </Grid>
+       </Grid>
+</ContentPage>

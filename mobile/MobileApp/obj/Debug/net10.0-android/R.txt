@@ -3929,10 +3929,10 @@ int layout select_dialog_multichoice_material 0x7f0b006e
 int layout select_dialog_singlechoice_material 0x7f0b006f
 int layout shellcontent 0x7f0b0070
 int layout support_simple_spinner_dropdown_item 0x7f0b0071
-int mipmap appicon 0x7f0d0000
-int mipmap appicon_background 0x7f0d0001
-int mipmap appicon_foreground 0x7f0d0002
-int mipmap appicon_round 0x7f0d0003
+int mipmap logo 0x7f0d0000
+int mipmap logo_background 0x7f0d0001
+int mipmap logo_foreground 0x7f0d0002
+int mipmap logo_round 0x7f0d0003
 int plurals mtrl_badge_content_description 0x7f0e0000
 int string abc_action_bar_home_description 0x7f0f0000
 int string abc_action_bar_up_description 0x7f0f0001
