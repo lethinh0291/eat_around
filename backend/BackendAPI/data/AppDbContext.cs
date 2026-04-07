@@ -1,5 +1,5 @@
-using BackendAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using SharedLib.Models;
 
 namespace BackendAPI.Data;
 

@@ -17,6 +17,11 @@ public static class MauiProgram
 
 #if DEBUG
 		builder.Logging.AddDebug();
+		// Trong file MauiProgram.cs
+		builder.Services.AddSingleton<DatabaseService>();
+		builder.Services.AddSingleton<ApiService>();
+		builder.Services.AddSingleton<LocationService>();
+		builder.Services.AddTransient<MainPage>();
 #endif
 
 		return builder.Build();

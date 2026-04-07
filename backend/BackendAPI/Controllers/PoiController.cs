@@ -1,7 +1,8 @@
-using BackendAPI.Data;
-using BackendAPI.Models;
+using SharedLib.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BackendAPI.Data;
+
 
 namespace BackendAPI.Controllers;
 

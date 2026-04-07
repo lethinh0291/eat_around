@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
-namespace BackendAPI.Models;
+namespace SharedLib.Models;
 
 public class POI
 {
@@ -23,9 +22,15 @@ public class POI
     public double Longitude { get; set; }
 
 
+    [Range(1, 1000, ErrorMessage = "Bán kính phải nằm trong khoảng 1 đến 1000 mét")]
+    public double Radius { get; set; } = 100; // Mặc định bán kính là 100 mét
 
-    public double Radius { get; set; } // Mặc định bán kính là 100 mét
-    public int Priority { get; set; } // Mặc định độ ưu tiên
+    [Range(1, 10, ErrorMessage = "Độ ưu tiên phải nằm trong khoảng 1 (thấp) đến 10 (cao)")]
+    public int Priority { get; set; } = 1; // Mặc định độ ưu tiên
+
     public string? ImageUrl { get; set; } // URL hình ảnh đại diện cho POI
     public string? AudioUrl { get; set; } // URL file âm thanh hướng dẫn
+
+    [StringLength(10)]
+    public string LanguageCode { get; set; } = "vi"; // Mặc định tiếng Việt [cite: 45]
 }
