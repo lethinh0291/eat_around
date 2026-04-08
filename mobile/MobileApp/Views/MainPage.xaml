@@ -172,27 +172,6 @@
                                                  FontAttributes="Bold"
                                                  TextColor="#DAEEFF"/>
 
-                                          <Grid ColumnDefinitions="Auto,*"
-                                                ColumnSpacing="10">
-                                                 <Label Text="Phương tiện"
-                                                        TextColor="#E2EEFA"
-                                                        FontSize="12"
-                                                        VerticalTextAlignment="Center"/>
-                                                 <Picker x:Name="TransportPicker"
-                                                         Grid.Column="1"
-                                                         Title="Chọn phương tiện"
-                                                         SelectedIndex="1"
-                                                         TextColor="White"
-                                                         BackgroundColor="#0F2F46"
-                                                         SelectedIndexChanged="OnTransportChanged">
-                                                        <Picker.Items>
-                                                               <x:String>Đi bộ</x:String>
-                                                               <x:String>Xe máy</x:String>
-                                                               <x:String>Ô tô</x:String>
-                                                        </Picker.Items>
-                                                 </Picker>
-                                          </Grid>
-
                                           <Grid ColumnDefinitions="*,*"
                                                 ColumnSpacing="16">
                                                  <Grid Grid.Column="0"

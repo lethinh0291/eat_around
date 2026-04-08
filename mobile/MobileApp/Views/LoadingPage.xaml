@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZesTour.Views.LoadingPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#F4F6F8">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <VerticalStackLayout Grid.Row="0"
+                             Padding="0,64,0,0"
+                             Spacing="10"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Start">
+            <Image Source="loading_logo.svg"
+                   WidthRequest="120"
+                   HeightRequest="120"
+                   Aspect="AspectFit"/>
+
+            <Label Text="ZESTOUR"
+                   FontSize="46"
+                   FontAttributes="Bold"
+                   FontFamily="OpenSansRegular"
+                   TextColor="#060606"
+                   HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1"
+              Margin="0,34,0,0"
+              HorizontalOptions="Center"
+              VerticalOptions="Start"
+              WidthRequest="220"
+              HeightRequest="220">
+            <Border StrokeThickness="0"
+                    StrokeShape="RoundRectangle 110"
+                    BackgroundColor="#FFF7ED"
+                    WidthRequest="220"
+                    HeightRequest="220">
+                <Border.Shadow>
+                    <Shadow Brush="#26F97316"
+                            Offset="0,8"
+                            Radius="28"
+                            Opacity="0.95"/>
+                </Border.Shadow>
+            </Border>
+
+            <ActivityIndicator IsRunning="True"
+                               Color="#F97316"
+                               WidthRequest="170"
+                               HeightRequest="170"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+
+            <Border StrokeThickness="0"
+                    WidthRequest="124"
+                    HeightRequest="124"
+                    StrokeShape="RoundRectangle 62"
+                    BackgroundColor="#FFFDF9"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                <Label Text="Đang tải hành trình..."
+                       FontSize="14"
+                       TextColor="#7A7A7A"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"/>
+            </Border>
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="2"
+                             Spacing="18"
+                             HorizontalOptions="Center"
+                             VerticalOptions="End"
+                             Padding="0,0,0,38">
+            <Label Text="Chuẩn bị chuyến đi của bạn"
+                   FontSize="13"
+                   TextColor="#8A8F98"
+                   HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

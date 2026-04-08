@@ -26,6 +26,7 @@ public static class MauiProgram
 
 		// Đăng ký MainPage để hệ thống tự "bơm" (Inject) các Service vào Constructor
 		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<LoadingPage>();
 
 		// --- CẤU HÌNH DEBUG ---
 #if DEBUG

@@ -4,20 +4,16 @@ namespace MobileApp;
 
 public partial class App : Application
 {
-	public App(MainPage mainPage)
+	private readonly LoadingPage _loadingPage;
+
+	public App(LoadingPage loadingPage)
 	{
 		InitializeComponent();
+		_loadingPage = loadingPage;
+	}
 
-		// THAY VÌ: MainPage = mainPage;
-		// NÍ SỬA THÀNH:
-		MainPage = new NavigationPage(mainPage);
-
-		// Nếu muốn thanh tiêu đề có màu xanh của shop ZESWAVE:
-		// (Phải đặt sau khi gán MainPage)
-		if (MainPage is NavigationPage navPage)
-		{
-			navPage.BarBackgroundColor = Color.FromArgb("#2196F3"); // Màu xanh
-			navPage.BarTextColor = Colors.White; // Chữ trắng
-		}
+	protected override Window CreateWindow(IActivationState? activationState)
+	{
+		return new Window(_loadingPage);
 	}
 }

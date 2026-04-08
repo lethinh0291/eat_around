@@ -20,7 +20,6 @@ public partial class MainPage : ContentPage
     private bool _batteryOptimized;
     private bool _dataLoaded;
     private bool _followUserRealtime;
-    private string _selectedTransport = "Xe máy";
     private POI? _currentPoi;
     private Location? _userLocation;
     private double? _selectedLat;
@@ -129,8 +128,9 @@ public partial class MainPage : ContentPage
                       (centerOnUser || _locationService.CalculateDistance(center.Latitude, center.Longitude, _userLocation.Latitude, _userLocation.Longitude) <= VinhKhanhRadiusMeters);
         var userLatitude = _userLocation?.Latitude.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
         var userLongitude = _userLocation?.Longitude.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
-        var routeProfile = GetRouteProfile();
-        var (routeColor, routeDashArray) = GetRouteStyle();
+        const string routeProfile = "driving";
+        const string routeColor = "#0B84F3";
+        const string routeDashArray = "";
 
         var html = @"<!DOCTYPE html>
 <html>
@@ -447,28 +447,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private string GetRouteProfile()
-    {
-        return _selectedTransport switch
-        {
-            "Đi bộ" => "walking",
-            "Xe máy" => "cycling",
-            "Ô tô" => "driving",
-            _ => "driving"
-        };
-    }
-
-    private (string Color, string DashArray) GetRouteStyle()
-    {
-        return _selectedTransport switch
-        {
-            "Đi bộ" => ("#16A34A", "6 8"),
-            "Xe máy" => ("#EA580C", ""),
-            "Ô tô" => ("#0B84F3", ""),
-            _ => ("#0B84F3", "")
-        };
-    }
-
     private void StartRealtimeTracking()
     {
         StopRealtimeTracking();
@@ -563,17 +541,6 @@ public partial class MainPage : ContentPage
             : $"{lat}, {lng}";
         NowPlayingLabel.Text = $"ĐANG PHÁT: {name}";
         MapPoiLabel.Text = name;
-    }
-
-    private void OnTransportChanged(object? sender, EventArgs e)
-    {
-        if (TransportPicker.SelectedItem is not string selected)
-        {
-            return;
-        }
-
-        _selectedTransport = selected;
-        LoadLeafletMap(_currentPoi, centerOnUser: _followUserRealtime && _userLocation is not null);
     }
 
     private static Dictionary<string, string> ParseQuery(string query)
