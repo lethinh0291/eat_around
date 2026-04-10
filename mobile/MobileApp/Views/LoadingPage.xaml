@@ -3,82 +3,122 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.LoadingPage"
              NavigationPage.HasNavigationBar="False"
-             BackgroundColor="#F4F6F8">
+             BackgroundColor="{StaticResource AppBackground}">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid.Background>
+            <RadialGradientBrush Center="0.28,0.12"
+                                 Radius="0.95">
+                <GradientStop Color="#FFF9F2"
+                              Offset="0"/>
+                <GradientStop Color="#FFF2E5"
+                              Offset="0.6"/>
+                <GradientStop Color="#FFE8D2"
+                              Offset="1"/>
+            </RadialGradientBrush>
+        </Grid.Background>
 
-        <VerticalStackLayout Grid.Row="0"
-                             Padding="0,64,0,0"
-                             Spacing="10"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Start">
-            <Image Source="loading_logo.svg"
-                   WidthRequest="120"
-                   HeightRequest="120"
-                   Aspect="AspectFit"/>
+        <Ellipse Fill="#26F97316"
+                 WidthRequest="300"
+                 HeightRequest="300"
+                 HorizontalOptions="Start"
+                 VerticalOptions="Start"
+                 Margin="-110,-100,0,0"/>
 
-            <Label Text="ZESTOUR"
-                   FontSize="46"
-                   FontAttributes="Bold"
-                   FontFamily="OpenSansRegular"
-                   TextColor="#060606"
-                   HorizontalTextAlignment="Center"/>
-        </VerticalStackLayout>
+        <Ellipse Fill="#1CF97316"
+                 WidthRequest="260"
+                 HeightRequest="260"
+                 HorizontalOptions="End"
+                 VerticalOptions="End"
+                 Margin="0,0,-120,-90"/>
 
-        <Grid Grid.Row="1"
-              Margin="0,34,0,0"
-              HorizontalOptions="Center"
-              VerticalOptions="Start"
-              WidthRequest="220"
-              HeightRequest="220">
+        <VerticalStackLayout Padding="28"
+                             Spacing="22"
+                             VerticalOptions="Center">
             <Border StrokeThickness="0"
-                    StrokeShape="RoundRectangle 110"
-                    BackgroundColor="#FFF7ED"
-                    WidthRequest="220"
-                    HeightRequest="220">
-                <Border.Shadow>
-                    <Shadow Brush="#26F97316"
-                            Offset="0,8"
-                            Radius="28"
-                            Opacity="0.95"/>
-                </Border.Shadow>
-            </Border>
-
-            <ActivityIndicator IsRunning="True"
-                               Color="#F97316"
-                               WidthRequest="170"
-                               HeightRequest="170"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
-
-            <Border StrokeThickness="0"
-                    WidthRequest="124"
-                    HeightRequest="124"
-                    StrokeShape="RoundRectangle 62"
-                    BackgroundColor="#FFFDF9"
+                    BackgroundColor="#FFFFFF"
+                    StrokeShape="RoundRectangle 34"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center">
-                <Label Text="Đang tải hành trình..."
-                       FontSize="14"
-                       TextColor="#7A7A7A"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"/>
-            </Border>
-        </Grid>
+                    WidthRequest="180"
+                    HeightRequest="180">
+                <Border.Shadow>
+                    <Shadow Brush="#33000000"
+                            Offset="0,14"
+                            Radius="28"
+                            Opacity="0.85"/>
+                </Border.Shadow>
 
-        <VerticalStackLayout Grid.Row="2"
-                             Spacing="18"
-                             HorizontalOptions="Center"
-                             VerticalOptions="End"
-                             Padding="0,0,0,38">
-            <Label Text="Chuẩn bị chuyến đi của bạn"
-                   FontSize="13"
-                   TextColor="#8A8F98"
-                   HorizontalTextAlignment="Center"/>
+                <Grid>
+                    <Image Source="loading_logo.svg"
+                           WidthRequest="120"
+                           HeightRequest="120"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+
+                    <Border BackgroundColor="{StaticResource Primary}"
+                            StrokeThickness="0"
+                            HorizontalOptions="End"
+                            VerticalOptions="End"
+                            Margin="0,0,18,18"
+                            Padding="10,5"
+                            StrokeShape="RoundRectangle 999">
+                        <Label Text="ZESTOUR"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <VerticalStackLayout Spacing="8"
+                                 HorizontalOptions="Center">
+                <Label Text="ZESTOUR"
+                       FontSize="38"
+                       FontAttributes="Bold"
+                       FontFamily="OpenSansRegular"
+                       TextColor="{StaticResource TextPrimary}"
+                       HorizontalTextAlignment="Center"/>
+
+                <Label Text="Định vị, khám phá và chỉ đường đẹp mắt hơn"
+                       FontSize="15"
+                       TextColor="{StaticResource TextSecondary}"
+                       HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+
+            <Border StrokeThickness="1"
+                    Stroke="{StaticResource BorderSoftBrush}"
+                    BackgroundColor="#FFFFFF"
+                    StrokeShape="RoundRectangle 26"
+                    Padding="18">
+                <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="14"
+                      VerticalOptions="Center">
+                    <Border WidthRequest="48"
+                            HeightRequest="48"
+                            StrokeThickness="0"
+                            BackgroundColor="#FFF7ED"
+                            StrokeShape="RoundRectangle 24">
+                        <ActivityIndicator IsRunning="True"
+                                           Color="{StaticResource Primary}"
+                                           WidthRequest="28"
+                                           HeightRequest="28"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1"
+                                         Spacing="4"
+                                         VerticalOptions="Center">
+                        <Label Text="Đang tải bản đồ và dữ liệu chuyến đi"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"/>
+                        <Label Text="Vui lòng chờ trong giây lát"
+                               FontSize="12"
+                               TextColor="{StaticResource TextSecondary}"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

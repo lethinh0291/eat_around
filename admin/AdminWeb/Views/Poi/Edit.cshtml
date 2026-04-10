@@ -1,0 +1,25 @@
+@model POI
+@{
+    ViewData["Title"] = "Sửa POI";
+    ViewData["ActionName"] = "Edit";
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+        <div class="breadcrumbs-inline mb-2">
+            <a asp-controller="Home" asp-action="Index">Dashboard</a>
+            <span>/</span>
+            <a asp-action="Index">POI</a>
+            <span>/</span>
+            <span>Sửa</span>
+        </div>
+        <h1 class="page-title">Chỉnh sửa POI</h1>
+        <p class="page-subtitle">Cập nhật thông tin để đồng bộ với bản đồ và các tính năng mobile.</p>
+    </div>
+</div>
+
+<partial name="_Form" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

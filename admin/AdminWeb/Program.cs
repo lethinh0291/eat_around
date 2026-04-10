@@ -1,7 +1,14 @@
+using AdminWeb.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient<PoiApiClient>(client =>
+{
+    var baseUrl = builder.Configuration["BackendApi:BaseUrl"] ?? "http://localhost:5069/";
+    client.BaseAddress = new Uri(baseUrl.EndsWith('/') ? baseUrl : baseUrl + "/");
+});
 
 var app = builder.Build();
 
@@ -13,7 +20,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseRouting();
 
 app.UseAuthorization();

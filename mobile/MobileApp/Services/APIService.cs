@@ -50,7 +50,11 @@ public class ApiService
 
     public ApiService()
     {
-        _httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) };
+        _httpClient = new HttpClient
+        {
+            BaseAddress = new Uri(BaseUrl),
+            Timeout = TimeSpan.FromSeconds(8)
+        };
     }
 
     public async Task<List<POI>> GetPoisAsync()

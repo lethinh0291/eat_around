@@ -1,13 +1,17 @@
+using MobileApp.Services;
+
 namespace ZesTour.Views;
 
 public partial class LoadingPage : ContentPage
 {
-    private readonly MainPage _mainPage;
+    private readonly AppNavigator _navigator;
+    private readonly AuthService _authService;
     private bool _hasNavigated;
 
-    public LoadingPage(MainPage mainPage)
+    public LoadingPage(AppNavigator navigator, AuthService authService)
     {
-        _mainPage = mainPage;
+        _navigator = navigator;
+        _authService = authService;
         InitializeComponent();
     }
 
@@ -21,7 +25,22 @@ public partial class LoadingPage : ContentPage
         }
 
         _hasNavigated = true;
-        await Task.Delay(1200);
-        Window!.Page = new NavigationPage(_mainPage);
+        await Task.Delay(650);
+
+        try
+        {
+            if (_authService.CurrentUser is not null)
+            {
+                await _navigator.ShowMenuAsync();
+                return;
+            }
+
+            await _navigator.ShowLoginAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex}");
+            await DisplayAlertAsync("Lỗi", $"Lỗi khởi động: {ex.Message}", "OK");
+        }
     }
 }

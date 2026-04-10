@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZesTour.Views.StoreRegistrationPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource AppBackground}">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                 EndPoint="1,1">
+                <GradientStop Color="#ffffff"
+                              Offset="0"/>
+                <GradientStop Color="#ffffff"
+                              Offset="0.55"/>
+                <GradientStop Color="#ffffff"
+                              Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <ScrollView>
+            <VerticalStackLayout Padding="20,48,20,24"
+                                 Spacing="14">
+                <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="10">
+                    <Border WidthRequest="42"
+                            HeightRequest="42"
+                            StrokeThickness="0"
+                            BackgroundColor="#ffffff"
+                            StrokeShape="RoundRectangle 14">
+                        <Label Text="←"
+                               FontSize="18"
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBackTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1"
+                                         Spacing="2"
+                                         VerticalOptions="Center">
+                        <Label Text="Đăng ký cửa hàng"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"/>
+                        <Label Text="Gửi thông tin để xét duyệt xuất hiện trên ứng dụng"
+                               FontSize="11"
+                               TextColor="Black"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Border StrokeThickness="1"
+                        Stroke="{StaticResource BorderSoftBrush}"
+                        BackgroundColor="#FFFFFF"
+                        StrokeShape="RoundRectangle 22"
+                        Padding="14">
+                    <VerticalStackLayout Spacing="10">
+                        <Entry x:Name="StoreNameEntry"
+                               Placeholder="Tên cửa hàng"/>
+                        <Entry x:Name="OwnerNameEntry"
+                               Placeholder="Tên chủ cửa hàng"/>
+                        <Entry x:Name="PhoneEntry"
+                               Placeholder="Số điện thoại"
+                               Keyboard="Telephone"/>
+                        <Entry x:Name="AddressEntry"
+                               Placeholder="Địa chỉ"/>
+                        <Entry x:Name="CategoryEntry"
+                               Placeholder="Loại hình (ăn uống, cafe,...)"/>
+                        <Editor x:Name="DescriptionEditor"
+                                Placeholder="Mô tả ngắn về cửa hàng"
+                                AutoSize="TextChanges"
+                                HeightRequest="110"/>
+
+                        <Label x:Name="MessageLabel"
+                               FontSize="12"
+                               TextColor="#ffffff"/>
+
+                        <Button Text="Gửi đăng ký"
+                                Clicked="OnSubmitClicked"
+                                HeightRequest="52"
+                                CornerRadius="16"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

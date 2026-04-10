@@ -1,0 +1,87 @@
+@model List<POI>
+@{
+    ViewData["Title"] = "Quản lý POI";
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+        <div class="breadcrumbs-inline mb-2">
+            <a asp-controller="Home" asp-action="Index">Dashboard</a>
+            <span>/</span>
+            <span>POI</span>
+        </div>
+        <h1 class="page-title">Quản lý địa điểm</h1>
+        <p class="page-subtitle">Thêm, sửa và xoá các POI được mobile app hiển thị trên bản đồ.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-admin btn-admin-soft" asp-action="Map">Xem Map</a>
+        <a class="btn btn-admin btn-admin-primary" asp-action="Create">+ Thêm POI</a>
+    </div>
+</div>
+
+@if (TempData["AdminMessage"] is string message && !string.IsNullOrWhiteSpace(message))
+{
+    <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">@message</div>
+}
+
+<div class="surface-card p-4">
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state">
+            <div>Chưa có POI nào.</div>
+            <div class="mt-3">
+                <a class="btn btn-admin btn-admin-primary" asp-action="Create">Tạo POI đầu tiên</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table admin-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Tên địa điểm</th>
+                        <th>Tọa độ</th>
+                        <th>Thuộc tính</th>
+                        <th>Media</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var poi in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="poi-name">@poi.Name</div>
+                                <div class="poi-meta">@(string.IsNullOrWhiteSpace(poi.Description) ? "Không có mô tả" : poi.Description)</div>
+                            </td>
+                            <td>
+                                <div class="poi-meta">@poi.Latitude.ToString("0.#####")</div>
+                                <div class="poi-meta">@poi.Longitude.ToString("0.#####")</div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="admin-badge admin-badge-accent">Priority @poi.Priority</span>
+                                    <span class="admin-badge admin-badge-muted">@poi.Radius.ToString("0.#")m</span>
+                                    <span class="admin-badge admin-badge-muted">@poi.LanguageCode</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="poi-meta">@(string.IsNullOrWhiteSpace(poi.ImageUrl) ? "Chưa có ảnh" : "Có ảnh")</div>
+                                <div class="poi-meta">@(string.IsNullOrWhiteSpace(poi.AudioUrl) ? "Chưa có audio" : "Có audio")</div>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                    <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="Edit" asp-route-id="@poi.Id">Sửa</a>
+                                    <form asp-action="Delete" asp-route-id="@poi.Id" method="post" onsubmit="return confirm('Xoá POI này?');">
+                                        <button type="submit" class="btn btn-admin btn-outline-danger btn-sm">Xoá</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

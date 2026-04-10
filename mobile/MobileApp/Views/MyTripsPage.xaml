@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZesTour.Views.MyTripsPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource AppBackground}">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20,48,20,24"
+                                 Spacing="12">
+                <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="10">
+                    <Border WidthRequest="42"
+                            HeightRequest="42"
+                            StrokeThickness="0"
+                            BackgroundColor="#FFF1E6"
+                            StrokeShape="RoundRectangle 14">
+                        <Label Text="←"
+                               FontSize="18"
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBackTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1"
+                                         Spacing="2"
+                                         VerticalOptions="Center">
+                        <Label Text="Hành trình của tôi"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"/>
+                        <Label Text="Danh sách điểm đến bạn đã chọn trên bản đồ"
+                               FontSize="11"
+                               TextColor="{StaticResource TextSecondary}"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <CollectionView x:Name="TripsCollectionView"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeThickness="1"
+                                    Stroke="{StaticResource BorderSoftBrush}"
+                                    BackgroundColor="#FFFFFF"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="12"
+                                    Margin="0,0,0,8">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextPrimary}"/>
+                                    <Label Text="{Binding Description}"
+                                           FontSize="11"
+                                           TextColor="{StaticResource TextSecondary}"/>
+                                    <Label Text="{Binding CreatedAtText}"
+                                           FontSize="10"
+                                           TextColor="#93A3B8"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label x:Name="EmptyLabel"
+                       Text="Bạn chưa có hành trình nào."
+                       FontSize="12"
+                       TextColor="{StaticResource TextSecondary}"
+                       IsVisible="False"
+                       HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

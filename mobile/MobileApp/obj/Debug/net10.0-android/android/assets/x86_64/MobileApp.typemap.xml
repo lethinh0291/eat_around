@@ -1,10 +1,10 @@
-<api type="debug" assembly-name="MobileApp" mvid="043c49c5b74b479092d2eb817ea0d610">
+<api type="debug" assembly-name="MobileApp" mvid="d2b7ba33fb5e4f1f837919454d4578a4">
   <java-to-managed>
-    <entry java-name="crc641e7d54598c36d2f9/MainActivity" managed-name="MobileApp.MainActivity, MobileApp" managed-type-token-id="33554444" />
-    <entry java-name="crc641e7d54598c36d2f9/MainApplication" managed-name="MobileApp.MainApplication, MobileApp" managed-type-token-id="33554445" />
+    <entry java-name="crc641e7d54598c36d2f9/MainActivity" managed-name="MobileApp.MainActivity, MobileApp" managed-type-token-id="33554452" />
+    <entry java-name="crc641e7d54598c36d2f9/MainApplication" managed-name="MobileApp.MainApplication, MobileApp" managed-type-token-id="33554453" />
   </java-to-managed>
   <managed-to-java>
-    <entry java-name="crc641e7d54598c36d2f9/MainActivity" managed-name="MobileApp.MainActivity, MobileApp" managed-type-token-id="33554444" />
-    <entry java-name="crc641e7d54598c36d2f9/MainApplication" managed-name="MobileApp.MainApplication, MobileApp" managed-type-token-id="33554445" />
+    <entry java-name="crc641e7d54598c36d2f9/MainActivity" managed-name="MobileApp.MainActivity, MobileApp" managed-type-token-id="33554452" />
+    <entry java-name="crc641e7d54598c36d2f9/MainApplication" managed-name="MobileApp.MainApplication, MobileApp" managed-type-token-id="33554453" />
   </managed-to-java>
 </api>

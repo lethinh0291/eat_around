@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZesTour.Views.HelpFeedbackPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource AppBackground}">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20,48,20,24"
+                                 Spacing="12">
+                <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="10">
+                    <Border WidthRequest="42"
+                            HeightRequest="42"
+                            StrokeThickness="0"
+                            BackgroundColor="#FFF1E6"
+                            StrokeShape="RoundRectangle 14">
+                        <Label Text="←"
+                               FontSize="18"
+                               TextColor="{StaticResource TextPrimary}"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBackTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1"
+                                         Spacing="2"
+                                         VerticalOptions="Center">
+                        <Label Text="Trợ giúp và phản hồi"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource TextPrimary}"/>
+                        <Label Text="Gửi góp ý để cải thiện trải nghiệm"
+                               FontSize="11"
+                               TextColor="{StaticResource TextSecondary}"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Border StrokeThickness="1"
+                        Stroke="{StaticResource BorderSoftBrush}"
+                        BackgroundColor="#FFFFFF"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="12">
+                    <VerticalStackLayout Spacing="10">
+                        <Entry x:Name="EmailEntry"
+                               Placeholder="Email liên hệ"
+                               Keyboard="Email"/>
+                        <Entry x:Name="TitleEntry"
+                               Placeholder="Tiêu đề phản hồi"/>
+                        <Editor x:Name="ContentEditor"
+                                Placeholder="Mô tả chi tiết phản hồi của bạn"
+                                AutoSize="TextChanges"
+                                HeightRequest="120"/>
+                        <Label x:Name="MessageLabel"
+                               FontSize="12"
+                               TextColor="#FCA5A5"/>
+                        <Button Text="Gửi phản hồi"
+                                Clicked="OnSubmitClicked"
+                                HeightRequest="50"
+                                CornerRadius="16"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -1,8 +1,158 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model AdminWeb.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="admin-hero mb-4">
+    <div class="row align-items-center g-4 position-relative">
+        <div class="col-lg-7">
+            <span class="eyebrow">Admin web cho mobile build</span>
+            <h1 class="hero-title">Quản trị POI và các tính năng nội dung của ZesTour từ web.</h1>
+            <p class="hero-copy">
+                Dashboard này phản ánh các phần đã có trên mobile: bản đồ, hành trình, cài đặt, trợ giúp, đăng ký cửa hàng và thuyết minh nhanh.
+                Từ đây bạn quản lý dữ liệu POI, theo dõi phạm vi phủ và chuẩn bị nội dung cho ứng dụng di động.
+            </p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <a class="btn btn-admin btn-admin-primary" asp-controller="Poi" asp-action="Index">Quản lý POI</a>
+                <a class="btn btn-admin btn-admin-soft" asp-controller="Poi" asp-action="Create">Tạo địa điểm mới</a>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="stat-card">
+                        <div class="stat-label">Tổng POI</div>
+                        <div class="stat-value">@Model.TotalPois</div>
+                        <div class="stat-note">Điểm đến đang hiển thị trên mobile</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="stat-card">
+                        <div class="stat-label">Ưu tiên cao</div>
+                        <div class="stat-value">@Model.HighPriorityPois</div>
+                        <div class="stat-note">POI có Priority từ 7 trở lên</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="stat-card">
+                        <div class="stat-label">Bán kính TB</div>
+                        <div class="stat-value">@Model.AverageRadius.ToString("0.#")m</div>
+                        <div class="stat-note">Phạm vi gợi ý quanh địa điểm</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="stat-card">
+                        <div class="stat-label">Ngôn ngữ</div>
+                        <div class="stat-value">@Model.DistinctLanguages</div>
+                        <div class="stat-note">Mã ngôn ngữ đang được dùng</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="row g-3 mb-4">
+    @foreach (var module in Model.ModuleCards)
+    {
+        <div class="col-md-6 col-xl-3">
+            <div class="module-card">
+                <div class="d-flex align-items-start justify-content-between gap-3">
+                    <div>
+                        <h2 class="section-title">@module.Title</h2>
+                        <p class="section-subtitle mt-2">@module.Description</p>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(module.Badge))
+                    {
+                        <span class="admin-badge admin-badge-accent">@module.Badge</span>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="surface-card p-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div>
+                    <h2 class="section-title">POI gần đây</h2>
+                    <p class="section-subtitle">Các địa điểm mới nhất được sắp xếp để kiểm tra nhanh.</p>
+                </div>
+                <a class="btn btn-admin btn-admin-soft btn-sm" asp-controller="Poi" asp-action="Index">Xem tất cả</a>
+            </div>
+
+            @if (Model.RecentPois.Count == 0)
+            {
+                <div class="empty-state">
+                    <div>Chưa có POI nào được tạo.</div>
+                    <div class="mt-2">
+                        <a class="btn btn-admin btn-admin-primary btn-sm" asp-controller="Poi" asp-action="Create">Thêm POI đầu tiên</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table admin-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Tên</th>
+                                <th>Tọa độ</th>
+                                <th>Thông tin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var poi in Model.RecentPois)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="poi-name">@poi.Name</div>
+                                        <div class="poi-meta">@(string.IsNullOrWhiteSpace(poi.Description) ? "Không có mô tả" : poi.Description)</div>
+                                    </td>
+                                    <td>
+                                        <div class="poi-meta">@poi.Latitude.ToString("0.#####"), @poi.Longitude.ToString("0.#####")</div>
+                                    </td>
+                                    <td>
+                                        <span class="admin-badge admin-badge-accent me-2">Priority @poi.Priority</span>
+                                        <span class="admin-badge admin-badge-muted">@poi.LanguageCode</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="surface-card p-4 h-100">
+            <h2 class="section-title mb-2">Tổng quan nội dung</h2>
+            <p class="section-subtitle mb-4">Một số chỉ số nhanh dựa trên dữ liệu POI hiện có.</p>
+
+            <div class="d-grid gap-3">
+                <div class="helper-chip justify-content-between">
+                    <span>POI có media</span>
+                    <strong>@Model.MediaPois</strong>
+                </div>
+                <div class="helper-chip justify-content-between">
+                    <span>Ưu tiên trung bình</span>
+                    <strong>@Model.AveragePriority.ToString("0.#")</strong>
+                </div>
+                <div class="helper-chip justify-content-between">
+                    <span>POI đang quản lý</span>
+                    <strong>@Model.TotalPois</strong>
+                </div>
+            </div>
+
+            <div class="mt-4 p-3 rounded-4" style="background: var(--admin-surface-soft); border: 1px solid var(--admin-border);">
+                <div class="fw-bold mb-2">Mục tiêu admin</div>
+                <div class="small text-secondary-emphasis">
+                    Giữ dữ liệu POI sạch, đầy đủ tọa độ, có mô tả và sẵn sàng cho phần bản đồ trên mobile.
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
