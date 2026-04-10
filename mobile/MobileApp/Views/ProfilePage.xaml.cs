@@ -47,7 +47,7 @@ public partial class ProfilePage : ContentPage
         await Navigation.PopAsync();
     }
 
-    private async void OnSignOutClicked(object sender, EventArgs e)
+    private async void OnSignOutClicked(object? sender, EventArgs e)
     {
         await _authService.SignOutAsync();
         await _navigator.ShowLoginAsync();

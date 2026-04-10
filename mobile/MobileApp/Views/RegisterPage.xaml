@@ -99,6 +99,36 @@
                                                                BackgroundColor="#FFF7ED"/>
                                                 </VerticalStackLayout>
 
+                                                <Border StrokeThickness="1"
+                                                        Stroke="{StaticResource BorderSoftBrush}"
+                                                        BackgroundColor="#FFFDF9"
+                                                        StrokeShape="RoundRectangle 14"
+                                                        Padding="12,10">
+                                                        <Grid ColumnDefinitions="*,Auto"
+                                                              ColumnSpacing="10">
+                                                                <VerticalStackLayout Spacing="2">
+                                                                        <Label Text="Đăng ký tài khoản người bán"
+                                                                               FontSize="13"
+                                                                               FontAttributes="Bold"
+                                                                               TextColor="{StaticResource TextPrimary}"/>
+                                                                        <Label Text="Bật nếu bạn muốn mở cửa hàng sau khi tạo tài khoản"
+                                                                               FontSize="11"
+                                                                               TextColor="{StaticResource TextSecondary}"/>
+                                                                </VerticalStackLayout>
+
+                                                                <Switch Grid.Column="1"
+                                                                        x:Name="SellerSwitch"
+                                                                        IsToggled="False"
+                                                                        Toggled="OnSellerSwitchToggled"
+                                                                        VerticalOptions="Center"/>
+                                                        </Grid>
+                                                </Border>
+
+                                                <Label x:Name="SelectedRoleLabel"
+                                                       Text="Vai trò sẽ tạo: Khách hàng"
+                                                       FontSize="12"
+                                                       TextColor="{StaticResource TextSecondary}"/>
+
                                                 <Button Text="Tạo tài khoản"
                                                         Clicked="OnRegisterClicked"
                                                         BackgroundColor="{StaticResource Primary}"

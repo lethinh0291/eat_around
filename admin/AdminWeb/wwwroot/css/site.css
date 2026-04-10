@@ -20,6 +20,9 @@ html {
   --admin-accent: #f97316;
   --admin-accent-dark: #d75e06;
   --admin-accent-soft: rgba(249, 115, 22, 0.12);
+  --poi-range-stroke: #f97316;
+  --poi-range-fill: #f97316;
+  --poi-range-fill-opacity: 0.12;
 }
 
 body.admin-body {
@@ -57,6 +60,12 @@ body.admin-body {
   letter-spacing: 0.02em;
 }
 
+.brand-logo {
+  width: 1.4rem;
+  height: 1.4rem;
+  object-fit: contain;
+}
+
 .brand-dot {
   width: 0.82rem;
   height: 0.82rem;
@@ -80,6 +89,89 @@ body.admin-body {
 
 .admin-main {
   min-height: calc(100vh - 130px);
+}
+
+.admin-login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.admin-login-frame {
+  width: min(100%, 980px);
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 24px 56px rgba(27, 36, 48, 0.12);
+}
+
+.admin-login-brand {
+  padding: 2.4rem 2.2rem;
+  background:
+    radial-gradient(circle at 90% 85%, rgba(249, 115, 22, 0.25), transparent 42%),
+    linear-gradient(155deg, #fff5ea 0%, #ffedd8 56%, #ffe4c3 100%);
+}
+
+.admin-login-logo-wrap {
+  margin-bottom: 0.7rem;
+}
+
+.admin-login-logo {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.admin-login-title {
+  font-size: clamp(1.7rem, 1.2rem + 1.3vw, 2.6rem);
+  line-height: 1.08;
+  font-weight: 800;
+  margin: 0;
+  max-width: 18ch;
+}
+
+.admin-login-copy {
+  margin-top: 1rem;
+  color: #4b5563;
+  max-width: 46ch;
+}
+
+.admin-login-bullets {
+  margin-top: 1.35rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-login-bullet {
+  border: 1px solid rgba(215, 94, 6, 0.2);
+  background: rgba(255, 255, 255, 0.6);
+  color: #7c2d12;
+  border-radius: 999px;
+  padding: 0.45rem 0.78rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.admin-login-panel {
+  padding: 2.1rem 1.8rem;
+  background: #ffffff;
+}
+
+.admin-login-form-title {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.admin-login-form-subtitle {
+  margin: 0.4rem 0 0;
+  color: var(--admin-muted);
 }
 
 .admin-footer {
@@ -301,6 +393,20 @@ body.admin-body {
   background: rgba(27, 36, 48, 0.06);
   color: var(--admin-muted);
   font-size: 0.82rem;
+}
+
+@media (max-width: 900px) {
+  .admin-login-frame {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-login-brand {
+    padding: 1.5rem 1.35rem;
+  }
+
+  .admin-login-panel {
+    padding: 1.45rem 1.35rem;
+  }
 }
 
 .empty-state {

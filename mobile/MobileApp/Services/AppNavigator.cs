@@ -88,6 +88,21 @@ public class AppNavigator
         }
     }
 
+    public async Task ShowStoreManagementAsync()
+    {
+        var navigation = EnsureNavigationPage();
+        if (navigation is null)
+        {
+            await ShowMenuAsync();
+            navigation = EnsureNavigationPage();
+        }
+
+        if (navigation is not null)
+        {
+            await navigation.PushAsync(_services.GetRequiredService<StoreManagementPage>());
+        }
+    }
+
     public async Task ShowMyTripsAsync()
     {
         var navigation = EnsureNavigationPage();

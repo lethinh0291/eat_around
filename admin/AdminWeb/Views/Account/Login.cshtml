@@ -1,0 +1,72 @@
+@model AdminWeb.Controllers.AccountController.LoginViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng nhập";
+}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ZesTour Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AdminWeb.styles.css" asp-append-version="true" />
+</head>
+
+<body class="admin-body">
+    <main class="admin-login-shell">
+        <div class="admin-login-frame">
+            <section class="admin-login-brand">
+                <div class="admin-login-logo-wrap">
+                    <img src="~/images/logo.svg" alt="ZesTour" class="admin-login-logo" />
+                </div>
+                <div class="eyebrow mb-3">ZesTour Administration</div>
+                <h1 class="admin-login-title">Hệ thống quản lý dành cho ZESTOUR</h1>
+                <p class="admin-login-copy">
+                    Đăng nhập để quản lý POI, duyệt quán ăn đăng ký và cập nhật dữ liệu bản đồ một cách đồng bộ.
+                </p>
+
+                <div class="admin-login-bullets">
+                    <div class="admin-login-bullet">Uy tín</div>
+                    <div class="admin-login-bullet">Trách nhiệm</div>
+                    <div class="admin-login-bullet">Tiện lợi</div>
+                </div>
+            </section>
+
+            <section class="admin-login-panel">
+                <h2 class="admin-login-form-title">Đăng nhập</h2>
+                <p class="admin-login-form-subtitle">Vui lòng dùng tài khoản đã được cấp để đăng nhập hệ thống của chúng
+                    tôi.</p>
+
+                    <form asp-action="Login" method="post" class="admin-form mt-3">
+                        <input type="hidden" asp-for="ReturnUrl" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label">Tên đăng nhập</label>
+                            <input asp-for="Username" class="form-control" autocomplete="username"
+                                   placeholder="Nhập tên đăng nhập" />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Mật khẩu</label>
+                            <input asp-for="Password" type="password" class="form-control" autocomplete="current-password"
+                                   placeholder="Nhập mật khẩu" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-admin btn-admin-primary w-100">Đăng nhập</button>
+                    </form>
+                </section>
+            </div>
+        </main>
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <partial name="_ValidationScriptsPartial" />
+    </body>
+
+</html>

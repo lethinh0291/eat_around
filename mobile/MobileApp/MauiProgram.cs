@@ -33,6 +33,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<LoginPage>();
 		builder.Services.AddTransient<RegisterPage>();
 		builder.Services.AddTransient<StoreRegistrationPage>();
+		builder.Services.AddTransient<StoreManagementPage>();
 		builder.Services.AddTransient<MyTripsPage>();
 		builder.Services.AddTransient<SettingsPage>();
 		builder.Services.AddTransient<HelpFeedbackPage>();

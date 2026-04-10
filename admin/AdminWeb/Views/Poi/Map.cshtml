@@ -37,7 +37,7 @@
             <span>Map</span>
         </div>
         <h1 class="page-title">Bản đồ POI</h1>
-        <p class="page-subtitle">Ban do chi hien thi trong pham vi Pho am thuc Vinh Khanh.</p>
+        <p class="page-subtitle">Ban do chi hien thi POI trong pham vi Pho am thuc Vinh Khanh.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
         <a class="btn btn-admin btn-admin-soft" asp-action="Index">Danh sach POI</a>
@@ -54,145 +54,276 @@
     }
     else
     {
-        <div class="admin-map-wrap mb-3">
-            <div id="poi-map"></div>
-        </div>
+        <div class="d-flex flex-wrap align-items-end gap-3 mb-3">
+            <div>
+                <label for="rangeStrokeColor" class="form-label mb-1">Mau vien pham vi</label>
+                <input id="rangeStrokeColor" type="color" class="form-control form-control-color" value="#f97316"
+                       title="Mau vien" />
+            </div>
+            <div>
+                <label for="rangeFillColor" class="form-label mb-1">Mau nen pham vi</label>
+                <input id="rangeFillColor" type="color" class="form-control form-control-color" value="#f97316"
+                       title="Mau nen" />
+            </div>
+            <div style="min-width: 220px;">
+                <label for="rangeFillOpacity" class="form-label mb-1">Do trong suot: <span
+                    id="rangeFillOpacityLabel">0.12</span></label>
+                    <input id="rangeFillOpacity" type="range" class="form-range" min="0.02" max="0.8" step="0.01"
+                           value="0.12" />
+                </div>
+                <button type="button" id="resetRangeStyle" class="btn btn-admin btn-admin-soft btn-sm">Dat lai mac dinh</button>
+            </div>
 
-        <div class="d-flex flex-wrap gap-2">
-            <span class="helper-chip">So POI trong khu vuc: <strong>@visiblePoiCount</strong></span>
-            <span class="helper-chip">Tip: Bam marker de xem chi tiet</span>
-            <span class="helper-chip">Vi tri cua ban se duoc danh dau neu trinh duyet cho phep</span>
-        </div>
-    }
-</div>
+            <div class="admin-map-wrap mb-3">
+                <div id="poi-map"></div>
+            </div>
 
-@section Scripts {
-    @if (visiblePoiCount > 0)
-    {
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-        <script>
-            (function () {
+            <div class="d-flex flex-wrap gap-2">
+                <span class="helper-chip">So POI trong khu vuc: <strong>@visiblePoiCount</strong></span>
+                <span class="helper-chip">Tip: Bam marker de xem chi tiet</span>
+                <span class="helper-chip">Vi tri cua ban se duoc danh dau neu trinh duyet cho phep</span>
+            </div>
+        }
+    </div>
+
+    @section Scripts {
+        @if (visiblePoiCount > 0)
+        {
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+            <script>
+                (function () {
                 const pois = @Html.Raw(mapJson);
                 if (!Array.isArray(pois) || pois.length === 0) {
-                    return;
+                return;
                 }
 
                 const defaultCenter = [10.7589, 106.7072];
                 const vinhKhanhBounds = L.latLngBounds(
-                    [10.7530, 106.6992],
-                    [10.7648, 106.7152]
+                [10.7530, 106.6992],
+                [10.7648, 106.7152]
                 );
 
                 const map = L.map('poi-map', {
-                    zoomControl: true,
-                    minZoom: 15,
-                    maxZoom: 19
+                zoomControl: true,
+                minZoom: 15,
+                maxZoom: 19
                 }).setView(defaultCenter, 14);
 
+                const css = getComputedStyle(document.documentElement);
+                const fallbackStroke = css.getPropertyValue('--poi-range-stroke').trim() || '#f97316';
+                const fallbackFill = css.getPropertyValue('--poi-range-fill').trim() || '#f97316';
+                const fallbackOpacityRaw = Number.parseFloat(css.getPropertyValue('--poi-range-fill-opacity').trim());
+                const fallbackOpacity = Number.isFinite(fallbackOpacityRaw) ? fallbackOpacityRaw : 0.12;
+
+                const strokeInput = document.getElementById('rangeStrokeColor');
+                const fillInput = document.getElementById('rangeFillColor');
+                const opacityInput = document.getElementById('rangeFillOpacity');
+                const opacityLabel = document.getElementById('rangeFillOpacityLabel');
+                const resetButton = document.getElementById('resetRangeStyle');
+
+                const storageKey = 'admin.poi.range-style.v1';
+                let rangeStrokeColor = fallbackStroke;
+                let rangeFillColor = fallbackFill;
+                let rangeFillOpacity = fallbackOpacity;
+
+                try {
+                const raw = localStorage.getItem(storageKey);
+                if (raw) {
+                const saved = JSON.parse(raw);
+                if (saved && typeof saved === 'object') {
+                if (typeof saved.stroke === 'string' && saved.stroke.trim() !== '') {
+                rangeStrokeColor = saved.stroke.trim();
+                }
+                if (typeof saved.fill === 'string' && saved.fill.trim() !== '') {
+                rangeFillColor = saved.fill.trim();
+                }
+                const parsedOpacity = Number.parseFloat(saved.opacity);
+                if (Number.isFinite(parsedOpacity) && parsedOpacity >= 0.02 && parsedOpacity <= 0.8) {
+                rangeFillOpacity = parsedOpacity;
+                }
+                }
+                }
+                } catch {
+                }
+
+                if (strokeInput) {
+                strokeInput.value = rangeStrokeColor;
+                }
+                if (fillInput) {
+                fillInput.value = rangeFillColor;
+                }
+                if (opacityInput) {
+                opacityInput.value = String(rangeFillOpacity);
+                }
+                if (opacityLabel) {
+                opacityLabel.textContent = rangeFillOpacity.toFixed(2);
+                }
+
                 map.setMaxBounds(vinhKhanhBounds.pad(0.01));
-                map.fitBounds(vinhKhanhBounds, { padding: [10, 10], maxZoom: 16 });
 
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
                 }).addTo(map);
 
                 const poiLatLngs = [];
                 const markerList = [];
 
                 for (const poi of pois) {
-                    if (typeof poi.lat !== 'number' || typeof poi.lng !== 'number') {
-                        continue;
-                    }
+                if (typeof poi.lat !== 'number' || typeof poi.lng !== 'number') {
+                continue;
+                }
 
-                    const labelHtml = `<div class="poi-label-pill">${poi.name}</div>`;
-                    const icon = L.divIcon({
-                        className: 'poi-label-wrapper',
-                        html: labelHtml,
-                        iconSize: [1, 1],
-                        iconAnchor: [0, 22]
-                    });
+                const labelHtml = `<div class="poi-label-pill">${poi.name}</div>`;
+                const icon = L.divIcon({
+                className: 'poi-label-wrapper',
+                html: labelHtml,
+                iconSize: [1, 1],
+                iconAnchor: [0, 22]
+                });
 
-                    const marker = L.marker([poi.lat, poi.lng], { icon }).addTo(map);
-                    const popupHtml = `
-                        <div class="poi-popup-title">${poi.name}</div>
-                        <div class="poi-popup-desc">${poi.description}</div>
-                        <div class="poi-popup-meta">Priority: ${poi.priority} | Radius: ${poi.radius}m | Lang: ${poi.languageCode}</div>`;
-                    marker.bindPopup(popupHtml);
+                const marker = L.marker([poi.lat, poi.lng], { icon }).addTo(map);
+                const popupHtml = `
+                <div class="poi-popup-title">${poi.name}</div>
+                <div class="poi-popup-desc">${poi.description}</div>
+                <div class="poi-popup-meta">Priority: ${poi.priority} | Radius: ${poi.radius}m | Lang: ${poi.languageCode}</div>`;
+                marker.bindPopup(popupHtml);
 
-                    const circle = L.circle([poi.lat, poi.lng], {
-                        radius: Math.max(1, poi.radius || 1),
-                        color: '#f97316',
-                        weight: 1,
-                        fillColor: '#f97316',
-                        fillOpacity: 0.12
-                    }).addTo(map);
+                const circle = L.circle([poi.lat, poi.lng], {
+                radius: Math.max(1, poi.radius || 1),
+                color: rangeStrokeColor,
+                weight: 1,
+                fillColor: rangeFillColor,
+                fillOpacity: rangeFillOpacity
+                }).addTo(map);
 
-                    poiLatLngs.push([poi.lat, poi.lng]);
-                    markerList.push({ poi, marker, circle });
+                poiLatLngs.push([poi.lat, poi.lng]);
+                markerList.push({ poi, marker, circle });
+                }
+
+                function applyRangeStyle() {
+                for (const item of markerList) {
+                item.circle.setStyle({
+                color: rangeStrokeColor,
+                fillColor: rangeFillColor,
+                fillOpacity: rangeFillOpacity
+                });
+                }
+
+                if (opacityLabel) {
+                opacityLabel.textContent = rangeFillOpacity.toFixed(2);
+                }
+
+                try {
+                localStorage.setItem(storageKey, JSON.stringify({
+                stroke: rangeStrokeColor,
+                fill: rangeFillColor,
+                opacity: rangeFillOpacity
+                }));
+                } catch {
+                }
+                }
+
+                if (strokeInput) {
+                strokeInput.addEventListener('input', function () {
+                rangeStrokeColor = strokeInput.value || fallbackStroke;
+                applyRangeStyle();
+                });
+                }
+
+                if (fillInput) {
+                fillInput.addEventListener('input', function () {
+                rangeFillColor = fillInput.value || fallbackFill;
+                applyRangeStyle();
+                });
+                }
+
+                if (opacityInput) {
+                opacityInput.addEventListener('input', function () {
+                const parsed = Number.parseFloat(opacityInput.value);
+                rangeFillOpacity = Number.isFinite(parsed) ? parsed : fallbackOpacity;
+                applyRangeStyle();
+                });
+                }
+
+                if (resetButton) {
+                resetButton.addEventListener('click', function () {
+                rangeStrokeColor = fallbackStroke;
+                rangeFillColor = fallbackFill;
+                rangeFillOpacity = fallbackOpacity;
+
+                if (strokeInput) {
+                strokeInput.value = rangeStrokeColor;
+                }
+                if (fillInput) {
+                fillInput.value = rangeFillColor;
+                }
+                if (opacityInput) {
+                opacityInput.value = String(rangeFillOpacity);
+                }
+
+                applyRangeStyle();
+                });
                 }
 
                 if (poiLatLngs.length > 0) {
-                    const poiBounds = L.latLngBounds(poiLatLngs).pad(0.2);
-                    const targetBounds = vinhKhanhBounds.intersects(poiBounds) ? poiBounds : vinhKhanhBounds;
-
-                    map.fitBounds(targetBounds, {
-                        maxZoom: 16,
-                        padding: [24, 24]
-                    });
+                map.fitBounds(vinhKhanhBounds, {
+                maxZoom: 16,
+                padding: [24, 24]
+                });
                 }
 
                 function haversineMeters(lat1, lon1, lat2, lon2) {
-                    const R = 6371000;
-                    const toRad = (value) => value * Math.PI / 180;
-                    const dLat = toRad(lat2 - lat1);
-                    const dLon = toRad(lon2 - lon1);
-                    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                const R = 6371000;
+                const toRad = (value) => value * Math.PI / 180;
+                const dLat = toRad(lat2 - lat1);
+                const dLon = toRad(lon2 - lon1);
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                 }
 
                 function highlightNearestPoi(userLat, userLng) {
-                    let nearest = null;
-                    let nearestDistance = Number.MAX_VALUE;
+                let nearest = null;
+                let nearestDistance = Number.MAX_VALUE;
 
-                    for (const item of markerList) {
-                        const distance = haversineMeters(userLat, userLng, item.poi.lat, item.poi.lng);
-                        if (distance < nearestDistance) {
-                            nearest = item;
-                            nearestDistance = distance;
-                        }
-                    }
+                for (const item of markerList) {
+                const distance = haversineMeters(userLat, userLng, item.poi.lat, item.poi.lng);
+                if (distance < nearestDistance) {
+                nearest = item;
+                nearestDistance = distance;
+                }
+                }
 
-                    for (const item of markerList) {
-                        item.marker.getElement()?.classList.remove('is-nearest-poi');
-                    }
+                for (const item of markerList) {
+                item.marker.getElement()?.classList.remove('is-nearest-poi');
+                }
 
-                    if (nearest && nearest.marker.getElement()) {
-                        nearest.marker.getElement().classList.add('is-nearest-poi');
-                        nearest.marker.openPopup();
-                    }
+                if (nearest && nearest.marker.getElement()) {
+                nearest.marker.getElement().classList.add('is-nearest-poi');
+                nearest.marker.openPopup();
+                }
                 }
 
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        const userLat = position.coords.latitude;
-                        const userLng = position.coords.longitude;
+                navigator.geolocation.getCurrentPosition((position) => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
 
-                        const userMarker = L.circleMarker([userLat, userLng], {
-                            radius: 8,
-                            color: '#2563eb',
-                            fillColor: '#2563eb',
-                            fillOpacity: 0.9,
-                            weight: 3
-                        }).addTo(map);
+                const userMarker = L.circleMarker([userLat, userLng], {
+                radius: 8,
+                color: '#2563eb',
+                fillColor: '#2563eb',
+                fillOpacity: 0.9,
+                weight: 3
+                }).addTo(map);
 
-                        userMarker.bindPopup('Vi tri hien tai cua ban');
-                        highlightNearestPoi(userLat, userLng);
-                    });
+                userMarker.bindPopup('Vi tri hien tai cua ban');
+                highlightNearestPoi(userLat, userLng);
+                });
                 }
-            })();
-        </script>
+                })();
+            </script>
+        }
     }
-}

@@ -1,0 +1,914 @@
+@model AdminWeb.Models.AdminStoresViewModel
+@using System.Text.Json
+@using System.Text.RegularExpressions
+@{
+    ViewData["Title"] = "Quản lý Quán Ăn";
+
+    var registeredRestaurantsMapData = Model.Restaurants
+        .Select(item => new
+        {
+            id = item.Id,
+            name = string.IsNullOrWhiteSpace(item.Name) ? "Quán ăn" : item.Name,
+            lat = item.Latitude,
+            lng = item.Longitude,
+            radius = item.Radius
+        })
+        .ToList();
+
+    var registeredRestaurantsJson = JsonSerializer.Serialize(registeredRestaurantsMapData);
+}
+
+<div class="admin-card mb-4">
+    <div>
+        <h1 class="h4 mb-1">Quản lý quán ăn</h1>
+        <p class="text-muted mb-0">Thêm, sửa, xóa quán trên map và duyệt danh sách gửi đăng ký quán ăn.</p>
+    </div>
+</div>
+
+    @if (TempData["AdminMessage"] is string ok)
+    {
+        <div class="alert alert-success">@ok</div>
+    }
+
+    @if (TempData["AdminError"] is string err)
+    {
+        <div class="alert alert-danger">@err</div>
+    }
+
+<div class="admin-card mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">Quán ăn đã lên map</h2>
+        <a class="btn btn-sm btn-outline-primary" asp-controller="Poi" asp-action="Create">Thêm quán mới</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên quán</th>
+                    <th>Ảnh review</th>
+                    <th>Tên đường</th>
+                    <th>Mô tả</th>
+                    <th>Tọa độ</th>
+                    <th>Bán kính / Ưu tiên</th>
+                    <th class="text-end">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Restaurants.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">Chưa có quán nào trên map.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var restaurant in Model.Restaurants)
+                    {
+                        var streetName = "Chưa có";
+                        var addressMatch = Regex.Match(restaurant.Description ?? string.Empty, @"Địa chỉ:\s*([^|]+)", RegexOptions.IgnoreCase);
+                        if (addressMatch.Success)
+                        {
+                            streetName = addressMatch.Groups[1].Value.Trim();
+                        }
+
+                        <tr>
+                            <td>@restaurant.Id</td>
+                            <td>@restaurant.Name</td>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(restaurant.ImageUrl))
+                                {
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="@restaurant.ImageUrl" alt="Ảnh quán" style="width:72px;height:54px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;" />
+                                        <a class="btn btn-sm btn-outline-secondary" href="@restaurant.ImageUrl" target="_blank" rel="noopener noreferrer">Xem</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Chưa có ảnh</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="small text-muted">@streetName</span>
+                            </td>
+                            <td>
+                                @if (string.IsNullOrWhiteSpace(restaurant.Description))
+                                {
+                                    <span class="text-muted small">Không có mô tả</span>
+                                }
+                                else
+                                {
+                                    <span>@restaurant.Description</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="small">
+                                    <div>Lat: @restaurant.Latitude.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture)</div>
+                                    <div>Lng: @restaurant.Longitude.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture)</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="small">
+                                    <div>Bán kính: @restaurant.Radius.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)m</div>
+                                    <div>Ưu tiên: @restaurant.Priority | Ngôn ngữ: @restaurant.LanguageCode</div>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editRestaurantModal"
+                                        data-restaurant-id="@restaurant.Id"
+                                        data-name="@restaurant.Name"
+                                        data-description="@restaurant.Description"
+                                        data-image-url="@restaurant.ImageUrl"
+                                        data-audio-url="@restaurant.AudioUrl"
+                                        data-latitude="@restaurant.Latitude.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-longitude="@restaurant.Longitude.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-radius="@restaurant.Radius.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-priority="@restaurant.Priority"
+                                        data-language-code="@restaurant.LanguageCode">
+                                        Chỉnh sửa
+                                    </button>
+                                    <form asp-action="DeleteRestaurant" method="post" onsubmit="return confirm('Xóa quán này khỏi map?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@restaurant.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="editRestaurantModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form asp-action="UpdateRestaurant" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa quán ăn trên map</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editRestaurantId" name="Id" />
+
+                    <div class="mb-3">
+                        <label for="editRestaurantName" class="form-label">Tên quán</label>
+                        <input id="editRestaurantName" type="text" name="Name" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editRestaurantDescription" class="form-label">Mô tả</label>
+                        <textarea id="editRestaurantDescription" name="Description" rows="3" class="form-control"></textarea>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="editRestaurantLatitude" class="form-label">Vĩ độ</label>
+                            <input id="editRestaurantLatitude" type="number" step="0.000001" name="Latitude" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editRestaurantLongitude" class="form-label">Kinh độ</label>
+                            <input id="editRestaurantLongitude" type="number" step="0.000001" name="Longitude" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="openMapPicker('editRestaurantLatitude','editRestaurantLongitude')">Chọn vị trí trên map</button>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4">
+                            <label for="editRestaurantRadius" class="form-label">Bán kính (m)</label>
+                            <input id="editRestaurantRadius" type="number" step="0.1" min="1" max="1000" name="Radius" class="form-control" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editRestaurantPriority" class="form-label">Ưu tiên</label>
+                            <input id="editRestaurantPriority" type="number" min="1" max="10" name="Priority" class="form-control" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label for="editRestaurantLanguageCode" class="form-label">Ngôn ngữ</label>
+                            <input id="editRestaurantLanguageCode" type="text" name="LanguageCode" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editRestaurantImageUrl" class="form-label">Ảnh review (URL)</label>
+                        <input id="editRestaurantImageUrl" type="url" name="ImageUrl" class="form-control" placeholder="https://..." />
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editRestaurantAudioUrl" class="form-label">Audio URL</label>
+                        <input id="editRestaurantAudioUrl" type="url" name="AudioUrl" class="form-control" placeholder="https://..." />
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="small text-muted mb-2">Xem trước ảnh review</div>
+                        <img id="editRestaurantImagePreview" src="" alt="Xem trước ảnh quán" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;display:none;" />
+                        <div id="editRestaurantImagePreviewEmpty" class="small text-muted">Chưa có ảnh để xem trước.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu chỉnh sửa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="admin-card">
+    <h2 class="h5 mb-3">Danh sách chờ duyệt</h2>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên quán</th>
+                    <th>Ảnh</th>
+                    <th>Chủ quán</th>
+                    <th>Liên hệ</th>
+                    <th>Loại hình</th>
+                    <th>Mô tả</th>
+                    <th>Gửi lúc (UTC)</th>
+                    <th>Duyệt lên map</th>
+                    <th class="text-end">Khác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.PendingRegistrations.Any())
+                {
+                    <tr>
+                        <td colspan="10" class="text-center text-muted">Không có đăng ký quán ăn.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model.PendingRegistrations)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.StoreName</td>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                {
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="@item.ImageUrl" alt="Ảnh quán" style="width:72px;height:54px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;" />
+                                        <a class="btn btn-sm btn-outline-secondary" href="@item.ImageUrl" target="_blank" rel="noopener noreferrer">Xem</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Chưa có ảnh</span>
+                                }
+                            </td>
+                            <td>@item.OwnerName</td>
+                            <td>
+                                <div>@item.Phone</div>
+                                <small class="text-muted">@item.Address</small>
+                            </td>
+                            <td>@item.Category</td>
+                            <td>@item.Description</td>
+                            <td>@item.SubmittedAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                <form asp-action="ApproveStore" method="post" class="d-flex flex-column gap-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <div class="d-flex gap-2">
+                                        <input id="lat-@item.Id" type="number" step="any" name="latitude" class="form-control form-control-sm" placeholder="Vĩ độ" required />
+                                        <input id="lng-@item.Id" type="number" step="any" name="longitude" class="form-control form-control-sm" placeholder="Kinh độ" required />
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="openMapPicker('lat-@item.Id','lng-@item.Id')">Chọn trên map</button>
+                                        <button type="submit" class="btn btn-sm btn-success">Duyệt</button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editStoreRegistrationModal"
+                                        data-store-id="@item.Id"
+                                        data-store-name="@item.StoreName"
+                                        data-owner-name="@item.OwnerName"
+                                        data-phone="@item.Phone"
+                                        data-address="@item.Address"
+                                        data-category="@item.Category"
+                                        data-description="@item.Description"
+                                        data-image-url="@item.ImageUrl">
+                                        Chỉnh sửa
+                                    </button>
+                                    <form asp-action="DeleteStore" method="post" onsubmit="return confirm('Xóa đăng ký quán này?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="editStoreRegistrationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form asp-action="UpdateStoreRegistration" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa quán ăn đã đăng ký</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editStoreId" name="id" />
+
+                    <div class="mb-3">
+                        <label for="editStoreName" class="form-label">Tên quán</label>
+                        <input id="editStoreName" type="text" name="storeName" class="form-control" required />
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="editOwnerName" class="form-label">Chủ quán</label>
+                            <input id="editOwnerName" type="text" name="ownerName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editPhone" class="form-label">Số điện thoại</label>
+                            <input id="editPhone" type="text" name="phone" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editAddress" class="form-label">Địa chỉ</label>
+                        <input id="editAddress" type="text" name="address" class="form-control" required />
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editCategory" class="form-label">Loại hình</label>
+                        <input id="editCategory" type="text" name="category" class="form-control" />
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editDescription" class="form-label">Mô tả</label>
+                        <textarea id="editDescription" name="description" rows="3" class="form-control"></textarea>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editImageUrl" class="form-label">Ảnh review (URL)</label>
+                        <input id="editImageUrl" type="url" name="imageUrl" class="form-control" placeholder="https://..." />
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="small text-muted mb-2">Xem trước ảnh review</div>
+                        <img id="editImagePreview" src="" alt="Xem trước ảnh quán" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;display:none;" />
+                        <div id="editImagePreviewEmpty" class="small text-muted">Chưa có ảnh để xem trước.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu chỉnh sửa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="mapPickerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chọn vị trí quán ăn trên bản đồ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col-12 d-flex gap-2 flex-wrap">
+                            <input id="manualStreetInput" type="text" class="form-control form-control-sm" style="max-width: 440px;" placeholder="Nhập tên đường, ví dụ: Vĩnh Khánh, Quận 4" />
+                            <button type="button" id="manualStreetSearchButton" class="btn btn-sm btn-outline-secondary">Tìm theo tên đường</button>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="manualLatInput" class="form-label mb-1">Vĩ độ</label>
+                            <input id="manualLatInput" type="number" step="0.000001" class="form-control form-control-sm" placeholder="10.758900" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="manualLngInput" class="form-label mb-1">Kinh độ</label>
+                            <input id="manualLngInput" type="number" step="0.000001" class="form-control form-control-sm" placeholder="106.707200" />
+                        </div>
+                        <div class="col-12 d-flex gap-2 flex-wrap">
+                            <input id="manualLatLngInput" type="text" class="form-control form-control-sm" style="max-width: 340px;" placeholder="Hoặc nhập nhanh: 10.758900,106.707200" />
+                            <button type="button" id="manualPointButton" class="btn btn-sm btn-outline-primary">Point trên map</button>
+                        </div>
+                    </div>
+                    <div id="store-map-picker" style="height: 420px; border-radius: 12px;"></div>
+                    <small class="text-muted d-block mt-2">Nhấp vào bản đồ để gắn tọa độ cho đăng ký quán ăn.</small>
+                    <small id="mapTileWarning" class="text-danger d-none d-block mt-1">Không tải được tile bản đồ từ OpenStreetMap. Vui lòng kiểm tra mạng hoặc thử lại.</small>
+                    <small id="manualPointWarning" class="text-danger d-none d-block mt-1">Tọa độ không hợp lệ. Vui lòng nhập đúng định dạng (lat,lng).</small>
+                    <small id="manualStreetWarning" class="text-danger d-none d-block mt-1">Không tìm thấy vị trí phù hợp từ tên đường. Vui lòng thử nhập rõ hơn.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        let pickerMap;
+        let pickerMarker;
+        let pickerModal;
+        let pickerModalElement;
+        let manualPointButton;
+        let manualStreetInput;
+        let manualStreetSearchButton;
+        let manualLatInput;
+        let manualLngInput;
+        let manualLatLngInput;
+        let manualPointWarning;
+        let manualStreetWarning;
+        const defaultCenter = [10.7589, 106.7072];
+        const registeredRestaurants = @Html.Raw(registeredRestaurantsJson);
+        const vinhKhanhBounds = L.latLngBounds(
+            [10.7530, 106.6992],
+            [10.7648, 106.7152]
+        );
+        let registeredRestaurantLayer;
+        let targetLatId;
+        let targetLngId;
+
+        function setRegistrationImagePreview(url) {
+            const preview = document.getElementById('editImagePreview');
+            const empty = document.getElementById('editImagePreviewEmpty');
+            const normalized = (url || '').trim();
+
+            if (!preview || !empty) {
+                return;
+            }
+
+            if (!normalized) {
+                preview.style.display = 'none';
+                preview.src = '';
+                empty.classList.remove('d-none');
+                return;
+            }
+
+            preview.src = normalized;
+            preview.style.display = 'block';
+            empty.classList.add('d-none');
+        }
+
+        function setRestaurantImagePreview(url) {
+            const preview = document.getElementById('editRestaurantImagePreview');
+            const empty = document.getElementById('editRestaurantImagePreviewEmpty');
+            const normalized = (url || '').trim();
+
+            if (!preview || !empty) {
+                return;
+            }
+
+            if (!normalized) {
+                preview.style.display = 'none';
+                preview.src = '';
+                empty.classList.remove('d-none');
+                return;
+            }
+
+            preview.src = normalized;
+            preview.style.display = 'block';
+            empty.classList.add('d-none');
+        }
+
+        function wireRestaurantEditModal() {
+            const modalElement = document.getElementById('editRestaurantModal');
+            if (!modalElement) {
+                return;
+            }
+
+            modalElement.addEventListener('show.bs.modal', function (event) {
+                const trigger = event.relatedTarget;
+                if (!trigger) {
+                    return;
+                }
+
+                document.getElementById('editRestaurantId').value = trigger.getAttribute('data-restaurant-id') || '';
+                document.getElementById('editRestaurantName').value = trigger.getAttribute('data-name') || '';
+                document.getElementById('editRestaurantDescription').value = trigger.getAttribute('data-description') || '';
+                document.getElementById('editRestaurantLatitude').value = trigger.getAttribute('data-latitude') || '';
+                document.getElementById('editRestaurantLongitude').value = trigger.getAttribute('data-longitude') || '';
+                document.getElementById('editRestaurantRadius').value = trigger.getAttribute('data-radius') || '';
+                document.getElementById('editRestaurantPriority').value = trigger.getAttribute('data-priority') || '';
+                document.getElementById('editRestaurantLanguageCode').value = trigger.getAttribute('data-language-code') || '';
+
+                const imageUrl = trigger.getAttribute('data-image-url') || '';
+                const imageInput = document.getElementById('editRestaurantImageUrl');
+                if (imageInput) {
+                    imageInput.value = imageUrl;
+                }
+
+                const audioInput = document.getElementById('editRestaurantAudioUrl');
+                if (audioInput) {
+                    audioInput.value = trigger.getAttribute('data-audio-url') || '';
+                }
+
+                setRestaurantImagePreview(imageUrl);
+            });
+
+            const imageInput = document.getElementById('editRestaurantImageUrl');
+            if (imageInput) {
+                imageInput.addEventListener('input', function (event) {
+                    setRestaurantImagePreview(event.target.value);
+                });
+            }
+
+            const preview = document.getElementById('editRestaurantImagePreview');
+            if (preview) {
+                preview.addEventListener('error', function () {
+                    this.style.display = 'none';
+                    const empty = document.getElementById('editRestaurantImagePreviewEmpty');
+                    if (empty) {
+                        empty.classList.remove('d-none');
+                        empty.textContent = 'Không thể tải ảnh từ URL hiện tại.';
+                    }
+                });
+
+                preview.addEventListener('load', function () {
+                    const empty = document.getElementById('editRestaurantImagePreviewEmpty');
+                    if (empty) {
+                        empty.classList.add('d-none');
+                        empty.textContent = 'Chưa có ảnh để xem trước.';
+                    }
+                });
+            }
+        }
+
+        function wireStoreRegistrationEditModal() {
+            const modalElement = document.getElementById('editStoreRegistrationModal');
+            if (!modalElement) {
+                return;
+            }
+
+            modalElement.addEventListener('show.bs.modal', function (event) {
+                const trigger = event.relatedTarget;
+                if (!trigger) {
+                    return;
+                }
+
+                document.getElementById('editStoreId').value = trigger.getAttribute('data-store-id') || '';
+                document.getElementById('editStoreName').value = trigger.getAttribute('data-store-name') || '';
+                document.getElementById('editOwnerName').value = trigger.getAttribute('data-owner-name') || '';
+                document.getElementById('editPhone').value = trigger.getAttribute('data-phone') || '';
+                document.getElementById('editAddress').value = trigger.getAttribute('data-address') || '';
+                document.getElementById('editCategory').value = trigger.getAttribute('data-category') || '';
+                document.getElementById('editDescription').value = trigger.getAttribute('data-description') || '';
+
+                const imageUrl = trigger.getAttribute('data-image-url') || '';
+                const imageInput = document.getElementById('editImageUrl');
+                if (imageInput) {
+                    imageInput.value = imageUrl;
+                }
+
+                setRegistrationImagePreview(imageUrl);
+            });
+
+            const imageInput = document.getElementById('editImageUrl');
+            if (imageInput) {
+                imageInput.addEventListener('input', function (event) {
+                    setRegistrationImagePreview(event.target.value);
+                });
+            }
+
+            const preview = document.getElementById('editImagePreview');
+            if (preview) {
+                preview.addEventListener('error', function () {
+                    this.style.display = 'none';
+                    const empty = document.getElementById('editImagePreviewEmpty');
+                    if (empty) {
+                        empty.classList.remove('d-none');
+                        empty.textContent = 'Không thể tải ảnh từ URL hiện tại.';
+                    }
+                });
+
+                preview.addEventListener('load', function () {
+                    const empty = document.getElementById('editImagePreviewEmpty');
+                    if (empty) {
+                        empty.classList.add('d-none');
+                        empty.textContent = 'Chưa có ảnh để xem trước.';
+                    }
+                });
+            }
+        }
+
+        wireRestaurantEditModal();
+        wireStoreRegistrationEditModal();
+
+        function syncTargetInputs(lat, lng) {
+            const latInput = document.getElementById(targetLatId);
+            const lngInput = document.getElementById(targetLngId);
+            if (latInput && lngInput) {
+                latInput.value = lat.toFixed(6);
+                lngInput.value = lng.toFixed(6);
+            }
+        }
+
+        function placePickerMarker(lat, lng, zoom = 16) {
+            if (!pickerMap) {
+                return;
+            }
+
+            pickerMap.setView([lat, lng], zoom);
+            if (pickerMarker) {
+                pickerMap.removeLayer(pickerMarker);
+            }
+
+            pickerMarker = L.marker([lat, lng]).addTo(pickerMap);
+            syncTargetInputs(lat, lng);
+
+            if (manualLatInput) {
+                manualLatInput.value = lat.toFixed(6);
+            }
+            if (manualLngInput) {
+                manualLngInput.value = lng.toFixed(6);
+            }
+            if (manualLatLngInput) {
+                manualLatLngInput.value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+            }
+            if (manualPointWarning) {
+                manualPointWarning.classList.add('d-none');
+            }
+        }
+
+        function tryPointFromManualInputs() {
+            let lat = manualLatInput ? Number(manualLatInput.value) : NaN;
+            let lng = manualLngInput ? Number(manualLngInput.value) : NaN;
+
+            if ((Number.isNaN(lat) || Number.isNaN(lng)) && manualLatLngInput) {
+                const raw = (manualLatLngInput.value || '').trim();
+                const parts = raw.split(',').map(part => part.trim());
+                if (parts.length === 2) {
+                    lat = Number(parts[0]);
+                    lng = Number(parts[1]);
+                }
+            }
+
+            const isValid = !Number.isNaN(lat) && !Number.isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+            if (!isValid) {
+                if (manualPointWarning) {
+                    manualPointWarning.classList.remove('d-none');
+                }
+                return;
+            }
+
+            placePickerMarker(lat, lng);
+        }
+
+        async function tryPointFromStreetName() {
+            const rawStreet = manualStreetInput ? (manualStreetInput.value || '').trim() : '';
+            if (!rawStreet) {
+                if (manualStreetWarning) {
+                    manualStreetWarning.classList.remove('d-none');
+                }
+                return;
+            }
+
+            if (manualStreetWarning) {
+                manualStreetWarning.classList.add('d-none');
+            }
+
+            if (manualStreetSearchButton) {
+                manualStreetSearchButton.disabled = true;
+                manualStreetSearchButton.textContent = 'Đang tìm...';
+            }
+
+            try {
+                const viewBox = '106.6992,10.7648,106.7152,10.7530';
+                const query = `${rawStreet}, Ho Chi Minh, Vietnam`;
+                const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&accept-language=vi&q=${encodeURIComponent(query)}&viewbox=${encodeURIComponent(viewBox)}&bounded=1`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Geocoding request failed');
+                }
+
+                const results = await response.json();
+                if (!Array.isArray(results) || results.length === 0) {
+                    if (manualStreetWarning) {
+                        manualStreetWarning.classList.remove('d-none');
+                    }
+                    return;
+                }
+
+                const first = results[0];
+                const lat = Number(first.lat);
+                const lng = Number(first.lon);
+                const valid = !Number.isNaN(lat) && !Number.isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+                if (!valid) {
+                    if (manualStreetWarning) {
+                        manualStreetWarning.classList.remove('d-none');
+                    }
+                    return;
+                }
+
+                placePickerMarker(lat, lng, 17);
+            } catch {
+                if (manualStreetWarning) {
+                    manualStreetWarning.classList.remove('d-none');
+                }
+            } finally {
+                if (manualStreetSearchButton) {
+                    manualStreetSearchButton.disabled = false;
+                    manualStreetSearchButton.textContent = 'Tìm theo tên đường';
+                }
+            }
+        }
+
+        function ensureMap() {
+            if (pickerMap) {
+                return;
+            }
+
+            const warning = document.getElementById('mapTileWarning');
+            pickerMap = L.map('store-map-picker', {
+                zoomControl: true,
+                minZoom: 15,
+                maxZoom: 19
+            }).setView(defaultCenter, 14);
+
+            pickerMap.setMaxBounds(vinhKhanhBounds.pad(0.01));
+
+            const layer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+            }).addTo(pickerMap);
+
+            layer.on('tileload', function () {
+                if (warning) {
+                    warning.classList.add('d-none');
+                }
+            });
+
+            layer.on('tileerror', function () {
+                if (warning) {
+                    warning.classList.remove('d-none');
+                }
+            });
+
+            registeredRestaurantLayer = L.layerGroup().addTo(pickerMap);
+
+            if (Array.isArray(registeredRestaurants)) {
+                for (const restaurant of registeredRestaurants) {
+                    if (typeof restaurant.lat !== 'number' || typeof restaurant.lng !== 'number') {
+                        continue;
+                    }
+
+                    const marker = L.circleMarker([restaurant.lat, restaurant.lng], {
+                        radius: 6,
+                        color: '#d97706',
+                        fillColor: '#f59e0b',
+                        fillOpacity: 0.9,
+                        weight: 2
+                    }).addTo(registeredRestaurantLayer);
+
+                    marker.bindPopup(`<strong>${restaurant.name}</strong><br/>Lat: ${restaurant.lat.toFixed(6)}<br/>Lng: ${restaurant.lng.toFixed(6)}`);
+
+                    if (typeof restaurant.radius === 'number' && restaurant.radius > 0) {
+                        L.circle([restaurant.lat, restaurant.lng], {
+                            radius: Math.max(1, restaurant.radius),
+                            color: '#f59e0b',
+                            fillColor: '#f59e0b',
+                            fillOpacity: 0.08,
+                            weight: 1
+                        }).addTo(registeredRestaurantLayer);
+                    }
+                }
+            }
+
+            pickerMap.on('click', function (e) {
+                if (!targetLatId || !targetLngId) {
+                    return;
+                }
+
+                placePickerMarker(e.latlng.lat, e.latlng.lng, pickerMap.getZoom());
+            });
+        }
+
+        function syncMapToCurrentInputs() {
+            const latInput = document.getElementById(targetLatId);
+            const lngInput = document.getElementById(targetLngId);
+            const lat = latInput ? Number(latInput.value) : NaN;
+            const lng = lngInput ? Number(lngInput.value) : NaN;
+
+            if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+                placePickerMarker(lat, lng);
+                return;
+            }
+
+            pickerMap.fitBounds(vinhKhanhBounds, {
+                maxZoom: 16,
+                padding: [24, 24]
+            });
+            if (pickerMarker) {
+                pickerMap.removeLayer(pickerMarker);
+                pickerMarker = null;
+            }
+        }
+
+        function syncManualInputsFromCurrentTarget() {
+            const currentLatInput = document.getElementById(targetLatId);
+            const currentLngInput = document.getElementById(targetLngId);
+            const currentLat = currentLatInput ? Number(currentLatInput.value) : NaN;
+            const currentLng = currentLngInput ? Number(currentLngInput.value) : NaN;
+
+            if (manualLatInput) {
+                manualLatInput.value = Number.isNaN(currentLat) ? '' : currentLat.toFixed(6);
+            }
+            if (manualLngInput) {
+                manualLngInput.value = Number.isNaN(currentLng) ? '' : currentLng.toFixed(6);
+            }
+            if (manualLatLngInput) {
+                manualLatLngInput.value = (!Number.isNaN(currentLat) && !Number.isNaN(currentLng))
+                    ? `${currentLat.toFixed(6)},${currentLng.toFixed(6)}`
+                    : '';
+            }
+            if (manualPointWarning) {
+                manualPointWarning.classList.add('d-none');
+            }
+            if (manualStreetWarning) {
+                manualStreetWarning.classList.add('d-none');
+            }
+        }
+
+        window.openMapPicker = function (latInputId, lngInputId) {
+            targetLatId = latInputId;
+            targetLngId = lngInputId;
+
+            if (!pickerModal) {
+                pickerModalElement = document.getElementById('mapPickerModal');
+                pickerModal = new bootstrap.Modal(pickerModalElement);
+                manualPointButton = document.getElementById('manualPointButton');
+                manualStreetInput = document.getElementById('manualStreetInput');
+                manualStreetSearchButton = document.getElementById('manualStreetSearchButton');
+                manualLatInput = document.getElementById('manualLatInput');
+                manualLngInput = document.getElementById('manualLngInput');
+                manualLatLngInput = document.getElementById('manualLatLngInput');
+                manualPointWarning = document.getElementById('manualPointWarning');
+                manualStreetWarning = document.getElementById('manualStreetWarning');
+
+                if (manualPointButton) {
+                    manualPointButton.addEventListener('click', tryPointFromManualInputs);
+                }
+
+                if (manualLatLngInput) {
+                    manualLatLngInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            tryPointFromManualInputs();
+                        }
+                    });
+                }
+
+                if (manualStreetSearchButton) {
+                    manualStreetSearchButton.addEventListener('click', function () {
+                        tryPointFromStreetName();
+                    });
+                }
+
+                if (manualStreetInput) {
+                    manualStreetInput.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            tryPointFromStreetName();
+                        }
+                    });
+                }
+
+                pickerModalElement.addEventListener('shown.bs.modal', function () {
+                    ensureMap();
+                    pickerMap.invalidateSize();
+                    setTimeout(function () {
+                        pickerMap.invalidateSize();
+                        syncMapToCurrentInputs();
+                    }, 150);
+                });
+            }
+
+            syncManualInputsFromCurrentTarget();
+
+            pickerModal.show();
+        };
+    </script>
+}

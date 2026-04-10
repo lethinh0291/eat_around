@@ -21,7 +21,7 @@
   </queries>
   <permission android:name="com.zestech.zestour.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" android:protectionLevel="signature" />
   <uses-permission android:name="com.zestech.zestour.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-  <application android:name="crc641e7d54598c36d2f9.MainApplication" android:allowBackup="true" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:debuggable="true" android:extractNativeLibs="true" android:icon="@mipmap/logo" android:label="ZESTOUR" android:roundIcon="@mipmap/logo_round" android:supportsRtl="true">
+  <application android:name="crc641e7d54598c36d2f9.MainApplication" android:allowBackup="true" android:appComponentFactory="androidx.core.app.CoreComponentFactory" android:debuggable="true" android:extractNativeLibs="true" android:icon="@mipmap/logo" android:label="ZESTOUR" android:roundIcon="@mipmap/logo_round" android:supportsRtl="true" android:usesCleartextTraffic="true">
     <activity android:name="crc641e7d54598c36d2f9.MainActivity" android:configChanges="density|orientation|smallestScreenSize|screenLayout|screenSize|uiMode" android:exported="true" android:launchMode="singleTop" android:theme="@style/Maui.SplashTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

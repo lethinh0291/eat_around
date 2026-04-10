@@ -12,7 +12,7 @@ public partial class HelpFeedbackPage : ContentPage
         InitializeComponent();
     }
 
-    private async void OnSubmitClicked(object sender, EventArgs e)
+    private async void OnSubmitClicked(object? sender, EventArgs e)
     {
         MessageLabel.Text = string.Empty;
 

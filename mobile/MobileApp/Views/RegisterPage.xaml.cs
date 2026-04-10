@@ -12,9 +12,10 @@ public partial class RegisterPage : ContentPage
         _authService = authService;
         _navigator = navigator;
         InitializeComponent();
+        UpdateSelectedRoleText();
     }
 
-    private async void OnRegisterClicked(object sender, EventArgs e)
+    private async void OnRegisterClicked(object? sender, EventArgs e)
     {
         MessageLabel.Text = string.Empty;
 
@@ -31,7 +32,8 @@ public partial class RegisterPage : ContentPage
             NameEntry.Text ?? string.Empty,
             UsernameEntry.Text ?? string.Empty,
             EmailEntry.Text ?? string.Empty,
-            password);
+            password,
+            registerAsSeller: SellerSwitch.IsToggled);
 
         if (!result.Success)
         {
@@ -43,8 +45,20 @@ public partial class RegisterPage : ContentPage
         await Navigation.PopAsync();
     }
 
-    private async void OnBackToLoginClicked(object sender, EventArgs e)
+    private async void OnBackToLoginClicked(object? sender, EventArgs e)
     {
         await Navigation.PopAsync();
+    }
+
+    private void OnSellerSwitchToggled(object? sender, ToggledEventArgs e)
+    {
+        UpdateSelectedRoleText();
+    }
+
+    private void UpdateSelectedRoleText()
+    {
+        SelectedRoleLabel.Text = SellerSwitch.IsToggled
+            ? "Vai trò sẽ tạo: Người bán"
+            : "Vai trò sẽ tạo: Khách hàng";
     }
 }

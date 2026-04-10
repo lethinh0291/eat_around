@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ZesTour.Views.StoreManagementPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource AppBackground}">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20,48,20,24" Spacing="14">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <Border WidthRequest="42" HeightRequest="42" StrokeThickness="0" BackgroundColor="#ffffff" StrokeShape="RoundRectangle 14">
+                        <Label Text="←" FontSize="18" TextColor="{StaticResource TextPrimary}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBackTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="Quản lý cửa hàng" FontSize="22" FontAttributes="Bold" TextColor="{StaticResource TextPrimary}"/>
+                        <Label Text="Xem, sửa, xóa đăng ký cửa hàng của bạn" FontSize="11" TextColor="#334155"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Button Text="Tải lại danh sách" Clicked="OnRefreshClicked" HeightRequest="44" CornerRadius="12" BackgroundColor="#E2E8F0" TextColor="#0F172A"/>
+
+                <Label x:Name="StatusLabel" FontSize="12" TextColor="#B91C1C"/>
+
+                <Border StrokeThickness="1" Stroke="{StaticResource BorderSoftBrush}" BackgroundColor="#FFFFFF" StrokeShape="RoundRectangle 18" Padding="12">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Danh sách đăng ký của tôi" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
+                        <CollectionView x:Name="RegistrationsCollection" SelectionMode="Single" SelectionChanged="OnRegistrationSelected" HeightRequest="180">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border StrokeThickness="1" Stroke="#E5E7EB" StrokeShape="RoundRectangle 12" Padding="10" Margin="0,0,0,8">
+                                        <VerticalStackLayout Spacing="2">
+                                            <Label Text="{Binding StoreName}" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
+                                            <Label Text="{Binding Address}" FontSize="12" TextColor="#4B5563"/>
+                                            <Label Text="{Binding SubmittedAtUtc, StringFormat='Gửi lúc: {0:yyyy-MM-dd HH:mm} UTC'}" FontSize="11" TextColor="#6B7280"/>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border StrokeThickness="1" Stroke="{StaticResource BorderSoftBrush}" BackgroundColor="#FFFFFF" StrokeShape="RoundRectangle 18" Padding="12">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Thông tin cửa hàng" FontSize="14" FontAttributes="Bold" TextColor="#111827"/>
+                        <Entry x:Name="StoreNameEntry" Placeholder="Tên cửa hàng" TextColor="#111827" PlaceholderColor="#6B7280"/>
+                        <Entry x:Name="PhoneEntry" Placeholder="Số điện thoại" Keyboard="Telephone" TextColor="#111827" PlaceholderColor="#6B7280"/>
+                        <Entry x:Name="AddressEntry" Placeholder="Địa chỉ" TextColor="#111827" PlaceholderColor="#6B7280"/>
+                        <Entry x:Name="CategoryEntry" Placeholder="Loại hình" TextColor="#111827" PlaceholderColor="#6B7280"/>
+                        <Editor x:Name="DescriptionEditor" Placeholder="Mô tả ngắn" AutoSize="TextChanges" HeightRequest="100" TextColor="#111827" PlaceholderColor="#6B7280"/>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="Cập nhật" Clicked="OnUpdateClicked" HeightRequest="48" CornerRadius="14" BackgroundColor="{StaticResource Primary}" TextColor="White"/>
+                            <Button Grid.Column="1" Text="Xóa" Clicked="OnDeleteClicked" HeightRequest="48" CornerRadius="14" BackgroundColor="#FEE2E2" TextColor="#991B1B"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

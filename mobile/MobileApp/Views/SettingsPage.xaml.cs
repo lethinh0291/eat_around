@@ -39,7 +39,7 @@ public partial class SettingsPage : ContentPage
         }
     }
 
-    private async void OnSaveClicked(object sender, EventArgs e)
+    private async void OnSaveClicked(object? sender, EventArgs e)
     {
         var data = new SettingData
         {

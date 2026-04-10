@@ -24,7 +24,7 @@ public partial class LoginPage : ContentPage
         }
     }
 
-    private async void OnLoginClicked(object sender, EventArgs e)
+    private async void OnLoginClicked(object? sender, EventArgs e)
     {
         MessageLabel.Text = string.Empty;
 
@@ -41,7 +41,7 @@ public partial class LoginPage : ContentPage
         await _navigator.ShowMenuAsync();
     }
 
-    private async void OnRegisterClicked(object sender, EventArgs e)
+    private async void OnRegisterClicked(object? sender, EventArgs e)
     {
         await _navigator.ShowRegisterAsync();
     }

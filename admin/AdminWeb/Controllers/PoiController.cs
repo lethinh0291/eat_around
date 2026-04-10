@@ -1,9 +1,11 @@
 using AdminWeb.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Models;
 
 namespace AdminWeb.Controllers;
 
+[Authorize]
 public class PoiController : Controller
 {
     private readonly PoiApiClient _poiApiClient;

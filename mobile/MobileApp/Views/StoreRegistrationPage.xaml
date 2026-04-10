@@ -47,7 +47,7 @@
                                TextColor="{StaticResource TextPrimary}"/>
                         <Label Text="Gửi thông tin để xét duyệt xuất hiện trên ứng dụng"
                                FontSize="11"
-                               TextColor="Black"/>
+                               TextColor="#334155"/>
                     </VerticalStackLayout>
                 </Grid>
 
@@ -58,24 +58,58 @@
                         Padding="14">
                     <VerticalStackLayout Spacing="10">
                         <Entry x:Name="StoreNameEntry"
-                               Placeholder="Tên cửa hàng"/>
+                               Placeholder="Tên cửa hàng"
+                               TextColor="#111827"
+                               PlaceholderColor="#6B7280"/>
                         <Entry x:Name="OwnerNameEntry"
-                               Placeholder="Tên chủ cửa hàng"/>
+                               Placeholder="Tên chủ cửa hàng"
+                               TextColor="#111827"
+                               PlaceholderColor="#6B7280"/>
                         <Entry x:Name="PhoneEntry"
                                Placeholder="Số điện thoại"
-                               Keyboard="Telephone"/>
+                               Keyboard="Telephone"
+                               TextColor="#111827"
+                               PlaceholderColor="#6B7280"/>
                         <Entry x:Name="AddressEntry"
-                               Placeholder="Địa chỉ"/>
+                               Placeholder="Địa chỉ"
+                               TextColor="#111827"
+                               PlaceholderColor="#6B7280"/>
                         <Entry x:Name="CategoryEntry"
-                               Placeholder="Loại hình (ăn uống, cafe,...)"/>
+                               Placeholder="Loại hình (ăn uống, cafe,...)"
+                               TextColor="#111827"
+                               PlaceholderColor="#6B7280"/>
                         <Editor x:Name="DescriptionEditor"
                                 Placeholder="Mô tả ngắn về cửa hàng"
                                 AutoSize="TextChanges"
-                                HeightRequest="110"/>
+                                HeightRequest="110"
+                                TextColor="#111827"
+                                PlaceholderColor="#6B7280"/>
+
+                        <Grid ColumnDefinitions="Auto,*"
+                              ColumnSpacing="10">
+                            <Button Grid.Column="0"
+                                Text="Chọn ảnh"
+                                Clicked="OnPickImageClicked"
+                                HeightRequest="44"
+                                CornerRadius="12"
+                                BackgroundColor="#E2E8F0"
+                                TextColor="#0F172A"/>
+                            <Label Grid.Column="1"
+                               x:Name="SelectedImageLabel"
+                               Text="Chưa chọn ảnh"
+                               FontSize="12"
+                               TextColor="#64748B"
+                               VerticalTextAlignment="Center"/>
+                        </Grid>
+
+                        <Image x:Name="StoreImagePreview"
+                               HeightRequest="140"
+                               Aspect="AspectFill"
+                               IsVisible="False"/>
 
                         <Label x:Name="MessageLabel"
                                FontSize="12"
-                               TextColor="#ffffff"/>
+                               TextColor="#B91C1C"/>
 
                         <Button Text="Gửi đăng ký"
                                 Clicked="OnSubmitClicked"

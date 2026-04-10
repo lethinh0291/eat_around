@@ -16,7 +16,7 @@
                              StrokeShape="RoundRectangle 18"
                              VerticalOptions="Center">
                             <Label Text="MENU"
-                                   FontSize="22"
+                                   FontSize="10"
                                    TextColor="{StaticResource TextPrimary}"
                                    HorizontalTextAlignment="Center"
                                    VerticalTextAlignment="Center">
@@ -36,7 +36,7 @@
                              StrokeShape="RoundRectangle 18"
                              VerticalOptions="Center">
                             <Label Text="PROFILE"
-                                   FontSize="18"
+                                   FontSize="10"
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource TextPrimary}"
                                    HorizontalTextAlignment="Center"
@@ -61,24 +61,6 @@
                                                    BackgroundColor="Transparent"
                                                    HorizontalOptions="Fill"
                                                    VerticalOptions="Fill"/>
-
-                                          <Border BackgroundColor="#D94F1F"
-                                                  StrokeThickness="0"
-                                                  Padding="12,6"
-                                                  Margin="16,16,0,0"
-                                                  HorizontalOptions="Start"
-                                                  VerticalOptions="Start"
-                                                  StrokeShape="RoundRectangle 18">
-                                                 <Label x:Name="MapPoiLabel"
-                                                        Text="Phố Ẩm Thực Vĩnh Khánh"
-                                                        FontSize="12"
-                                                        FontAttributes="Bold"
-                                                        TextColor="White">
-                                                        <Label.GestureRecognizers>
-                                                               <TapGestureRecognizer Tapped="OnNearbyCardTapped"/>
-                                                        </Label.GestureRecognizers>
-                                                 </Label>
-                                          </Border>
 
                                           <VerticalStackLayout HorizontalOptions="End"
                                                                VerticalOptions="Start"
@@ -142,14 +124,19 @@
                                                         <VerticalStackLayout Grid.Column="1"
                                                                              Spacing="2"
                                                                              VerticalOptions="Center">
-                                                               <Label Text="Trạm dừng hiện tại"
+                                                               <Label x:Name="LocationTitleLabel"
+                                                                      Text="Địa điểm trên bản đồ"
                                                                       FontSize="12"
-                                                                      TextColor="#ffffff"/>
+                                                                      TextColor="{StaticResource TextSecondary}"/>
                                                                <Label x:Name="NowPlayingLabel"
-                                                                      Text="ĐANG PHÁT: Phố Ẩm Thực Vĩnh Khánh"
+                                                                      Text="Chạm vào bản đồ để chọn địa điểm"
                                                                       FontSize="16"
                                                                       FontAttributes="Bold"
                                                                       TextColor="{StaticResource TextPrimary}"/>
+                                                               <Label x:Name="AddressLabel"
+                                                                      Text="Số nhà, đường: Chưa có thông tin"
+                                                                      FontSize="12"
+                                                                      TextColor="{StaticResource TextSecondary}"/>
                                                         </VerticalStackLayout>
                                                  </Grid>
 

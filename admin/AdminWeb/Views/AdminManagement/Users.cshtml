@@ -1,0 +1,204 @@
+@model IReadOnlyList<AdminWeb.Models.AdminUsersViewModel.UserRow>
+@{
+    ViewData["Title"] = "Quản lý User";
+}
+
+<div class="admin-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h1 class="h4 mb-1">Quản lý user</h1>
+            <p class="text-muted mb-0">Thêm, sửa, xóa tài khoản người dùng.</p>
+        </div>
+    </div>
+</div>
+
+@if (TempData["AdminMessage"] is string ok)
+{
+    <div class="alert alert-success">@ok</div>
+}
+
+@if (TempData["AdminError"] is string err)
+{
+    <div class="alert alert-danger">@err</div>
+}
+
+<div class="admin-card">
+    <h2 class="h5 mb-3">Thêm user mới</h2>
+    <form asp-action="CreateUser" method="post" class="row g-2 mb-4">
+        @Html.AntiForgeryToken()
+        <div class="col-md-3">
+            <input type="text" name="name" class="form-control" placeholder="Họ tên" required />
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="username" class="form-control" placeholder="Username" required />
+        </div>
+        <div class="col-md-3">
+            <input type="email" name="email" class="form-control" placeholder="Email" required />
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="password" class="form-control" placeholder="Mật khẩu" required />
+        </div>
+        <div class="col-md-1">
+            <select name="role" class="form-select">
+                <option value="customer">customer</option>
+                <option value="seller">seller</option>
+                <option value="admin">admin</option>
+            </select>
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">Thêm</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Quán sở hữu</th>
+                    <th>Role</th>
+                    <th class="text-end">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Không có dữ liệu user.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var row in Model)
+                {
+                    var user = row.User;
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Name</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>
+                            @if (!row.OwnedStores.Any())
+                            {
+                                <span class="text-muted">Chưa có quán</span>
+                            }
+                            else
+                            {
+                                <div class="small d-flex flex-wrap gap-1">
+                                    @foreach (var store in row.OwnedStores)
+                                    {
+                                        <span class="badge text-bg-light border">@store</span>
+                                    }
+                                </div>
+                            }
+                        </td>
+                        <td><span class="badge text-bg-secondary">@user.Role</span></td>
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end gap-2">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editUserModal"
+                                    data-user-id="@user.Id"
+                                    data-user-name="@user.Name"
+                                    data-user-username="@user.Username"
+                                    data-user-email="@user.Email"
+                                    data-user-role="@user.Role">
+                                    Chỉnh sửa
+                                </button>
+                                <form asp-action="DeleteUser" method="post" onsubmit="return confirm('Xóa user này?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form asp-action="UpdateUser" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa user</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editUserId" name="userId" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="editUserName" class="form-label">Họ tên</label>
+                            <input id="editUserName" type="text" name="name" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editUserUsername" class="form-label">Username</label>
+                            <input id="editUserUsername" type="text" name="username" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editUserEmail" class="form-label">Email</label>
+                        <input id="editUserEmail" type="email" name="email" class="form-control" required />
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editUserPassword" class="form-label">Mật khẩu mới</label>
+                        <input id="editUserPassword" type="text" name="password" class="form-control" placeholder="Nhập mật khẩu mới" required />
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="editUserRole" class="form-label">Role</label>
+                        <select id="editUserRole" name="role" class="form-select" required>
+                            <option value="customer">customer</option>
+                            <option value="seller">seller</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu chỉnh sửa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const modalElement = document.getElementById('editUserModal');
+            if (!modalElement) {
+                return;
+            }
+
+            modalElement.addEventListener('show.bs.modal', function (event) {
+                const trigger = event.relatedTarget;
+                if (!trigger) {
+                    return;
+                }
+
+                document.getElementById('editUserId').value = trigger.getAttribute('data-user-id') || '';
+                document.getElementById('editUserName').value = trigger.getAttribute('data-user-name') || '';
+                document.getElementById('editUserUsername').value = trigger.getAttribute('data-user-username') || '';
+                document.getElementById('editUserEmail').value = trigger.getAttribute('data-user-email') || '';
+                document.getElementById('editUserPassword').value = '';
+
+                const role = (trigger.getAttribute('data-user-role') || 'customer').toLowerCase();
+                document.getElementById('editUserRole').value = role;
+            });
+        })();
+    </script>
+}

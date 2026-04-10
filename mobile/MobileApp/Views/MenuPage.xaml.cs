@@ -15,12 +15,21 @@ public partial class MenuPage : ContentPage
         BindingContext = new { User = _authService.CurrentUser };
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        UpdateRoleBadge();
+        var isSeller = IsSeller();
+        StoreRegistrationCard.IsVisible = isSeller;
+        StoreManagementCard.IsVisible = isSeller;
+    }
+
     private async Task ShowComingSoonAsync(string featureName)
     {
         await DisplayAlertAsync("Tính năng", $"{featureName} sẽ được hoàn thiện trong bản cập nhật tiếp theo.", "Đóng");
     }
 
-    private async void OnSearchCompleted(object sender, EventArgs e)
+    private async void OnSearchCompleted(object? sender, EventArgs e)
     {
         var keyword = SearchEntry.Text?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(keyword))
@@ -46,7 +55,20 @@ public partial class MenuPage : ContentPage
         if (keyword.Contains("cửa hàng", StringComparison.OrdinalIgnoreCase) ||
             keyword.Contains("đăng ký", StringComparison.OrdinalIgnoreCase))
         {
-            await _navigator.ShowStoreRegistrationAsync();
+            if (!IsSeller())
+            {
+                await DisplayAlertAsync("Vai trò chưa phù hợp", "Tính năng đăng ký cửa hàng chỉ hiển thị cho tài khoản Người bán.", "OK");
+                return;
+            }
+
+            if (keyword.Contains("quản lý", StringComparison.OrdinalIgnoreCase))
+            {
+                await _navigator.ShowStoreManagementAsync();
+            }
+            else
+            {
+                await _navigator.ShowStoreRegistrationAsync();
+            }
             return;
         }
 
@@ -106,7 +128,54 @@ public partial class MenuPage : ContentPage
 
     private async void OnStoreRegistrationTapped(object? sender, TappedEventArgs e)
     {
+        if (!IsSeller())
+        {
+            await DisplayAlertAsync("Vai trò chưa phù hợp", "Bạn cần đăng nhập bằng tài khoản Người bán để dùng tính năng này.", "OK");
+            return;
+        }
+
         await _navigator.ShowStoreRegistrationAsync();
+    }
+
+    private async void OnStoreManagementTapped(object? sender, TappedEventArgs e)
+    {
+        if (!IsSeller())
+        {
+            await DisplayAlertAsync("Vai trò chưa phù hợp", "Bạn cần đăng nhập bằng tài khoản Người bán để dùng tính năng này.", "OK");
+            return;
+        }
+
+        await _navigator.ShowStoreManagementAsync();
+    }
+
+    private bool IsSeller()
+    {
+        return string.Equals(_authService.CurrentUser?.Role, "seller", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void UpdateRoleBadge()
+    {
+        var role = _authService.CurrentUser?.Role?.Trim().ToLowerInvariant() ?? "customer";
+
+        if (role == "seller")
+        {
+            RoleBadgeLabel.Text = "Người bán";
+            RoleBadgeBorder.BackgroundColor = Color.FromArgb("#DCFCE7");
+            RoleBadgeLabel.TextColor = Color.FromArgb("#166534");
+            return;
+        }
+
+        if (role == "admin")
+        {
+            RoleBadgeLabel.Text = "Quản trị viên";
+            RoleBadgeBorder.BackgroundColor = Color.FromArgb("#FEE2E2");
+            RoleBadgeLabel.TextColor = Color.FromArgb("#991B1B");
+            return;
+        }
+
+        RoleBadgeLabel.Text = "Khách hàng";
+        RoleBadgeBorder.BackgroundColor = Color.FromArgb("#E0F2FE");
+        RoleBadgeLabel.TextColor = Color.FromArgb("#075985");
     }
 
     private async void OnProfileTapped(object? sender, TappedEventArgs e)
@@ -114,7 +183,7 @@ public partial class MenuPage : ContentPage
         await _navigator.ShowProfileAsync();
     }
 
-    private async void OnSignOutClicked(object sender, EventArgs e)
+    private async void OnSignOutClicked(object? sender, EventArgs e)
     {
         await _authService.SignOutAsync();
         await _navigator.ShowLoginAsync();

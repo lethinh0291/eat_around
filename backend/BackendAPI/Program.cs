@@ -63,6 +63,38 @@ using (var scope = app.Services.CreateScope())
 
         db.SaveChanges();
     }
+
+    if (!db.Users.Any())
+    {
+        db.Users.AddRange(
+            new User
+            {
+                Name = "System Admin",
+                Email = "admin@zestour.local",
+                Username = "admin",
+                Password = "admin123",
+                Role = "admin"
+            },
+            new User
+            {
+                Name = "Seller Demo",
+                Email = "seller@zestour.local",
+                Username = "seller",
+                Password = "seller123",
+                Role = "seller"
+            },
+            new User
+            {
+                Name = "Customer Demo",
+                Email = "customer@zestour.local",
+                Username = "customer",
+                Password = "customer123",
+                Role = "customer"
+            }
+        );
+
+        db.SaveChanges();
+    }
 }
 
 

@@ -31,6 +31,19 @@
                                FontSize="19"
                                FontAttributes="Bold"
                                TextColor="#1B2430"/>
+                        <Border x:Name="RoleBadgeBorder"
+                                StrokeThickness="0"
+                                BackgroundColor="#E0F2FE"
+                                StrokeShape="RoundRectangle 10"
+                                Padding="8,3"
+                                HorizontalOptions="Start"
+                                Margin="0,4,0,0">
+                            <Label x:Name="RoleBadgeLabel"
+                                   Text="Khách hàng"
+                                   FontSize="10"
+                                   FontAttributes="Bold"
+                                   TextColor="#075985"/>
+                        </Border>
                     </VerticalStackLayout>
                 </Grid>
 
@@ -196,6 +209,7 @@
                 </Border>
 
                 <Border StrokeThickness="0"
+                    x:Name="StoreRegistrationCard"
                         BackgroundColor="#FFFFFF"
                         StrokeShape="RoundRectangle 14"
                         Padding="12,10">
@@ -224,6 +238,41 @@
                                VerticalTextAlignment="Center">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnSupportTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                </Border>
+
+                <Border StrokeThickness="0"
+                        x:Name="StoreManagementCard"
+                        BackgroundColor="#FFFFFF"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="12,10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnStoreManagementTapped"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="10">
+                        <Label Text="📦"
+                               FontSize="19"
+                               VerticalTextAlignment="Center"/>
+                        <Label Grid.Column="1"
+                               Text="Quản lý cửa hàng của tôi"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#1B2430"
+                               VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnStoreManagementTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <Label Grid.Column="2"
+                               Text="›"
+                               FontSize="20"
+                               TextColor="#9AA6B7"
+                               VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnStoreManagementTapped"/>
                             </Label.GestureRecognizers>
                         </Label>
                     </Grid>

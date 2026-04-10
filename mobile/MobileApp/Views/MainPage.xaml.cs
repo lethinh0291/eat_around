@@ -5,7 +5,6 @@ using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Storage;
 using System.Threading;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace ZesTour.Views;
@@ -41,8 +40,9 @@ public partial class MainPage : ContentPage
     private double? _selectedLng;
     private string _selectedName = string.Empty;
     private string _selectedDescription = string.Empty;
-    private static readonly TimeSpan NormalTrackingInterval = TimeSpan.FromSeconds(7);
-    private static readonly TimeSpan BatteryTrackingInterval = TimeSpan.FromSeconds(12);
+    private bool _hasExplicitMapSelection;
+    private static readonly TimeSpan NormalTrackingInterval = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan BatteryTrackingInterval = TimeSpan.FromSeconds(18);
 
     public MainPage(DatabaseService databaseService, ApiService apiService, LocationService locationService, AppNavigator navigator)
     {
@@ -111,31 +111,53 @@ public partial class MainPage : ContentPage
 
         _allPois = pois.Where(IsInsideVinhKhanhBounds).ToList();
 
-        _userLocation = await locationTask;
-        cancellationToken.ThrowIfCancellationRequested();
-
         _currentPoi = FindNearestPoi(_allPois);
 
         if (_currentPoi is null)
         {
-            MapPoiLabel.Text = "Bản đồ quanh bạn";
-            PoiBadgeLabel.Text = "KHÔNG CÓ DỮ LIỆU";
-            NowPlayingLabel.Text = "Đang hiển thị bản đồ mặc định.";
+            PoiBadgeLabel.Text = "ĐỊA ĐIỂM";
+            LocationTitleLabel.Text = "Địa điểm trên bản đồ";
+            NowPlayingLabel.Text = "Chạm vào bản đồ để chọn địa điểm";
+            AddressLabel.Text = "Số nhà, đường: Chưa có thông tin";
             InitializeMap(null);
             StartRealtimeTracking();
+            _ = UpdateLocationAsync(locationTask, cancellationToken);
             return;
         }
 
         BindPoi(_currentPoi);
         InitializeMap(_currentPoi);
-
-        // Smoothly move to the user position if available after the map is ready.
-        if (_userLocation is not null)
-        {
-            await RecenterMapAsync(_userLocation);
-        }
-
         StartRealtimeTracking();
+
+        // Continue location refinement in background so first screen paints faster.
+        _ = UpdateLocationAsync(locationTask, cancellationToken);
+    }
+
+    private async Task UpdateLocationAsync(Task<Location?> locationTask, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _userLocation = await locationTask;
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (_userLocation is null)
+            {
+                return;
+            }
+
+            var nearestPoi = FindNearestPoi(_allPois);
+            if (nearestPoi is not null)
+            {
+                _currentPoi = nearestPoi;
+                MainThread.BeginInvokeOnMainThread(() => BindPoi(nearestPoi));
+            }
+
+            await MainThread.InvokeOnMainThreadAsync(() => RecenterMapAsync(_userLocation));
+        }
+        catch
+        {
+            // Ignore delayed geolocation failures to keep first render smooth.
+        }
     }
 
     private POI? FindNearestPoi(List<POI> pois)
@@ -167,19 +189,20 @@ public partial class MainPage : ContentPage
         return nearest;
     }
 
+    private void BindPoi(POI poi)
+    {
+        PoiBadgeLabel.Text = "ĐỊA ĐIỂM";
+        LocationTitleLabel.Text = "Địa điểm đang xem";
+        NowPlayingLabel.Text = poi.Name;
+        AddressLabel.Text = string.IsNullOrWhiteSpace(poi.Description)
+            ? "Số nhà, đường: Chưa có thông tin"
+            : $"Số nhà, đường: {poi.Description}";
+    }
+
     private static bool IsInsideVinhKhanhBounds(POI poi)
     {
         return poi.Latitude >= VinhKhanhMinLat && poi.Latitude <= VinhKhanhMaxLat &&
                poi.Longitude >= VinhKhanhMinLng && poi.Longitude <= VinhKhanhMaxLng;
-    }
-
-
-
-    private void BindPoi(POI poi)
-    {
-        MapPoiLabel.Text = poi.Name;
-        PoiBadgeLabel.Text = string.IsNullOrWhiteSpace(poi.LanguageCode) ? "POI" : poi.LanguageCode.ToUpperInvariant();
-        NowPlayingLabel.Text = $"ĐANG PHÁT: {poi.Name} (Nội dung tự động)";
     }
 
     private void InitializeMap(POI? poi)
@@ -189,361 +212,336 @@ public partial class MainPage : ContentPage
 
     private void LoadLeafletMap(POI? poi, bool centerOnUser = false)
     {
-        var center = centerOnUser && _userLocation is not null ? _userLocation : _vinhKhanhCenter;
-        var hasUser = _userLocation is not null &&
-                      (centerOnUser || _locationService.CalculateDistance(center.Latitude, center.Longitude, _userLocation.Latitude, _userLocation.Longitude) <= VinhKhanhRadiusMeters);
-        var userLatitude = _userLocation?.Latitude.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
-        var userLongitude = _userLocation?.Longitude.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
-        var allPoisBlock = BuildAllPoisBlock(_allPois);
-        const string routeProfile = "driving";
-        const string routeColor = "#0B84F3";
-        const string routeDashArray = "";
+        var hasInternet = Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
 
-        var html = @"<!DOCTYPE html>
+        if (hasInternet)
+        {
+            var centerLat = (centerOnUser && _userLocation is not null ? _userLocation.Latitude : poi?.Latitude ?? _vinhKhanhCenter.Latitude)
+                .ToString(CultureInfo.InvariantCulture);
+            var centerLng = (centerOnUser && _userLocation is not null ? _userLocation.Longitude : poi?.Longitude ?? _vinhKhanhCenter.Longitude)
+                .ToString(CultureInfo.InvariantCulture);
+            var hasUserLocation = _userLocation is not null;
+            var userLat = hasUserLocation ? _userLocation!.Latitude.ToString(CultureInfo.InvariantCulture) : "null";
+            var userLng = hasUserLocation ? _userLocation!.Longitude.ToString(CultureInfo.InvariantCulture) : "null";
+            var selectedPoiLat = poi?.Latitude.ToString(CultureInfo.InvariantCulture) ?? "null";
+            var selectedPoiLng = poi?.Longitude.ToString(CultureInfo.InvariantCulture) ?? "null";
+            var selectedPoiName = EscapeJavaScript(poi?.Name ?? "Điểm đang chọn");
+            var selectedPoiDesc = EscapeJavaScript(poi?.Description ?? "Không có mô tả");
+            var shouldRestoreSelection = _hasExplicitMapSelection ? "true" : "false";
+            var poisScriptArray = BuildAllPoisBlock(_allPois);
+
+            var onlineHtml = $@"<!DOCTYPE html>
 <html>
 <head>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
     <link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
     <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
     <style>
-        html, body {
+        html, body {{
             height: 100%;
             width: 100%;
             margin: 0;
             padding: 0;
-            background: #efe9dc;
             overflow: hidden;
-        }
-        #map {
-            height: 100%;
+            background: #f5efe5;
+        }}
+        #map {{
             width: 100%;
-            display: block;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-        #fallback {
             height: 100%;
-            width: 100%;
-            border: 0;
-            display: block;
-        }
-        .street-pin {
-            background: #e86f2d;
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 999px;
-            border: 2px solid rgba(255,255,255,0.9);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-            font: 600 13px system-ui, -apple-system, Segoe UI, sans-serif;
-            white-space: nowrap;
-        }
-        .street-center {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #4b8de8;
-            border: 3px solid rgba(255,255,255,0.95);
-            box-shadow: 0 0 0 8px rgba(75,141,232,0.18);
-        }
-        .user-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #2d74da;
-            border: 3px solid #ffffff;
-            box-shadow: 0 0 0 10px rgba(45,116,218,0.2);
-        }
+        }}
+        .leaflet-control-attribution {{
+            font-size: 9px;
+        }}
+        .poi-popup-name {{
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #1f2937;
+        }}
+        .poi-popup-desc {{
+            color: #4b5563;
+            font-size: 12px;
+        }}
     </style>
 </head>
 <body>
     <div id='map'></div>
-    <iframe id='fallback' src='https://www.openstreetmap.org/export/embed.html?bbox=106.6992%2C10.7530%2C106.7152%2C10.7648&amp;layer=mapnik&amp;marker=10.7589%2C106.7072'></iframe>
     <script>
-        const streetCenter = [__CENTER_LAT__, __CENTER_LNG__];
-        const vinhKhanhBounds = L.latLngBounds([__MIN_LAT__, __MIN_LNG__], [__MAX_LAT__, __MAX_LNG__]);
+        const centerLat = {centerLat};
+        const centerLng = {centerLng};
+        const userLat = {userLat};
+        const userLng = {userLng};
+        const selectedPoiLat = {selectedPoiLat};
+        const selectedPoiLng = {selectedPoiLng};
+        const selectedPoiName = '{selectedPoiName}';
+        const selectedPoiDesc = '{selectedPoiDesc}';
+        const shouldRestoreSelection = {shouldRestoreSelection};
+        const pois = {poisScriptArray};
 
-        if (typeof L === 'undefined') {
-            document.getElementById('fallback').style.display = 'block';
-        } else {
-            const fallback = document.getElementById('fallback');
-            const mapElement = document.getElementById('map');
-            let tilesLoaded = false;
+        const map = L.map('map', {{
+            zoomControl: false,
+            minZoom: 15,
+            maxZoom: 19,
+            maxBounds: [[{VinhKhanhMinLat.ToString(CultureInfo.InvariantCulture)}, {VinhKhanhMinLng.ToString(CultureInfo.InvariantCulture)}], [{VinhKhanhMaxLat.ToString(CultureInfo.InvariantCulture)}, {VinhKhanhMaxLng.ToString(CultureInfo.InvariantCulture)}]],
+            maxBoundsViscosity: 1.0
+        }}).setView([centerLat, centerLng], {LeafletZoom.ToString(CultureInfo.InvariantCulture)});
 
-            function activateMap() {
-                if (mapElement.style.opacity === '1') {
-                    return;
-                }
+        // Force zoom buttons to top-left as requested.
+        L.control.zoom({{ position: 'topleft' }}).addTo(map);
 
-                mapElement.style.opacity = '1';
-                fallback.style.display = 'none';
-            }
+        L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+            attribution: '&copy; OpenStreetMap contributors'
+        }}).addTo(map);
 
-            const map = L.map('map', {
-                zoomControl: true,
-                attributionControl: false,
-                touchZoom: true,
-                doubleClickZoom: true,
-                scrollWheelZoom: true,
-                dragging: true
-            });
+        const bounds = {{
+            minLat: {VinhKhanhMinLat.ToString(CultureInfo.InvariantCulture)},
+            maxLat: {VinhKhanhMaxLat.ToString(CultureInfo.InvariantCulture)},
+            minLng: {VinhKhanhMinLng.ToString(CultureInfo.InvariantCulture)},
+            maxLng: {VinhKhanhMaxLng.ToString(CultureInfo.InvariantCulture)}
+        }};
 
-            map.setMaxBounds(vinhKhanhBounds.pad(0.01));
+        function clampToBounds(lat, lng) {{
+            return {{
+                lat: Math.min(bounds.maxLat, Math.max(bounds.minLat, lat)),
+                lng: Math.min(bounds.maxLng, Math.max(bounds.minLng, lng))
+            }};
+        }}
 
-            const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19
-            });
+        const routeStart = (userLat !== null && userLng !== null)
+            ? clampToBounds(userLat, userLng)
+            : clampToBounds(centerLat, centerLng);
 
-            tileLayer.on('load', () => {
-                tilesLoaded = true;
-                activateMap();
-            });
+        if (userLat !== null && userLng !== null) {{
+            const userOnMap = clampToBounds(userLat, userLng);
+            L.circleMarker([userOnMap.lat, userOnMap.lng], {{
+                radius: 8,
+                color: '#ffffff',
+                weight: 2,
+                fillColor: '#0ea5e9',
+                fillOpacity: 1
+            }}).addTo(map).bindTooltip('Vị trí của bạn', {{ direction: 'top', offset: [0, -6] }});
+        }}
 
-            tileLayer.on('tileerror', () => {
-                fallback.style.display = 'block';
-            });
+        let activeRoute = null;
+        let activeDestinationDot = null;
 
-            tileLayer.addTo(map);
+        function distanceMeters(a, b) {{
+            const toRad = v => (v * Math.PI) / 180;
+            const dLat = toRad(b.lat - a.lat);
+            const dLng = toRad(b.lng - a.lng);
+            const lat1 = toRad(a.lat);
+            const lat2 = toRad(b.lat);
+            const hav = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+            return 6371000 * 2 * Math.atan2(Math.sqrt(hav), Math.sqrt(1 - hav));
+        }}
 
-            setTimeout(() => {
-                if (!tilesLoaded) {
-                    fallback.style.display = 'block';
-                }
-            }, 5000);
+        async function routeTo(lat, lng) {{
+            const target = clampToBounds(lat, lng);
 
-            map.setView(streetCenter, __LEAFLET_ZOOM__);
-            map.fitBounds(vinhKhanhBounds, { padding: [12, 12], maxZoom: 16 });
+            if (activeRoute) {{
+                map.removeLayer(activeRoute);
+            }}
+            if (activeDestinationDot) {{
+                map.removeLayer(activeDestinationDot);
+            }}
 
-            let userPos = __USER_POSITION__;
-            let userMarker = null;
-            let destinationMarker = null;
-            let routeLine = null;
+            activeDestinationDot = L.circleMarker([target.lat, target.lng], {{
+                radius: 7,
+                color: '#0f766e',
+                weight: 2,
+                fillColor: '#14b8a6',
+                fillOpacity: 0.95
+            }}).addTo(map);
 
-            function updateUserMarker(lat, lng) {
-                const userLatLng = [lat, lng];
-                userPos = [lat, lng];
+            if (distanceMeters(routeStart, target) < 5) {{
+                map.setView([target.lat, target.lng], 17);
+                return;
+            }}
 
-                if (!userMarker) {
-                    const userIcon = L.divIcon({ className: 'user-dot', html: '<div></div>', iconSize: [16,16], iconAnchor:[8,8] });
-                    userMarker = L.marker(userLatLng, { icon: userIcon }).addTo(map).bindPopup('Bạn đang ở đây');
-                    return;
-                }
+            try {{
+                const routeUrl = `https://router.project-osrm.org/route/v1/driving/${{routeStart.lng}},${{routeStart.lat}};${{target.lng}},${{target.lat}}?overview=full&geometries=geojson`;
+                const response = await fetch(routeUrl);
+                const data = await response.json();
 
-                userMarker.setLatLng(userLatLng);
-            }
+                if (response.ok && data && data.code === 'Ok' && data.routes && data.routes.length > 0) {{
+                    const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                    activeRoute = L.polyline(coords, {{
+                        color: '#0f766e',
+                        weight: 5,
+                        opacity: 0.95
+                    }}).addTo(map);
+                }} else {{
+                    throw new Error('OSRM route unavailable');
+                }}
+            }} catch {{
+                // Fallback when routing service is unreachable on emulator/network.
+                activeRoute = L.polyline([
+                    [routeStart.lat, routeStart.lng],
+                    [target.lat, target.lng]
+                ], {{
+                    color: '#0f766e',
+                    weight: 5,
+                    opacity: 0.9,
+                    dashArray: '8, 8'
+                }}).addTo(map);
+            }}
 
-window.recenterToUser = function(lat, lng)
-{
-    updateUserMarker(lat, lng);
-    map.panTo([lat, lng], { animate: true });
-};
+            map.fitBounds(activeRoute.getBounds(), {{ padding: [36, 36], maxZoom: 17 }});
+        }}
 
-function clearRoute()
-{
-    if (routeLine)
-    {
-        map.removeLayer(routeLine);
-        routeLine = null;
-    }
-    if (destinationMarker)
-    {
-        map.removeLayer(destinationMarker);
-        destinationMarker = null;
-    }
-}
+        function buildAddressText(address) {{
+            if (!address) {{
+                return 'Chưa có thông tin';
+            }}
 
-function notifySelection(name, desc, lat, lng)
-{
-    const url = 'app://selected?name=' + encodeURIComponent(name)
-        + '&desc=' + encodeURIComponent(desc)
-        + '&lat=' + encodeURIComponent(lat)
-        + '&lng=' + encodeURIComponent(lng);
-    window.location.href = url;
-}
+            const house = address.house_number || '';
+            const road = address.road || address.pedestrian || address.footway || address.path || '';
+            const combined = `${{house}} ${{road}}`.trim();
+            return combined || road || 'Chưa có thông tin';
+        }}
 
-async function drawRouteTo(destLat, destLng, label, detail)
-{
-    clearRoute();
+        async function resolvePlaceInfo(lat, lng, fallbackName, fallbackDesc) {{
+            try {{
+                const reverseUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${{lat}}&lon=${{lng}}&zoom=18&addressdetails=1`;
+                const response = await fetch(reverseUrl, {{ headers: {{ 'Accept': 'application/json' }} }});
+                if (!response.ok) {{
+                    throw new Error('reverse geocode failed');
+                }}
 
-    notifySelection(label, detail, destLat, destLng);
+                const data = await response.json();
+                const name = (data.name || fallbackName || 'Địa điểm đã chọn').trim();
+                const addr = buildAddressText(data.address);
+                return {{ name, address: addr }};
+            }} catch {{
+                return {{
+                    name: (fallbackName || 'Địa điểm đã chọn').trim(),
+                    address: (fallbackDesc || 'Chưa có thông tin').trim()
+                }};
+            }}
+        }}
 
-    destinationMarker = L.marker([destLat, destLng]).addTo(map);
-    destinationMarker.bindPopup('<b>' + label + '</b>').openPopup();
+        function notifySelection(item, addressText) {{
+            const name = encodeURIComponent(item.name || 'Địa điểm đã chọn');
+            const desc = encodeURIComponent(item.desc || 'Chưa có thông tin');
+            const addr = encodeURIComponent(addressText || item.desc || 'Chưa có thông tin');
+            const lat = encodeURIComponent(item.lat);
+            const lng = encodeURIComponent(item.lng);
+            setTimeout(() => {{
+                window.location.href = `app://selected?name=${{name}}&desc=${{desc}}&addr=${{addr}}&lat=${{lat}}&lng=${{lng}}`;
+            }}, 0);
+        }}
 
-    try
-    {
-        const url = `https://router.project-osrm.org/route/v1/__ROUTE_PROFILE__/${userPos[1]},${userPos[0]};${destLng},${destLat}?overview=full&geometries=geojson`;
-        const response = await fetch(url);
-        const data = await response.json();
+        function addPoiMarker(item, focus) {{
+            const popup = `<div class='poi-popup-name'>${{item.name}}</div><div class='poi-popup-desc'>${{item.desc}}</div>`;
+            const marker = L.marker([item.lat, item.lng]).addTo(map).bindPopup(popup);
 
-        if (data && data.code === 'Ok' && data.routes && data.routes.length > 0)
-        {
-            const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-            routeLine = L.polyline(coords, { color: '__ROUTE_COLOR__', weight: 5, opacity: 0.9, dashArray: '__ROUTE_DASH__' }).addTo(map);
-        }
-        else
-        {
-            routeLine = L.polyline([userPos, [destLat, destLng]], { color: '__ROUTE_COLOR__', weight: 4, dashArray: '__ROUTE_DASH__' }).addTo(map);
-        }
-    }
-    catch
-    {
-        routeLine = L.polyline([userPos, [destLat, destLng]], { color: '__ROUTE_COLOR__', weight: 4, dashArray: '__ROUTE_DASH__' }).addTo(map);
-    }
+            const onSelect = async function() {{
+                await routeTo(item.lat, item.lng);
+                const info = await resolvePlaceInfo(item.lat, item.lng, item.name, item.desc);
+                notifySelection(item, info.address);
+            }};
 
-    if (routeLine)
-    {
-        map.fitBounds(routeLine.getBounds(), { padding: [28, 28], maxZoom: 18 });
-    }
-}
+            marker.on('click', onSelect);
+            marker.on('touchstart', onSelect);
 
-async function resolvePlaceInfo(lat, lng)
-{
-    const fallback = {
-                    label: 'Điểm đã chọn',
-                    detail: `Tọa độ: ${ lat.toFixed(6)}, ${ lng.toFixed(6)}`
-                };
+            if (focus) {{
+                marker.openPopup();
+            }}
+        }}
 
-function buildLabelAndDetail(rawName, rawDetail, isWorship = false)
-{
-    let label = (rawName || '').trim();
-    if (!label)
-    {
-        return fallback;
-    }
+        pois.forEach(p => addPoiMarker(p, false));
 
-    if (isWorship && !label.toLowerCase().includes('nhà thờ'))
-    {
-        label = `Nhà thờ ${ label}`;
-    }
+        map.on('click', async function(e) {{
+            const item = {{
+                lat: e.latlng.lat,
+                lng: e.latlng.lng,
+                name: 'Địa điểm đã chọn',
+                desc: 'Chưa có thông tin'
+            }};
+            await routeTo(item.lat, item.lng);
+            const info = await resolvePlaceInfo(item.lat, item.lng, item.name, item.desc);
+            item.name = info.name;
+            notifySelection(item, info.address);
+        }});
 
-    return {
-        label,
-                        detail: (rawDetail || fallback.detail).trim()
-                    }
-    ;
-}
-
-                try {
-                    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
-                    const response = await fetch(url, {
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-
-if (!response.ok)
-{
-    return fallback;
-}
-
-const data = await response.json();
-const address = data.address || {};
-const isWorship = data.type === 'place_of_worship' || address.amenity === 'place_of_worship';
-
-const labelCandidates = [
-    data.name,
-                        address.attraction,
-                        address.building,
-                        address.tourism,
-                        address.shop,
-                        address.office,
-                        address.amenity,
-                        address.road,
-                        data.display_name ? data.display_name.split(',')[0] : null
-];
-
-const label = labelCandidates.find(v => typeof v === 'string' && v.trim().length > 0);
-if (label)
-{
-    return buildLabelAndDetail(label, data.display_name, isWorship);
-}
-                } catch {
-    // Try another provider if Nominatim fails.
-}
-
-try
-{
-    const photonUrl = `https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`;
-    const photonRes = await fetch(photonUrl, {
-    headers:
-        {
-            'Accept': 'application/json'
-                        }
-    });
-
-    if (photonRes.ok)
-    {
-        const photon = await photonRes.json();
-        const feature = photon.features && photon.features.length > 0 ? photon.features[0] : null;
-        const p = feature ? (feature.properties || { }) : { }
-        ;
-        const pLabel = p.name || p.street || p.housenumber || p.city || p.county;
-        const pDetail = [p.street, p.district, p.city, p.state, p.country]
-            .filter(Boolean)
-            .join(', ');
-
-        if (pLabel)
-        {
-            return buildLabelAndDetail(pLabel, pDetail);
-        }
-    }
-}
-catch
-{
-    // Ignore and use fallback.
-}
-
-return fallback;
-            }
-
-            const streetIcon = L.divIcon({
-                className: '',
-                html: '<div class=""street-pin"">Phố Ẩm Thực Vĩnh Khánh</div>',
-                iconSize: [160, 34],
-                iconAnchor: [80, 34]
-            });
-const streetMarker = L.marker(streetCenter, { icon: streetIcon }).addTo(map);
-streetMarker.on('click', () => drawRouteTo(streetCenter[0], streetCenter[1], 'Phố Ẩm Thực Vĩnh Khánh', 'Phường 10, Quận 4, TP.HCM'));
-
-__USER_BLOCK__
-
-__ALL_POIS_BLOCK__
-
-            __SELECTED_ROUTE_BLOCK__
-
-            map.on('click', async (e) => {
-                const info = await resolvePlaceInfo(e.latlng.lat, e.latlng.lng);
-drawRouteTo(
-    e.latlng.lat,
-    e.latlng.lng,
-    info.label,
-    info.detail
-);
-            });
-        }
+        if (shouldRestoreSelection && selectedPoiLat !== null && selectedPoiLng !== null) {{
+            const selectedItem = {{
+                lat: selectedPoiLat,
+                lng: selectedPoiLng,
+                name: selectedPoiName,
+                desc: selectedPoiDesc
+            }};
+            addPoiMarker(selectedItem, true);
+            routeTo(selectedPoiLat, selectedPoiLng);
+        }}
     </script>
 </body>
-</html> ";
+</html>";
 
-        html = html
-            .Replace("__CENTER_LAT__", center.Latitude.ToString(CultureInfo.InvariantCulture))
-            .Replace("__CENTER_LNG__", center.Longitude.ToString(CultureInfo.InvariantCulture))
-            .Replace("__MIN_LAT__", VinhKhanhMinLat.ToString(CultureInfo.InvariantCulture))
-            .Replace("__MAX_LAT__", VinhKhanhMaxLat.ToString(CultureInfo.InvariantCulture))
-            .Replace("__MIN_LNG__", VinhKhanhMinLng.ToString(CultureInfo.InvariantCulture))
-            .Replace("__MAX_LNG__", VinhKhanhMaxLng.ToString(CultureInfo.InvariantCulture))
-            .Replace("__LEAFLET_ZOOM__", LeafletZoom.ToString(CultureInfo.InvariantCulture))
-            .Replace("__ROUTE_PROFILE__", routeProfile)
-            .Replace("__ROUTE_COLOR__", routeColor)
-            .Replace("__ROUTE_DASH__", routeDashArray)
-            .Replace("__USER_POSITION__", hasUser ? $"[{userLatitude}, {userLongitude}]" : "streetCenter")
-            .Replace("__USER_BLOCK__", hasUser
-                ? $"updateUserMarker({userLatitude}, {userLongitude});"
-                : string.Empty)
-            .Replace("__ALL_POIS_BLOCK__", allPoisBlock)
-            .Replace("__SELECTED_ROUTE_BLOCK__", _selectedLat.HasValue && _selectedLng.HasValue
-                ? $"drawRouteTo({_selectedLat.Value.ToString(CultureInfo.InvariantCulture)}, {_selectedLng.Value.ToString(CultureInfo.InvariantCulture)}, '{EscapeJavaScript(_selectedName)}', '{EscapeJavaScript(_selectedDescription)}');"
-                : string.Empty);
+            LeafletMapView.Source = new HtmlWebViewSource
+            {
+                Html = onlineHtml
+            };
+
+            return;
+        }
+
+        var html = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+    <style>
+        html, body {{
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #efe9dc;
+            font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        }}
+        .offline-shell {{
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }}
+        .offline-card {{
+            width: 100%;
+            border-radius: 16px;
+            background: #fffaf2;
+            border: 1px solid #ecdcc7;
+            padding: 16px;
+            color: #5b4631;
+            line-height: 1.45;
+        }}
+        .title {{
+            font-size: 16px;
+            font-weight: 700;
+            color: #7a3e12;
+            margin-bottom: 10px;
+        }}
+        .meta {{
+            font-size: 13px;
+        }}
+    </style>
+</head>
+<body>
+    <div class='offline-shell'>
+        <div class='offline-card'>
+            <div class='title'>Khong tai duoc ban do online</div>
+            <div class='meta'>
+                Khong co ket noi Internet tren thiet bi/emulator.<br/>
+                Khu vuc mac dinh: Pho am thuc Vinh Khanh (Q4, TP.HCM).<br/>
+                Lat: {VinhKhanhMinLat.ToString(CultureInfo.InvariantCulture)} - {VinhKhanhMaxLat.ToString(CultureInfo.InvariantCulture)}<br/>
+                Lng: {VinhKhanhMinLng.ToString(CultureInfo.InvariantCulture)} - {VinhKhanhMaxLng.ToString(CultureInfo.InvariantCulture)}
+            </div>
+        </div>
+    </div>
+</body>
+</html>";
 
         LeafletMapView.Source = new HtmlWebViewSource
         {
@@ -551,52 +549,21 @@ drawRouteTo(
         };
     }
 
-    private string BuildAllPoisBlock(IEnumerable<POI> pois)
+    private static string BuildAllPoisBlock(IEnumerable<POI> pois)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine("const poiCoords = [];");
+        var entries = pois.Select(poi =>
+            $"{{lat:{poi.Latitude.ToString(CultureInfo.InvariantCulture)},lng:{poi.Longitude.ToString(CultureInfo.InvariantCulture)},name:'{EscapeJavaScript(poi.Name)}',desc:'{EscapeJavaScript(poi.Description ?? "Không có mô tả")}'}}");
 
-        foreach (var poi in pois)
-        {
-            if (double.IsNaN(poi.Latitude) || double.IsNaN(poi.Longitude))
-            {
-                continue;
-            }
-
-            var lat = poi.Latitude.ToString(CultureInfo.InvariantCulture);
-            var lng = poi.Longitude.ToString(CultureInfo.InvariantCulture);
-            var name = EscapeJavaScript(string.IsNullOrWhiteSpace(poi.Name) ? "POI" : poi.Name);
-            var desc = EscapeJavaScript(string.IsNullOrWhiteSpace(poi.Description) ? "Không có mô tả." : poi.Description);
-
-            sb.AppendLine($@"(function() {{
-                const lat = {lat};
-                const lng = {lng};
-                const name = '{name}';
-                const desc = '{desc}';
-                const poiIcon = L.divIcon({{
-                    className: 'poi-label',
-                    html: '<div style=""background: #FFF7ED; color: #1B2430; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"">'' + name + ''</div>',
-                    iconSize: [120, 24],
-                    iconAnchor: [60, 24]
-                }});
-                const marker = L.marker([lat, lng], {{ icon: poiIcon }}).addTo(map).bindPopup('<b>' + name + '</b><br/>' + desc);
-                marker.on('click', () => drawRouteTo(lat, lng, name, desc));
-                poiCoords.push([lat, lng]);
-            }})();");
-        }
-
-        sb.AppendLine("if (poiCoords.length > 0) { const poiBounds = L.latLngBounds(poiCoords); map.fitBounds(poiBounds.pad(0.15), { padding: [24, 24], maxZoom: 17 }); }");
-
-        return sb.ToString();
+        return $"[{string.Join(",", entries)}]";
     }
 
     private static string EscapeJavaScript(string value)
     {
         return value
-                .Replace("\\", "\\\\")
-                .Replace("'", "\\'")
-                .Replace("\r", string.Empty)
-                .Replace("\n", " ");
+            .Replace("\\", "\\\\")
+            .Replace("'", "\\'")
+            .Replace("\r", " ")
+            .Replace("\n", " ");
     }
 
     private static async Task<Location?> TryGetUserLocationAsync(CancellationToken cancellationToken)
@@ -833,7 +800,11 @@ drawRouteTo(
 
         var description = query.TryGetValue("desc", out var selectedDesc)
             ? selectedDesc
-            : "Không có mô tả";
+            : "Chưa có thông tin";
+
+        var address = query.TryGetValue("addr", out var selectedAddr)
+            ? selectedAddr
+            : description;
 
         var lat = query.TryGetValue("lat", out var selectedLat) ? selectedLat : string.Empty;
         var lng = query.TryGetValue("lng", out var selectedLng) ? selectedLng : string.Empty;
@@ -841,27 +812,30 @@ drawRouteTo(
         if (double.TryParse(lat, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedLat) &&
             double.TryParse(lng, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedLng))
         {
+            _hasExplicitMapSelection = true;
+
             var isSameSelection = _selectedLat.HasValue &&
                                   _selectedLng.HasValue &&
                                   Math.Abs(_selectedLat.Value - parsedLat) < 0.000001 &&
                                   Math.Abs(_selectedLng.Value - parsedLng) < 0.000001 &&
                                   string.Equals(_selectedName, name, StringComparison.Ordinal) &&
-                                  string.Equals(_selectedDescription, description, StringComparison.Ordinal);
+                                  string.Equals(_selectedDescription, address, StringComparison.Ordinal);
 
             _selectedLat = parsedLat;
             _selectedLng = parsedLng;
             _selectedName = name;
-            _selectedDescription = description;
+            _selectedDescription = address;
 
             if (!isSameSelection)
             {
-                SaveTripSelection(name, description);
+                SaveTripSelection(name, address);
             }
         }
 
-        PoiBadgeLabel.Text = "ĐÃ CHỌN";
-        NowPlayingLabel.Text = $"Đang phát thông tin liên quan đến: {name}";
-        MapPoiLabel.Text = name;
+        PoiBadgeLabel.Text = "ĐỊA ĐIỂM";
+        LocationTitleLabel.Text = "Địa điểm đã chọn";
+        NowPlayingLabel.Text = name;
+        AddressLabel.Text = $"Số nhà, đường: {address}";
     }
 
     private static Dictionary<string, string> ParseQuery(string query)
@@ -967,38 +941,14 @@ drawRouteTo(
 
     private async Task RecenterMapAsync(Location location)
     {
-        try
-        {
-            var script = $"window.recenterToUser({location.Latitude.ToString(CultureInfo.InvariantCulture)}, {location.Longitude.ToString(CultureInfo.InvariantCulture)});";
-            await LeafletMapView.EvaluateJavaScriptAsync(script);
-        }
-        catch
-        {
-            LoadLeafletMap(_currentPoi, centerOnUser: true);
-        }
-    }
-
-    private async void OnNearbyCardTapped(object? sender, TappedEventArgs e)
-    {
-        if (_currentPoi is null)
-        {
-            await DisplayAlertAsync("Địa điểm", "Chưa có dữ liệu từ database.", "Đóng");
-            return;
-        }
-
-        var status = _autoPlayEnabled ? "Bật" : "Tắt";
-        var description = string.IsNullOrWhiteSpace(_currentPoi.Description)
-            ? "Chưa có mô tả."
-            : _currentPoi.Description;
-
-        await DisplayAlertAsync(_currentPoi.Name, $"{description}\nTự động phát hiện: {status}", "Đóng");
+        LoadLeafletMap(_currentPoi, centerOnUser: true);
+        await Task.CompletedTask;
     }
 
     private void OnAutoPlayToggled(object? sender, ToggledEventArgs e)
     {
         _autoPlayEnabled = e.Value;
-        var text = e.Value ? "Tự động phát: Bật" : "Tự động phát: Tắt";
-        NowPlayingLabel.Text = text;
+        PoiBadgeLabel.Text = e.Value ? "TỰ ĐỘNG" : "THỦ CÔNG";
     }
 
     private void OnBatteryOptimizedToggled(object? sender, ToggledEventArgs e)
