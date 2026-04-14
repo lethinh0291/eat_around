@@ -89,6 +89,25 @@ public class ApiService
         }
     }
 
+    public async Task<List<AdBanner>> GetActiveAdBannersAsync()
+    {
+        try
+        {
+            var banners = await _httpClient.GetFromJsonAsync<List<AdBanner>>("ad-banners/active") ?? new List<AdBanner>();
+            foreach (var banner in banners)
+            {
+                banner.ImageUrl = NormalizeApiImageUrl(banner.ImageUrl);
+            }
+
+            return banners;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi khi lấy banner quảng cáo: {ex.Message}");
+            return new List<AdBanner>();
+        }
+    }
+
     public async Task<(bool Success, string Message)> SubmitStoreRegistrationAsync(
         string storeName,
         string ownerName,
@@ -96,15 +115,26 @@ public class ApiService
         string address,
         string category,
         string description,
-        string? imageUrl = null)
+        List<string>? imageUrls = null,
+        string? primaryImageUrl = null,
+        double? latitude = null,
+        double? longitude = null,
+        double? radiusMeters = null)
     {
+        var normalizedImageUrls = NormalizeImageUrls(imageUrls);
         var payload = new BackendStoreRegistration
         {
             StoreName = storeName,
             OwnerName = ownerName,
-            ImageUrl = imageUrl,
+            ImageUrl = string.IsNullOrWhiteSpace(primaryImageUrl)
+                ? normalizedImageUrls.FirstOrDefault()
+                : primaryImageUrl.Trim(),
+            ImageUrls = normalizedImageUrls,
             Phone = phone,
             Address = address,
+            Latitude = latitude,
+            Longitude = longitude,
+            RadiusMeters = radiusMeters,
             Category = category,
             Description = description
         };
@@ -214,13 +244,20 @@ public class ApiService
     {
         try
         {
+            var normalizedImageUrls = NormalizeImageUrls(registration.ImageUrls);
             var payload = new
             {
                 registration.StoreName,
                 OwnerName = ownerName,
-                registration.ImageUrl,
+                ImageUrl = string.IsNullOrWhiteSpace(registration.ImageUrl)
+                    ? normalizedImageUrls.FirstOrDefault()
+                    : registration.ImageUrl.Trim(),
+                ImageUrls = normalizedImageUrls,
                 registration.Phone,
                 registration.Address,
+                registration.Latitude,
+                registration.Longitude,
+                registration.RadiusMeters,
                 registration.Category,
                 registration.Description
             };
@@ -280,6 +317,86 @@ public class ApiService
         catch (Exception ex)
         {
             Console.WriteLine($"Lỗi xóa đăng ký cửa hàng: {ex.Message}");
+            return (false, "Không thể kết nối máy chủ.");
+        }
+    }
+
+    public async Task<(bool Success, string Message, string? ImageUrl)> UploadUserAvatarAsync(byte[] imageBytes, string fileName, string? contentType = null)
+    {
+        if (string.IsNullOrWhiteSpace(CloudinaryCloudName) ||
+            string.IsNullOrWhiteSpace(CloudinaryUploadPreset) ||
+            CloudinaryCloudName.Contains("YOUR_", StringComparison.OrdinalIgnoreCase) ||
+            CloudinaryUploadPreset.Contains("YOUR_", StringComparison.OrdinalIgnoreCase))
+        {
+            return (false, "Cloudinary chưa được cấu hình. Vui lòng cập nhật CloudinaryCloudName và CloudinaryUploadPreset trong ApiService.", null);
+        }
+
+        try
+        {
+            if (imageBytes is null || imageBytes.Length == 0)
+            {
+                return (false, "Ảnh rỗng hoặc không hợp lệ.", null);
+            }
+
+            using var content = new MultipartFormDataContent();
+            var byteContent = new ByteArrayContent(imageBytes);
+            var normalizedContentType = string.IsNullOrWhiteSpace(contentType) ? "application/octet-stream" : contentType.Trim();
+            byteContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(normalizedContentType);
+            content.Add(byteContent, "file", string.IsNullOrWhiteSpace(fileName) ? "avatar.jpg" : fileName);
+            content.Add(new StringContent(CloudinaryUploadPreset), "upload_preset");
+            content.Add(new StringContent("zestour/avatars"), "folder");
+
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+            var preset = Uri.EscapeDataString(CloudinaryUploadPreset);
+            var folder = Uri.EscapeDataString("zestour/avatars");
+            var endpoint = $"https://api.cloudinary.com/v1_1/{CloudinaryCloudName}/image/upload?upload_preset={preset}&folder={folder}";
+            var response = await client.PostAsync(endpoint, content);
+            var body = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var cloudError = System.Text.Json.JsonSerializer.Deserialize<CloudinaryErrorEnvelope>(body);
+                var detail = cloudError?.Error?.Message;
+                if (string.IsNullOrWhiteSpace(detail))
+                {
+                    detail = $"HTTP {(int)response.StatusCode}";
+                }
+
+                return (false, $"Upload Cloudinary thất bại: {detail}", null);
+            }
+
+            var payload = System.Text.Json.JsonSerializer.Deserialize<CloudinaryUploadResponse>(body);
+            if (string.IsNullOrWhiteSpace(payload?.SecureUrl))
+            {
+                return (false, "Không nhận được URL ảnh từ Cloudinary.", null);
+            }
+
+            return (true, "Upload ảnh đại diện thành công.", payload.SecureUrl);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi upload avatar Cloudinary: {ex.Message}");
+            return (false, $"Không thể upload ảnh đại diện lên cloud: {ex.Message}", null);
+        }
+    }
+
+    public async Task<(bool Success, string Message)> UpdateUserAvatarAsync(int userId, string avatarUrl)
+    {
+        try
+        {
+            var response = await _httpClient.PutAsJsonAsync($"auth/users/{userId}/avatar", new { AvatarUrl = avatarUrl });
+            var payload = await response.Content.ReadFromJsonAsync<ApiMessageResponse>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return (true, payload?.Message ?? "Cập nhật ảnh đại diện thành công.");
+            }
+
+            return (false, payload?.Message ?? "Cập nhật ảnh đại diện thất bại.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi cập nhật ảnh đại diện: {ex.Message}");
             return (false, "Không thể kết nối máy chủ.");
         }
     }
@@ -359,8 +476,12 @@ public class ApiService
         public string StoreName { get; set; } = string.Empty;
         public string OwnerName { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
+        public List<string>? ImageUrls { get; set; }
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        public double? RadiusMeters { get; set; }
         public string Category { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }
@@ -371,6 +492,7 @@ public class ApiService
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
+        public string? AvatarUrl { get; set; }
         public string Role { get; set; } = "customer";
     }
 
@@ -380,11 +502,49 @@ public class ApiService
         public string StoreName { get; set; } = string.Empty;
         public string OwnerName { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
+        public List<string>? ImageUrls { get; set; }
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        public double? RadiusMeters { get; set; }
         public string Category { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTime SubmittedAtUtc { get; set; }
+    }
+
+    public sealed class AdBanner
+    {
+        public int Id { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public int SortOrder { get; set; }
+    }
+
+    private static List<string> NormalizeImageUrls(IEnumerable<string>? imageUrls)
+    {
+        return imageUrls?
+            .Select(url => url?.Trim())
+            .Where(url => !string.IsNullOrWhiteSpace(url))
+            .Select(url => url!)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList() ?? [];
+    }
+
+    private string NormalizeApiImageUrl(string? imageUrl)
+    {
+        var value = imageUrl?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        if (Uri.TryCreate(value, UriKind.Absolute, out _))
+        {
+            return value;
+        }
+
+        return new Uri(_httpClient.BaseAddress!, value.TrimStart('/')).ToString();
     }
 
     private sealed class CloudinaryUploadResponse

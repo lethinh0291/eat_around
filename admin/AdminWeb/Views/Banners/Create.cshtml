@@ -1,0 +1,49 @@
+@model AdminWeb.Services.AdminManagementApiClient.AdBannerUpsertDto
+@{
+    ViewData["Title"] = "Thêm banner";
+}
+
+<div class="d-flex align-items-end justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+        <div class="breadcrumbs-inline mb-2">
+            <a asp-controller="Home" asp-action="Index">Dashboard</a>
+            <span>/</span>
+            <a asp-action="Index">Banner quảng cáo</a>
+            <span>/</span>
+            <span>Thêm mới</span>
+        </div>
+        <h1 class="page-title">Thêm banner quảng cáo</h1>
+        <p class="page-subtitle">Chọn ảnh trực tiếp từ máy để hiển thị trên mobile.</p>
+    </div>
+</div>
+
+<div class="surface-card p-4" style="max-width:760px;">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div>
+            <label class="form-label">Ảnh banner</label>
+            <input name="imageFile" type="file" class="form-control" accept="image/*" required />
+            <span class="form-text">Hỗ trợ .jpg, .jpeg, .png, .webp</span>
+        </div>
+
+        <div>
+            <label asp-for="SortOrder" class="form-label">Thứ tự hiển thị</label>
+            <input asp-for="SortOrder" type="number" class="form-control" />
+        </div>
+
+        <div class="form-check">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label">Hiển thị ngay trên mobile</label>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-admin btn-admin-primary">Lưu banner</button>
+            <a class="btn btn-admin btn-admin-soft" asp-action="Index">Hủy</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

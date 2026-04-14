@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.ProfilePage"
@@ -6,27 +6,26 @@
              BackgroundColor="{StaticResource AppBackground}">
     <Grid>
         <Grid.Background>
-            <RadialGradientBrush Center="0.25,0.08"
-                                 Radius="1">
-                <GradientStop Color="#FFF9F2"
+            <LinearGradientBrush StartPoint="0,0"
+                                 EndPoint="1,1">
+                <GradientStop Color="#FFFDFB"
                               Offset="0"/>
-                <GradientStop Color="#FFF2E5"
-                              Offset="0.62"/>
-                <GradientStop Color="#FFE8D2"
+                <GradientStop Color="#FFF4EC"
                               Offset="1"/>
-            </RadialGradientBrush>
+            </LinearGradientBrush>
         </Grid.Background>
 
         <ScrollView>
-            <VerticalStackLayout Padding="24,54,24,28"
-                                 Spacing="18">
+            <VerticalStackLayout Padding="22,50,22,24"
+                                 Spacing="16">
                 <Grid ColumnDefinitions="Auto,*"
                       ColumnSpacing="12">
-                    <Border WidthRequest="48"
-                            HeightRequest="48"
-                            StrokeThickness="0"
-                            BackgroundColor="#FFF1E6"
-                            StrokeShape="RoundRectangle 16">
+                    <Border WidthRequest="46"
+                            HeightRequest="46"
+                            StrokeThickness="1"
+                            Stroke="#E8D6CA"
+                            BackgroundColor="#FFFFFF"
+                            StrokeShape="RoundRectangle 15">
                         <Label Text="←"
                                FontSize="18"
                                TextColor="{StaticResource TextPrimary}"
@@ -44,32 +43,39 @@
                         <Label Text="Hồ sơ người dùng"
                                FontSize="12"
                                TextColor="{StaticResource TextSecondary}"/>
-                        <Label Text="Tài khoản và tuỳ chọn cá nhân"
+                        <Label Text="Tài khoản và ảnh đại diện"
                                FontSize="24"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
                     </VerticalStackLayout>
                 </Grid>
 
-                <Border StrokeThickness="0"
+                <Border StrokeThickness="1"
+                        Stroke="#E8D6CA"
                         BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 32"
-                        Padding="20">
+                        StrokeShape="RoundRectangle 28"
+                        Padding="18">
                     <VerticalStackLayout Spacing="14">
                         <Grid ColumnDefinitions="Auto,*"
                               ColumnSpacing="14">
-                            <Border WidthRequest="68"
-                                    HeightRequest="68"
-                                    StrokeThickness="0"
-                                    BackgroundColor="{StaticResource Primary}"
-                                    StrokeShape="RoundRectangle 24">
-                                <Label x:Name="InitialsLabel"
-                                       Text="U"
-                                       FontSize="24"
-                                       FontAttributes="Bold"
-                                       TextColor="White"
-                                       HorizontalTextAlignment="Center"
-                                       VerticalTextAlignment="Center"/>
+                            <Border WidthRequest="84"
+                                    HeightRequest="84"
+                                    StrokeThickness="1"
+                                    Stroke="#E8D6CA"
+                                    BackgroundColor="#FFF1E8"
+                                    StrokeShape="RoundRectangle 28">
+                                <Grid>
+                                    <Image x:Name="AvatarImage"
+                                           Aspect="AspectFill"
+                                           IsVisible="False"/>
+                                    <Label x:Name="AvatarInitialsLabel"
+                                           Text="U"
+                                           FontSize="28"
+                                           FontAttributes="Bold"
+                                           TextColor="#8E2F18"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"/>
+                                </Grid>
                             </Border>
 
                             <VerticalStackLayout Grid.Column="1"
@@ -87,15 +93,16 @@
                                 <Label x:Name="StatusLabel"
                                        Text="Đang đăng nhập"
                                        FontSize="11"
-                                       TextColor="{StaticResource AccentBlue}"/>
+                                       TextColor="#D94827"/>
                             </VerticalStackLayout>
                         </Grid>
 
                         <Grid ColumnDefinitions="*,*"
                               ColumnSpacing="12">
-                            <Border StrokeThickness="0"
-                                    BackgroundColor="#FFF4EA"
-                                    StrokeShape="RoundRectangle 20"
+                            <Border StrokeThickness="1"
+                                    Stroke="#E8D6CA"
+                                    BackgroundColor="#F7FAFC"
+                                    StrokeShape="RoundRectangle 18"
                                     Padding="12">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="Tên đăng nhập"
@@ -110,9 +117,10 @@
                             </Border>
 
                             <Border Grid.Column="1"
-                                    StrokeThickness="0"
-                                    BackgroundColor="#FFF4EA"
-                                    StrokeShape="RoundRectangle 20"
+                                    StrokeThickness="1"
+                                    Stroke="#E8D6CA"
+                                    BackgroundColor="#F7FAFC"
+                                    StrokeShape="RoundRectangle 18"
                                     Padding="12">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="Số tài khoản"
@@ -126,11 +134,39 @@
                                 </VerticalStackLayout>
                             </Border>
                         </Grid>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="12,10">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Ảnh đại diện"
+                                       FontSize="11"
+                                       TextColor="{StaticResource TextSecondary}"/>
+                                <Label Text="Chọn từ máy và lưu lên Cloudinary để dùng cho hồ sơ của bạn"
+                                       FontSize="12"
+                                       TextColor="{StaticResource TextPrimary}"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Button Text="Đổi ảnh đại diện"
+                                Clicked="OnChangeAvatarClicked"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                CornerRadius="14"
+                                HeightRequest="48"
+                                FontAttributes="Bold"/>
+
+                        <Label x:Name="MessageLabel"
+                               Text=""
+                               FontSize="12"
+                               TextColor="#B91C1C"/>
                     </VerticalStackLayout>
                 </Border>
 
                 <Border StrokeThickness="1"
-                        Stroke="{StaticResource BorderSoftBrush}"
+                        Stroke="#E8D6CA"
                         BackgroundColor="#FFFFFF"
                         StrokeShape="RoundRectangle 28"
                         Padding="18">
@@ -142,8 +178,9 @@
 
                         <Grid ColumnDefinitions="*,*"
                               ColumnSpacing="12">
-                            <Border StrokeThickness="0"
-                                    BackgroundColor="#FFF7ED"
+                            <Border StrokeThickness="1"
+                                    Stroke="#E8D6CA"
+                                    BackgroundColor="#F7FAFC"
                                     StrokeShape="RoundRectangle 18"
                                     Padding="14">
                                 <VerticalStackLayout Spacing="4">
@@ -158,8 +195,9 @@
                             </Border>
 
                             <Border Grid.Column="1"
-                                    StrokeThickness="0"
-                                    BackgroundColor="#FFF7ED"
+                                    StrokeThickness="1"
+                                    Stroke="#E8D6CA"
+                                    BackgroundColor="#F7FAFC"
                                     StrokeShape="RoundRectangle 18"
                                     Padding="14">
                                 <VerticalStackLayout Spacing="4">
@@ -174,15 +212,10 @@
                             </Border>
                         </Grid>
 
-                        <Label x:Name="MessageLabel"
-                               Text=""
-                               FontSize="12"
-                               TextColor="#FCA5A5"/>
-
                         <Button Text="Đăng xuất"
                                 Clicked="OnSignOutClicked"
-                                BackgroundColor="{StaticResource Primary}"
-                                TextColor="White"
+                                BackgroundColor="#FEE2E2"
+                                TextColor="#B91C1C"
                                 CornerRadius="18"
                                 HeightRequest="52"/>
                     </VerticalStackLayout>
@@ -191,3 +224,4 @@
         </ScrollView>
     </Grid>
 </ContentPage>
+

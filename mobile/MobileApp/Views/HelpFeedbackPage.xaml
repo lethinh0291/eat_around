@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.HelpFeedbackPage"
@@ -13,7 +13,7 @@
                     <Border WidthRequest="42"
                             HeightRequest="42"
                             StrokeThickness="0"
-                            BackgroundColor="#FFF1E6"
+                            BackgroundColor="#FFF1E8"
                             StrokeShape="RoundRectangle 14">
                         <Label Text="←"
                                FontSize="18"
@@ -55,7 +55,7 @@
                                 HeightRequest="120"/>
                         <Label x:Name="MessageLabel"
                                FontSize="12"
-                               TextColor="#FCA5A5"/>
+                               TextColor="#B91C1C"/>
                         <Button Text="Gửi phản hồi"
                                 Clicked="OnSubmitClicked"
                                 HeightRequest="50"
@@ -68,3 +68,5 @@
         </ScrollView>
     </Grid>
 </ContentPage>
+
+

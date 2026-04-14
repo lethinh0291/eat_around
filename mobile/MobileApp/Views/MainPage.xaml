@@ -6,17 +6,19 @@
              BackgroundColor="{StaticResource AppBackground}">
 
        <Grid RowDefinitions="Auto,*">
-              <Grid Padding="18,20,18,12"
+              <Grid Padding="18,22,18,12"
                     ColumnDefinitions="Auto,*,Auto"
                     ColumnSpacing="12">
-                     <Border WidthRequest="52"
-                             HeightRequest="52"
-                             StrokeThickness="0"
-                             BackgroundColor="{StaticResource SurfaceSoft}"
-                             StrokeShape="RoundRectangle 18"
+                     <Border WidthRequest="50"
+                             HeightRequest="50"
+                             StrokeThickness="1"
+                             Stroke="#D6E1E9"
+                             BackgroundColor="#FFFFFF"
+                             StrokeShape="RoundRectangle 16"
                              VerticalOptions="Center">
-                            <Label Text="MENU"
-                                   FontSize="10"
+                            <Label Text="Menu"
+                                   FontSize="11"
+                                   FontAttributes="Bold"
                                    TextColor="{StaticResource TextPrimary}"
                                    HorizontalTextAlignment="Center"
                                    VerticalTextAlignment="Center">
@@ -26,17 +28,28 @@
                             </Label>
                      </Border>
 
-
+                     <VerticalStackLayout Grid.Column="1"
+                                          VerticalOptions="Center"
+                                          Spacing="2">
+                            <Label Text="Bản đồ khám phá"
+                                   FontSize="19"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextPrimary}"/>
+                            <Label Text="Chạm vào điểm trên bản đồ để nghe mô tả"
+                                   FontSize="12"
+                                   TextColor="{StaticResource TextSecondary}"/>
+                     </VerticalStackLayout>
 
                      <Border Grid.Column="2"
-                             WidthRequest="52"
-                             HeightRequest="52"
-                             StrokeThickness="0"
-                             BackgroundColor="White"
-                             StrokeShape="RoundRectangle 18"
+                             WidthRequest="50"
+                             HeightRequest="50"
+                             StrokeThickness="1"
+                             Stroke="#D6E1E9"
+                             BackgroundColor="#FFFFFF"
+                             StrokeShape="RoundRectangle 16"
                              VerticalOptions="Center">
-                            <Label Text="PROFILE"
-                                   FontSize="10"
+                            <Label Text="Hồ sơ"
+                                   FontSize="11"
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource TextPrimary}"
                                    HorizontalTextAlignment="Center"
@@ -46,14 +59,14 @@
                                    </Label.GestureRecognizers>
                             </Label>
                      </Border>
-
               </Grid>
 
               <Grid Grid.Row="1"
                     Padding="14,0,14,14">
-                     <Border StrokeThickness="0"
-                             BackgroundColor="{StaticResource Surface}"
-                             StrokeShape="RoundRectangle 30">
+                     <Border StrokeThickness="1"
+                             Stroke="#E8D6CA"
+                             BackgroundColor="#FFFFFF"
+                             StrokeShape="RoundRectangle 28">
                             <Grid RowDefinitions="*,Auto">
                                    <Grid>
                                           <WebView x:Name="LeafletMapView"
@@ -64,33 +77,17 @@
 
                                           <VerticalStackLayout HorizontalOptions="End"
                                                                VerticalOptions="Start"
-                                                               Margin="0,16,14,0"
+                                                               Margin="0,14,12,0"
                                                                Spacing="10">
-                                                 <Border BackgroundColor="#F8FAFC"
-                                                         StrokeThickness="0"
-                                                         WidthRequest="42"
-                                                         HeightRequest="42"
+                                                 <Border BackgroundColor="#FFFFFF"
+                                                         StrokeThickness="1"
+                                                         Stroke="#E8D6CA"
+                                                         WidthRequest="44"
+                                                         HeightRequest="44"
                                                          StrokeShape="RoundRectangle 14">
-                                                        <Label Text="i"
-                                                               FontSize="16"
-                                                               FontAttributes="Bold"
-                                                               TextColor="{StaticResource TextDark}"
-                                                               HorizontalTextAlignment="Center"
-                                                               VerticalTextAlignment="Center">
-                                                               <Label.GestureRecognizers>
-                                                                      <TapGestureRecognizer Tapped="OnInfoTapped"/>
-                                                               </Label.GestureRecognizers>
-                                                        </Label>
-                                                 </Border>
-
-                                                 <Border BackgroundColor="#F8FAFC"
-                                                         StrokeThickness="0"
-                                                         WidthRequest="42"
-                                                         HeightRequest="42"
-                                                         StrokeShape="RoundRectangle 14">
-                                                        <Label Text="⌖"
-                                                               FontSize="16"
-                                                               TextColor="{StaticResource TextDark}"
+                                                        <Label Text="◎"
+                                                               FontSize="18"
+                                                               TextColor="{StaticResource TextPrimary}"
                                                                HorizontalTextAlignment="Center"
                                                                VerticalTextAlignment="Center">
                                                                <Label.GestureRecognizers>
@@ -103,21 +100,20 @@
 
                                    <Border Grid.Row="1"
                                            StrokeThickness="0"
-                                           BackgroundColor="#ffffff"
-                                           StrokeShape="RoundRectangle 28,28,30,30"
-                                           Margin="0,0,0,0"
+                                           BackgroundColor="#FFF9F6"
+                                           StrokeShape="RoundRectangle 26,26,28,28"
                                            Padding="16,14,16,16">
-                                          <VerticalStackLayout Spacing="14">
+                                          <VerticalStackLayout Spacing="12">
                                                  <Grid ColumnDefinitions="Auto,*"
-                                                       ColumnSpacing="12">
+                                                       ColumnSpacing="10">
                                                         <Border StrokeThickness="0"
-                                                                BackgroundColor="#ffffff"
-                                                                Padding="12,8"
-                                                                StrokeShape="RoundRectangle 16">
+                                                                BackgroundColor="#FFF1E8"
+                                                                Padding="12,7"
+                                                                StrokeShape="RoundRectangle 14">
                                                                <Label x:Name="PoiBadgeLabel"
-                                                                      Text="VỊ TRÍ"
+                                                                      Text="ĐỊA ĐIỂM"
                                                                       FontAttributes="Bold"
-                                                                      TextColor="#7A4718"
+                                                                      TextColor="#8E2F18"
                                                                       FontSize="11"/>
                                                         </Border>
 
@@ -141,14 +137,15 @@
                                                  </Grid>
 
                                                  <Grid ColumnDefinitions="*,*"
-                                                       ColumnSpacing="12">
-                                                        <Border StrokeThickness="0"
-                                                                BackgroundColor="#ffffff"
-                                                                Padding="12"
-                                                                StrokeShape="RoundRectangle 18">
+                                                       ColumnSpacing="10">
+                                                        <Border StrokeThickness="1"
+                                                                Stroke="#E8D6CA"
+                                                                BackgroundColor="#FFFFFF"
+                                                                Padding="10"
+                                                                StrokeShape="RoundRectangle 16">
                                                                <Grid ColumnDefinitions="*,Auto"
-                                                                     ColumnSpacing="10">
-                                                                      <Label Text="Tự Động Phát"
+                                                                     ColumnSpacing="8">
+                                                                      <Label Text="Tự động phát"
                                                                              FontSize="12"
                                                                              TextColor="{StaticResource TextPrimary}"
                                                                              VerticalTextAlignment="Center"/>
@@ -159,13 +156,14 @@
                                                         </Border>
 
                                                         <Border Grid.Column="1"
-                                                                StrokeThickness="0"
-                                                                BackgroundColor="#ffffff"
-                                                                Padding="12"
-                                                                StrokeShape="RoundRectangle 18">
+                                                                StrokeThickness="1"
+                                                                Stroke="#E8D6CA"
+                                                                BackgroundColor="#FFFFFF"
+                                                                Padding="10"
+                                                                StrokeShape="RoundRectangle 16">
                                                                <Grid ColumnDefinitions="*,Auto"
-                                                                     ColumnSpacing="10">
-                                                                      <Label Text="Tối Ưu Pin"
+                                                                     ColumnSpacing="8">
+                                                                      <Label Text="Tiết kiệm pin"
                                                                              FontSize="12"
                                                                              TextColor="{StaticResource TextPrimary}"
                                                                              VerticalTextAlignment="Center"/>
@@ -186,7 +184,7 @@
                     IsVisible="False"
                     Opacity="0"
                     InputTransparent="True"
-                    BackgroundColor="#ffffff00">
+                    BackgroundColor="#40000000">
                      <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnSidebarBackdropTapped"/>
                      </Grid.GestureRecognizers>
@@ -196,13 +194,13 @@
                       Grid.RowSpan="2"
                       HorizontalOptions="Start"
                       VerticalOptions="Fill"
-                      WidthRequest="290"
+                      WidthRequest="292"
                       Margin="14,12,0,12"
                       Padding="16,18"
                       TranslationX="-340"
                       StrokeThickness="1"
-                      Stroke="{StaticResource BorderSoftBrush}"
-                      BackgroundColor="#ffffff"
+                      Stroke="#E8D6CA"
+                      BackgroundColor="#FFFFFF"
                       StrokeShape="RoundRectangle 24">
                      <VerticalStackLayout Spacing="14">
                             <Grid ColumnDefinitions="*,Auto"
@@ -215,11 +213,12 @@
                                    <Border Grid.Column="1"
                                            WidthRequest="34"
                                            HeightRequest="34"
-                                           StrokeThickness="0"
-                                           BackgroundColor="White"
+                                           StrokeThickness="1"
+                                           Stroke="#D6E1E9"
+                                           BackgroundColor="#FFFFFF"
                                            StrokeShape="RoundRectangle 12">
                                           <Label Text="✕"
-                                                 FontSize="14"
+                                                 FontSize="13"
                                                  TextColor="{StaticResource TextPrimary}"
                                                  HorizontalTextAlignment="Center"
                                                  VerticalTextAlignment="Center">
@@ -230,39 +229,39 @@
                                    </Border>
                             </Grid>
 
-                            <Label Text="Truy cập nhanh các tính năng chính để thao tác ít bước hơn."
+                            <Label Text="Truy cập nhanh các chức năng chính để thao tác ít bước hơn."
                                    FontSize="12"
                                    TextColor="{StaticResource TextSecondary}"/>
 
                             <Button Text="Trang bản đồ"
                                     Clicked="OnSidebarHomeClicked"
-                                    BackgroundColor="White"
-                                    TextColor="{StaticResource TextPrimary}"
+                                    BackgroundColor="{StaticResource Secondary}"
+                                    TextColor="{StaticResource PrimaryDark}"
+                                    CornerRadius="14"
+                                    HeightRequest="46"/>
+
+                            <Button Text="Về trang chính"
+                                    Clicked="OnSidebarMenuClicked"
+                                    BackgroundColor="{StaticResource Secondary}"
+                                    TextColor="{StaticResource PrimaryDark}"
                                     CornerRadius="14"
                                     HeightRequest="46"/>
 
                             <Button Text="Hồ sơ người dùng"
                                     Clicked="OnSidebarProfileClicked"
-                                    BackgroundColor="White"
-                                    TextColor="{StaticResource TextPrimary}"
+                                    BackgroundColor="{StaticResource Secondary}"
+                                    TextColor="{StaticResource PrimaryDark}"
                                     CornerRadius="14"
                                     HeightRequest="46"/>
 
                             <Button Text="Định vị lại"
                                     Clicked="OnSidebarRecenterClicked"
-                                    BackgroundColor="White"
-                                    TextColor="{StaticResource TextPrimary}"
+                                    BackgroundColor="{StaticResource Secondary}"
+                                    TextColor="{StaticResource PrimaryDark}"
                                     CornerRadius="14"
                                     HeightRequest="46"/>
-
-                            <BoxView HeightRequest="1"
-                                     BackgroundColor="#ffffff"
-                                     Margin="0,6,0,0"/>
-
-                            <Label Text="Mẹo: chạm vùng bên ngoài để đóng nhanh thanh này."
-                                   FontSize="11"
-                                   TextColor="{StaticResource TextSecondary}"/>
                      </VerticalStackLayout>
               </Border>
        </Grid>
 </ContentPage>
+

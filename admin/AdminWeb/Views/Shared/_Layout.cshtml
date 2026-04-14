@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,57 +12,83 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AdminWeb.styles.css" asp-append-version="true" />
 </head>
+
 <body class="admin-body">
+    @{
+        var isAuthenticated = User.Identity?.IsAuthenticated == true;
+        var isAdmin = User.IsInRole("admin");
+        var isSeller = User.IsInRole("seller");
+        var brandController = isSeller ? "OwnerPortal" : "Home";
+    }
     <header class="admin-header">
         <nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
             <div class="container-fluid px-4">
-                <a class="navbar-brand brand-mark" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand brand-mark" asp-area="" asp-controller="@brandController" asp-action="Index">
                     <img src="~/images/logo.svg" alt="ZesTour" class="brand-logo" />
                     ZesTour Admin
                 </a>
-                @if (User.Identity?.IsAuthenticated == true)
+                @if (isAuthenticated)
                 {
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav"
-                            aria-expanded="false" aria-label="Menu">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav"
+                            aria-controls="adminNav" aria-expanded="false" aria-label="Menu">
                         Menu
                     </button>
                     <div class="collapse navbar-collapse" id="adminNav">
                         <ul class="navbar-nav ms-auto gap-2">
-                            <li class="nav-item">
-                                <a class="nav-link admin-nav-link" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link admin-nav-link" asp-area="" asp-controller="AdminManagement" asp-action="Users">Users</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link admin-nav-link" asp-area="" asp-controller="AdminManagement" asp-action="Stores">Quán ăn</a>
-                            </li>
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="Home"
+                                       asp-action="Index">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="AdminManagement"
+                                       asp-action="Users">Users</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="AdminManagement"
+                                       asp-action="Stores">Quán ăn</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="Banners"
+                                       asp-action="Index">Banner</a>
+                                </li>
+                            }
+                            else if (isSeller)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="OwnerPortal"
+                                       asp-action="Index">Trang chủ quán</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="nav-link admin-nav-link btn btn-link p-0 border-0">Đăng xuất</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                }
+                                    <button type="submit" class="nav-link admin-nav-link btn btn-link p-0 border-0">Đăng
+                                        xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </nav>
+        </header>
+        <main role="main" class="admin-main">
+            <div class="container-fluid px-4 py-4">
+                @RenderBody()
             </div>
-        </nav>
-    </header>
-    <main role="main" class="admin-main">
-        <div class="container-fluid px-4 py-4">
-            @RenderBody()
-        </div>
-    </main>
+        </main>
 
-    <footer class="admin-footer">
-        <div class="container-fluid px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <span>&copy; 2026 - ZesTour Admin</span>
-            <span class="admin-footer-note">Quản trị nội dung từ mobile build</span>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+        <footer class="admin-footer">
+            <div class="container-fluid px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span>&copy; 2026 - ZesTour Admin</span>
+                <span class="admin-footer-note">Đồng bộ nội dung với ứng dụng mobile</span>
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
+
 </html>

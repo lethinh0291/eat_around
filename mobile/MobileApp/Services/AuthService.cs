@@ -37,6 +37,30 @@ public class AuthService
         return (true, result.Message);
     }
 
+    public async Task<(bool Success, string Message)> UpdateCurrentUserAvatarAsync(byte[] imageBytes, string fileName, string? contentType = null)
+    {
+        if (CurrentUser is null)
+        {
+            return (false, "Bạn cần đăng nhập trước.");
+        }
+
+        var upload = await _apiService.UploadUserAvatarAsync(imageBytes, fileName, contentType);
+        if (!upload.Success || string.IsNullOrWhiteSpace(upload.ImageUrl))
+        {
+            return (false, upload.Message);
+        }
+
+        var update = await _apiService.UpdateUserAvatarAsync(CurrentUser.Id, upload.ImageUrl);
+        if (!update.Success)
+        {
+            return (false, update.Message);
+        }
+
+        CurrentUser.AvatarUrl = upload.ImageUrl.Trim();
+        Preferences.Default.Set(CurrentUserKey, System.Text.Json.JsonSerializer.Serialize(CurrentUser));
+        return (true, update.Message);
+    }
+
     public Task SignOutAsync()
     {
         CurrentUser = null;

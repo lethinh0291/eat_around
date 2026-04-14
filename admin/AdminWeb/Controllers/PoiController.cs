@@ -5,7 +5,7 @@ using SharedLib.Models;
 
 namespace AdminWeb.Controllers;
 
-[Authorize]
+[Authorize(Roles = "admin")]
 public class PoiController : Controller
 {
     private readonly PoiApiClient _poiApiClient;

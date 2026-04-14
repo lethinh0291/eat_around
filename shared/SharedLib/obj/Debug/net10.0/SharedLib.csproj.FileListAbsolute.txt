@@ -10,9 +10,3 @@ D:\CODE\C\shared\SharedLib\obj\Debug\net10.0\SharedLib.dll
 D:\CODE\C\shared\SharedLib\obj\Debug\net10.0\refint\SharedLib.dll
 D:\CODE\C\shared\SharedLib\obj\Debug\net10.0\SharedLib.pdb
 D:\CODE\C\shared\SharedLib\obj\Debug\net10.0\ref\SharedLib.dll
-D:\CODE\C\backend\BackendAPI\bin\Debug\net10.0\build-temp\SharedLib.deps.json
-D:\CODE\C\backend\BackendAPI\bin\Debug\net10.0\build-temp\SharedLib.dll
-D:\CODE\C\backend\BackendAPI\bin\Debug\net10.0\build-temp\SharedLib.pdb
-D:\CODE\C\admin\AdminWeb\bin\Debug\net10.0\build-temp\SharedLib.deps.json
-D:\CODE\C\admin\AdminWeb\bin\Debug\net10.0\build-temp\SharedLib.dll
-D:\CODE\C\admin\AdminWeb\bin\Debug\net10.0\build-temp\SharedLib.pdb

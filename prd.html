@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ZesTour - Tài liệu Yêu cầu Sản phẩm (PRD)</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #16202a;
+      --muted: #5d6b7a;
+      --primary: #0f766e;
+      --primary-soft: #d9f3ef;
+      --line: #d6e0ea;
+      --warn: #9a3412;
+      --accent: #0b4850;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, #e7f7f4 0, transparent 42%),
+        radial-gradient(circle at bottom left, #eef4fb 0, transparent 36%),
+        var(--bg);
+      line-height: 1.58;
+    }
+
+    .wrap {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #0f766e, #0b5f58);
+      color: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 12px 24px rgba(11, 95, 88, 0.24);
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      opacity: 0.95;
+      font-size: 15px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .meta div {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(9, 30, 66, 0.04);
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      color: var(--accent);
+    }
+
+    h3 {
+      margin: 16px 0 8px;
+      font-size: 16px;
+      color: #0c5960;
+    }
+
+    p, li { font-size: 14px; }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: #0e5c55;
+      border: 1px solid #c0e9e3;
+      font-size: 12px;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      text-align: left;
+      padding: 9px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f2faf9;
+      color: #0a4b45;
+      font-weight: 600;
+    }
+
+    .warning {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: var(--warn);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .diagram {
+      background: #f8fbfd;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      overflow: auto;
+      margin-top: 10px;
+    }
+
+    .diagram-title {
+      margin: 14px 0 6px;
+      font-size: 14px;
+      color: #0d4f57;
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .legend {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    @media (max-width: 860px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+
+      svg {
+        min-width: 760px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>ZesTour - Tài liệu Yêu cầu Sản phẩm (PRD)</h1>
+      <p>PRD được tổng hợp từ hiện trạng codebase gồm Admin Web, Backend API, Mobile App và Shared Library.</p>
+      <div class="meta">
+        <div><strong>Phiên bản:</strong> 1.1</div>
+        <div><strong>Ngày cập nhật:</strong> 2026-04-11</div>
+        <div><strong>Nguồn dữ liệu:</strong> README + Program.cs + Controllers + Mobile ApiService</div>
+        <div><strong>Trạng thái:</strong> Draft dùng để đồng bộ triển khai</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1. Tổng quan sản phẩm</h2>
+      <p>
+        ZesTour là hệ thống quản lý và trải nghiệm quán ăn đa nền tảng. Hệ thống gồm:
+        Admin Web để quản trị, Backend API để đồng bộ và xử lý dữ liệu, Mobile App cho người dùng cuối,
+        và SharedLib cho model dùng chung.
+      </p>
+      <h3>Bài toán cần giải quyết</h3>
+      <p>
+        Quy trình tiếp nhận, duyệt và đưa thông tin quán ăn lên bản đồ thường rời rạc và thủ công,
+        gây chậm cập nhật và khó theo dõi trạng thái đăng ký của chủ quán.
+      </p>
+      <h3>Mục tiêu sản phẩm</h3>
+      <ul>
+        <li>Tập trung hóa dữ liệu quán ăn và POI trên một hệ thống thống nhất.</li>
+        <li>Cho phép seller gửi và tự quản lý đăng ký cửa hàng trên mobile.</li>
+        <li>Hỗ trợ admin duyệt nhanh, gán tọa độ map và tạo POI từ đăng ký.</li>
+        <li>Đảm bảo đồng bộ dữ liệu thời gian thực giữa admin và mobile thông qua API.</li>
+      </ul>
+      <div>
+        <span class="pill">Quản trị tập trung</span>
+        <span class="pill">Quy trình duyệt quán</span>
+        <span class="pill">POI CRUD</span>
+        <span class="pill">Phân vai người dùng</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Persona và bên liên quan</h2>
+      <div class="two-col">
+        <div>
+          <h3>Persona chính</h3>
+          <ul>
+            <li>Admin: quản lý user, quản lý quán ăn, duyệt đăng ký quán từ seller.</li>
+            <li>Seller: đăng ký quán, cập nhật/xóa đăng ký của chính mình, upload ảnh quán.</li>
+            <li>Customer: đăng ký/đăng nhập và sử dụng tính năng khám phá địa điểm (mức cơ bản).</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Bên liên quan</h3>
+          <ul>
+            <li>Product Owner: định hướng roadmap và KPI.</li>
+            <li>Backend Team: API, DB, migration, data integrity.</li>
+            <li>Admin Web Team: dashboard và công cụ vận hành.</li>
+            <li>Mobile Team: onboarding, seller flow, kết nối API.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Phạm vi</h2>
+      <h3>In Scope (MVP / Build hiện tại)</h3>
+      <ul>
+        <li>Auth API: register, login, CRUD user, cập nhật role.</li>
+        <li>Store registration API: tạo, xem toàn bộ, xem theo owner, update, delete.</li>
+        <li>POI API CRUD và seed dữ liệu mẫu khi DB rỗng.</li>
+        <li>Admin Web cookie authentication và fallback policy bắt buộc đăng nhập.</li>
+        <li>Mobile app: login/register, gửi đăng ký cửa hàng, quản lý đăng ký của tôi.</li>
+        <li>Upload ảnh lên Cloudinary trước khi gửi thông tin quán từ mobile.</li>
+      </ul>
+
+      <h3>Out of Scope (Build hiện tại)</h3>
+      <ul>
+        <li>Thanh toán online, booking, loyalty, recommendation engine nâng cao.</li>
+        <li>Phân quyền JWT token end-to-end cho toàn hệ thống.</li>
+        <li>Audit trail chi tiết cho từng hành động.</li>
+        <li>Push notification hoặc email automation.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>4. Sơ đồ hệ thống và luồng chính</h2>
+
+      <div class="diagram-title">4.1 Sơ đồ kiến trúc tổng thể</div>
+      <div class="diagram">
+        <svg width="980" height="300" viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sơ đồ kiến trúc hệ thống ZesTour">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6f78"/>
+            </marker>
+          </defs>
+          <rect x="24" y="40" rx="12" ry="12" width="180" height="84" fill="#e9f6f4" stroke="#84c8bf"/>
+          <text x="114" y="75" text-anchor="middle" font-size="16" fill="#0b5f58" font-weight="600">Mobile App</text>
+          <text x="114" y="97" text-anchor="middle" font-size="12" fill="#35545a">Customer / Seller</text>
+
+          <rect x="24" y="170" rx="12" ry="12" width="180" height="84" fill="#edf4fb" stroke="#a2c1de"/>
+          <text x="114" y="205" text-anchor="middle" font-size="16" fill="#1f4d7a" font-weight="600">Admin Web</text>
+          <text x="114" y="227" text-anchor="middle" font-size="12" fill="#35545a">Quản trị viên</text>
+
+          <rect x="388" y="95" rx="12" ry="12" width="220" height="100" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="498" y="132" text-anchor="middle" font-size="18" fill="#9a3412" font-weight="700">Backend API</text>
+          <text x="498" y="154" text-anchor="middle" font-size="12" fill="#6f3a23">Auth / Store / POI</text>
+
+          <rect x="760" y="45" rx="12" ry="12" width="180" height="84" fill="#f3eefc" stroke="#c6b1ea"/>
+          <text x="850" y="80" text-anchor="middle" font-size="16" fill="#5b3f9b" font-weight="600">SQL Server</text>
+          <text x="850" y="102" text-anchor="middle" font-size="12" fill="#35545a">EF Core + Migration</text>
+
+          <rect x="760" y="170" rx="12" ry="12" width="180" height="84" fill="#ecfaf2" stroke="#a0dab8"/>
+          <text x="850" y="205" text-anchor="middle" font-size="16" fill="#166534" font-weight="600">Cloudinary</text>
+          <text x="850" y="227" text-anchor="middle" font-size="12" fill="#35545a">Lưu ảnh quán</text>
+
+          <line x1="204" y1="82" x2="388" y2="126" stroke="#1f6f78" stroke-width="2.4" marker-end="url(#arr)"/>
+          <line x1="204" y1="212" x2="388" y2="165" stroke="#1f6f78" stroke-width="2.4" marker-end="url(#arr)"/>
+          <line x1="608" y1="125" x2="760" y2="87" stroke="#1f6f78" stroke-width="2.4" marker-end="url(#arr)"/>
+          <line x1="608" y1="164" x2="760" y2="212" stroke="#1f6f78" stroke-width="2.4" marker-end="url(#arr)"/>
+
+          <text x="300" y="87" font-size="11" fill="#35545a">HTTP /api/*</text>
+          <text x="292" y="200" font-size="11" fill="#35545a">HTTP /api/*</text>
+          <text x="680" y="95" font-size="11" fill="#35545a">CRUD dữ liệu</text>
+          <text x="680" y="205" font-size="11" fill="#35545a">Upload ảnh</text>
+        </svg>
+      </div>
+
+      <div class="diagram-title">4.2 Sơ đồ luồng nghiệp vụ Seller đăng ký quán</div>
+      <div class="diagram">
+        <svg width="980" height="250" viewBox="0 0 980 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sơ đồ luồng seller đăng ký quán">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#145f72"/>
+            </marker>
+          </defs>
+          <rect x="30" y="90" rx="10" ry="10" width="140" height="56" fill="#e6f7f2" stroke="#89d2bd"/>
+          <text x="100" y="122" text-anchor="middle" font-size="13" fill="#0f5b57" font-weight="600">Seller nhập form</text>
+
+          <rect x="205" y="90" rx="10" ry="10" width="190" height="56" fill="#eef8ff" stroke="#a9cbe6"/>
+          <text x="300" y="114" text-anchor="middle" font-size="13" fill="#1e4d78" font-weight="600">Upload ảnh Cloudinary</text>
+          <text x="300" y="132" text-anchor="middle" font-size="11" fill="#35545a">nhận imageUrl</text>
+
+          <rect x="430" y="90" rx="10" ry="10" width="220" height="56" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="540" y="114" text-anchor="middle" font-size="13" fill="#8f3a13" font-weight="600">POST /store-registrations</text>
+          <text x="540" y="132" text-anchor="middle" font-size="11" fill="#35545a">store + owner + imageUrl</text>
+
+          <rect x="685" y="90" rx="10" ry="10" width="135" height="56" fill="#f2f1fe" stroke="#c4b5fd"/>
+          <text x="752" y="122" text-anchor="middle" font-size="13" fill="#4c3a90" font-weight="600">DB lưu đơn</text>
+
+          <rect x="845" y="90" rx="10" ry="10" width="105" height="56" fill="#ebfaf2" stroke="#9ad0b5"/>
+          <text x="898" y="122" text-anchor="middle" font-size="13" fill="#166534" font-weight="600">Admin duyệt</text>
+
+          <line x1="170" y1="118" x2="205" y2="118" stroke="#145f72" stroke-width="2.2" marker-end="url(#arr2)"/>
+          <line x1="395" y1="118" x2="430" y2="118" stroke="#145f72" stroke-width="2.2" marker-end="url(#arr2)"/>
+          <line x1="650" y1="118" x2="685" y2="118" stroke="#145f72" stroke-width="2.2" marker-end="url(#arr2)"/>
+          <line x1="820" y1="118" x2="845" y2="118" stroke="#145f72" stroke-width="2.2" marker-end="url(#arr2)"/>
+        </svg>
+      </div>
+
+      <div class="diagram-title">4.3 Sơ đồ luồng dữ liệu Admin duyệt và tạo POI</div>
+      <div class="diagram">
+        <svg width="980" height="280" viewBox="0 0 980 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sơ đồ luồng admin duyệt đăng ký và tạo POI">
+          <defs>
+            <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f6170"/>
+            </marker>
+          </defs>
+
+          <rect x="40" y="35" rx="10" ry="10" width="180" height="60" fill="#edf4fb" stroke="#a9cbe6"/>
+          <text x="130" y="70" text-anchor="middle" font-size="13" fill="#1e4d78" font-weight="600">Admin Web đăng nhập</text>
+
+          <rect x="290" y="35" rx="10" ry="10" width="230" height="60" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="405" y="62" text-anchor="middle" font-size="13" fill="#8f3a13" font-weight="600">GET /store-registrations</text>
+          <text x="405" y="80" text-anchor="middle" font-size="11" fill="#35545a">lấy danh sách chờ duyệt</text>
+
+          <rect x="590" y="35" rx="10" ry="10" width="160" height="60" fill="#f3eefc" stroke="#c6b1ea"/>
+          <text x="670" y="70" text-anchor="middle" font-size="13" fill="#4c3a90" font-weight="600">SQL Server</text>
+
+          <rect x="290" y="165" rx="10" ry="10" width="230" height="70" fill="#eefcf7" stroke="#99d7bf"/>
+          <text x="405" y="192" text-anchor="middle" font-size="13" fill="#166534" font-weight="600">Admin chọn tọa độ map</text>
+          <text x="405" y="210" text-anchor="middle" font-size="11" fill="#35545a">xác nhận duyệt đăng ký</text>
+
+          <rect x="590" y="165" rx="10" ry="10" width="220" height="70" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="700" y="192" text-anchor="middle" font-size="13" fill="#8f3a13" font-weight="600">POST /poi hoặc PUT /poi/{id}</text>
+          <text x="700" y="210" text-anchor="middle" font-size="11" fill="#35545a">tạo/cập nhật điểm hiển thị</text>
+
+          <line x1="220" y1="65" x2="290" y2="65" stroke="#0f6170" stroke-width="2.3" marker-end="url(#arr3)"/>
+          <line x1="520" y1="65" x2="590" y2="65" stroke="#0f6170" stroke-width="2.3" marker-end="url(#arr3)"/>
+          <line x1="670" y1="95" x2="670" y2="165" stroke="#0f6170" stroke-width="2.3" marker-end="url(#arr3)"/>
+          <line x1="520" y1="200" x2="590" y2="200" stroke="#0f6170" stroke-width="2.3" marker-end="url(#arr3)"/>
+          <line x1="590" y1="200" x2="520" y2="200" stroke="#0f6170" stroke-width="2.3" marker-end="url(#arr3)"/>
+
+          <text x="535" y="188" font-size="11" fill="#35545a">ghi POI</text>
+          <text x="602" y="155" font-size="11" fill="#35545a">đọc dữ liệu</text>
+        </svg>
+      </div>
+
+      <div class="diagram-title">4.4 Sequence Diagram - Seller gửi đăng ký quán</div>
+      <div class="diagram">
+        <svg width="980" height="360" viewBox="0 0 980 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sequence Seller gửi đăng ký quán">
+          <defs>
+            <marker id="arr4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f6170"/>
+            </marker>
+          </defs>
+
+          <rect x="40" y="20" width="150" height="40" rx="8" fill="#eefcf7" stroke="#99d7bf"/>
+          <text x="115" y="45" text-anchor="middle" font-size="13" fill="#166534" font-weight="600">Seller</text>
+
+          <rect x="240" y="20" width="170" height="40" rx="8" fill="#edf4fb" stroke="#a9cbe6"/>
+          <text x="325" y="45" text-anchor="middle" font-size="13" fill="#1e4d78" font-weight="600">Mobile App</text>
+
+          <rect x="470" y="20" width="170" height="40" rx="8" fill="#ecfaf2" stroke="#a0dab8"/>
+          <text x="555" y="45" text-anchor="middle" font-size="13" fill="#166534" font-weight="600">Cloudinary</text>
+
+          <rect x="690" y="20" width="170" height="40" rx="8" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="775" y="45" text-anchor="middle" font-size="13" fill="#8f3a13" font-weight="600">Backend API</text>
+
+          <line x1="115" y1="60" x2="115" y2="330" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+          <line x1="325" y1="60" x2="325" y2="330" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+          <line x1="555" y1="60" x2="555" y2="330" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+          <line x1="775" y1="60" x2="775" y2="330" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+
+          <line x1="115" y1="95" x2="325" y2="95" stroke="#0f6170" stroke-width="2" marker-end="url(#arr4)"/>
+          <text x="220" y="88" text-anchor="middle" font-size="11" fill="#35545a">1) Nhập thông tin quán</text>
+
+          <line x1="325" y1="135" x2="555" y2="135" stroke="#0f6170" stroke-width="2" marker-end="url(#arr4)"/>
+          <text x="440" y="128" text-anchor="middle" font-size="11" fill="#35545a">2) Upload ảnh</text>
+
+          <line x1="555" y1="175" x2="325" y2="175" stroke="#0f6170" stroke-width="2" marker-end="url(#arr4)"/>
+          <text x="440" y="168" text-anchor="middle" font-size="11" fill="#35545a">3) Trả về imageUrl</text>
+
+          <line x1="325" y1="215" x2="775" y2="215" stroke="#0f6170" stroke-width="2" marker-end="url(#arr4)"/>
+          <text x="550" y="208" text-anchor="middle" font-size="11" fill="#35545a">4) POST /api/store-registrations</text>
+
+          <line x1="775" y1="255" x2="325" y2="255" stroke="#0f6170" stroke-width="2" marker-end="url(#arr4)"/>
+          <text x="550" y="248" text-anchor="middle" font-size="11" fill="#35545a">5) 200 OK + message</text>
+
+          <line x1="325" y1="295" x2="115" y2="295" stroke="#0f6170" stroke-width="2" marker-end="url(#arr4)"/>
+          <text x="220" y="288" text-anchor="middle" font-size="11" fill="#35545a">6) Hiển thị gửi thành công</text>
+        </svg>
+      </div>
+
+      <div class="diagram-title">4.5 Sequence Diagram - Admin duyệt đăng ký và tạo POI</div>
+      <div class="diagram">
+        <svg width="980" height="400" viewBox="0 0 980 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sequence Admin duyệt đăng ký và tạo POI">
+          <defs>
+            <marker id="arr5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f6170"/>
+            </marker>
+          </defs>
+
+          <rect x="30" y="20" width="150" height="40" rx="8" fill="#edf4fb" stroke="#a9cbe6"/>
+          <text x="105" y="45" text-anchor="middle" font-size="13" fill="#1e4d78" font-weight="600">Admin</text>
+
+          <rect x="220" y="20" width="170" height="40" rx="8" fill="#eef8ff" stroke="#9ec5e6"/>
+          <text x="305" y="45" text-anchor="middle" font-size="13" fill="#1e4d78" font-weight="600">Admin Web</text>
+
+          <rect x="450" y="20" width="170" height="40" rx="8" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="535" y="45" text-anchor="middle" font-size="13" fill="#8f3a13" font-weight="600">Backend API</text>
+
+          <rect x="670" y="20" width="120" height="40" rx="8" fill="#f3eefc" stroke="#c6b1ea"/>
+          <text x="730" y="45" text-anchor="middle" font-size="13" fill="#4c3a90" font-weight="600">SQL DB</text>
+
+          <rect x="820" y="20" width="130" height="40" rx="8" fill="#e9f6f4" stroke="#84c8bf"/>
+          <text x="885" y="45" text-anchor="middle" font-size="13" fill="#0b5f58" font-weight="600">POI Service</text>
+
+          <line x1="105" y1="60" x2="105" y2="365" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+          <line x1="305" y1="60" x2="305" y2="365" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+          <line x1="535" y1="60" x2="535" y2="365" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+          <line x1="730" y1="60" x2="730" y2="365" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+          <line x1="885" y1="60" x2="885" y2="365" stroke="#9ab2bf" stroke-dasharray="5,5"/>
+
+          <line x1="105" y1="95" x2="305" y2="95" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="205" y="88" text-anchor="middle" font-size="11" fill="#35545a">1) Mở màn hình duyệt</text>
+
+          <line x1="305" y1="130" x2="535" y2="130" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="420" y="123" text-anchor="middle" font-size="11" fill="#35545a">2) GET /store-registrations</text>
+
+          <line x1="535" y1="165" x2="730" y2="165" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="632" y="158" text-anchor="middle" font-size="11" fill="#35545a">3) Đọc dữ liệu đơn</text>
+
+          <line x1="730" y1="200" x2="305" y2="200" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="520" y="193" text-anchor="middle" font-size="11" fill="#35545a">4) Trả danh sách đơn</text>
+
+          <line x1="105" y1="235" x2="305" y2="235" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="205" y="228" text-anchor="middle" font-size="11" fill="#35545a">5) Chọn tọa độ và duyệt</text>
+
+          <line x1="305" y1="270" x2="535" y2="270" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="420" y="263" text-anchor="middle" font-size="11" fill="#35545a">6) POST/PUT /api/poi</text>
+
+          <line x1="535" y1="305" x2="885" y2="305" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="710" y="298" text-anchor="middle" font-size="11" fill="#35545a">7) Ghi dữ liệu POI</text>
+
+          <line x1="885" y1="340" x2="305" y2="340" stroke="#0f6170" stroke-width="2" marker-end="url(#arr5)"/>
+          <text x="595" y="333" text-anchor="middle" font-size="11" fill="#35545a">8) Phản hồi thành công cho Admin</text>
+        </svg>
+      </div>
+
+      <div class="diagram-title">4.6 Sơ đồ Use Case tổng quan</div>
+      <div class="diagram">
+        <svg width="980" height="340" viewBox="0 0 980 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Use case tổng quan ZesTour">
+          <ellipse cx="95" cy="95" rx="55" ry="24" fill="#edf4fb" stroke="#9ec5e6"/>
+          <text x="95" y="100" text-anchor="middle" font-size="12" fill="#1e4d78">Seller</text>
+
+          <ellipse cx="95" cy="240" rx="55" ry="24" fill="#edf4fb" stroke="#9ec5e6"/>
+          <text x="95" y="245" text-anchor="middle" font-size="12" fill="#1e4d78">Admin</text>
+
+          <rect x="200" y="30" width="740" height="280" rx="14" fill="#f8fbfd" stroke="#bdd1df"/>
+          <text x="570" y="55" text-anchor="middle" font-size="14" fill="#0b4850" font-weight="700">Hệ thống ZesTour</text>
+
+          <ellipse cx="330" cy="100" rx="95" ry="28" fill="#eefcf7" stroke="#99d7bf"/>
+          <text x="330" y="105" text-anchor="middle" font-size="12" fill="#166534">Đăng ký / Đăng nhập</text>
+
+          <ellipse cx="560" cy="100" rx="130" ry="28" fill="#eefcf7" stroke="#99d7bf"/>
+          <text x="560" y="105" text-anchor="middle" font-size="12" fill="#166534">Gửi đăng ký cửa hàng + upload ảnh</text>
+
+          <ellipse cx="790" cy="100" rx="110" ry="28" fill="#eefcf7" stroke="#99d7bf"/>
+          <text x="790" y="105" text-anchor="middle" font-size="12" fill="#166534">Quản lý đăng ký của tôi</text>
+
+          <ellipse cx="370" cy="220" rx="120" ry="28" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="370" y="225" text-anchor="middle" font-size="12" fill="#8f3a13">Quản lý người dùng</text>
+
+          <ellipse cx="620" cy="220" rx="120" ry="28" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="620" y="225" text-anchor="middle" font-size="12" fill="#8f3a13">Duyệt đăng ký quán</text>
+
+          <ellipse cx="840" cy="220" rx="90" ry="28" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="840" y="225" text-anchor="middle" font-size="12" fill="#8f3a13">POI CRUD</text>
+
+          <line x1="150" y1="95" x2="235" y2="100" stroke="#35545a"/>
+          <line x1="150" y1="95" x2="430" y2="100" stroke="#35545a"/>
+          <line x1="150" y1="95" x2="680" y2="100" stroke="#35545a"/>
+
+          <line x1="150" y1="240" x2="250" y2="220" stroke="#35545a"/>
+          <line x1="150" y1="240" x2="500" y2="220" stroke="#35545a"/>
+          <line x1="150" y1="240" x2="750" y2="220" stroke="#35545a"/>
+        </svg>
+      </div>
+
+      <div class="diagram-title">4.7 Sơ đồ trạng thái đăng ký cửa hàng</div>
+      <div class="diagram">
+        <svg width="980" height="240" viewBox="0 0 980 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="State diagram đăng ký cửa hàng">
+          <defs>
+            <marker id="arr6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f6170"/>
+            </marker>
+          </defs>
+
+          <circle cx="70" cy="120" r="12" fill="#0f6170"/>
+
+          <rect x="140" y="90" width="170" height="58" rx="12" fill="#edf4fb" stroke="#9ec5e6"/>
+          <text x="225" y="115" text-anchor="middle" font-size="12" fill="#1e4d78" font-weight="600">Đã gửi đăng ký</text>
+          <text x="225" y="132" text-anchor="middle" font-size="11" fill="#35545a">Submitted</text>
+
+          <rect x="390" y="90" width="170" height="58" rx="12" fill="#fff7ed" stroke="#f2be8e"/>
+          <text x="475" y="115" text-anchor="middle" font-size="12" fill="#8f3a13" font-weight="600">Đang admin xử lý</text>
+          <text x="475" y="132" text-anchor="middle" font-size="11" fill="#35545a">In Review</text>
+
+          <rect x="640" y="35" width="170" height="58" rx="12" fill="#eefcf7" stroke="#99d7bf"/>
+          <text x="725" y="60" text-anchor="middle" font-size="12" fill="#166534" font-weight="600">Được duyệt</text>
+          <text x="725" y="77" text-anchor="middle" font-size="11" fill="#35545a">Approved - tạo POI</text>
+
+          <rect x="640" y="145" width="170" height="58" rx="12" fill="#fdecec" stroke="#f0a7a7"/>
+          <text x="725" y="170" text-anchor="middle" font-size="12" fill="#a61b1b" font-weight="600">Bị từ chối / xóa</text>
+          <text x="725" y="187" text-anchor="middle" font-size="11" fill="#35545a">Rejected / Deleted</text>
+
+          <line x1="82" y1="120" x2="140" y2="120" stroke="#0f6170" stroke-width="2.2" marker-end="url(#arr6)"/>
+          <line x1="310" y1="120" x2="390" y2="120" stroke="#0f6170" stroke-width="2.2" marker-end="url(#arr6)"/>
+          <line x1="560" y1="110" x2="640" y2="65" stroke="#0f6170" stroke-width="2.2" marker-end="url(#arr6)"/>
+          <line x1="560" y1="130" x2="640" y2="175" stroke="#0f6170" stroke-width="2.2" marker-end="url(#arr6)"/>
+
+          <text x="602" y="84" font-size="11" fill="#35545a">Duyệt</text>
+          <text x="600" y="165" font-size="11" fill="#35545a">Từ chối / xóa</text>
+        </svg>
+      </div>
+
+      <div class="legend">Chú thích: Các sơ đồ trên phản ánh đúng hiện trạng các module và endpoint đang có trong project build.</div>
+    </section>
+
+    <section class="card">
+      <h2>5. Yêu cầu chức năng (Functional Requirements)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Yêu cầu</th>
+            <th>Mô tả</th>
+            <th>Ưu tiên</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>FR-01</td>
+            <td>Đăng ký/Đăng nhập người dùng</td>
+            <td>Hệ thống cho phép đăng ký và đăng nhập bằng username hoặc email, trả về profile và role.</td>
+            <td>P0</td>
+          </tr>
+          <tr>
+            <td>FR-02</td>
+            <td>Quản lý user (Admin)</td>
+            <td>Admin tạo/sửa/xóa user, cập nhật role (admin/seller/customer), validate username/email duy nhất.</td>
+            <td>P0</td>
+          </tr>
+          <tr>
+            <td>FR-03</td>
+            <td>Gửi đăng ký cửa hàng</td>
+            <td>Seller gửi thông tin quán (store, owner, phone, address, category, description, imageUrl).</td>
+            <td>P0</td>
+          </tr>
+          <tr>
+            <td>FR-04</td>
+            <td>Quản lý đăng ký theo owner</td>
+            <td>Seller chỉ được cập nhật/xóa đăng ký của chính ownerName đã gửi.</td>
+            <td>P0</td>
+          </tr>
+          <tr>
+            <td>FR-05</td>
+            <td>POI CRUD</td>
+            <td>Admin/backend hỗ trợ tạo, xem, sửa, xóa POI với thông tin vị trí và mô tả.</td>
+            <td>P0</td>
+          </tr>
+          <tr>
+            <td>FR-06</td>
+            <td>Bootstrap dữ liệu</td>
+            <td>Backend tự chạy migration và seed user/POI mặc định khi DB rỗng.</td>
+            <td>P1</td>
+          </tr>
+          <tr>
+            <td>FR-07</td>
+            <td>Bảo mật phiên Admin</td>
+            <td>Admin Web dùng cookie auth, fallback policy bắt buộc đăng nhập cho route mặc định.</td>
+            <td>P1</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>6. Yêu cầu phi chức năng (NFR)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nhóm</th>
+            <th>Yêu cầu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NFR-01</td>
+            <td>Availability</td>
+            <td>Backend và Admin chạy ổn định ở local/dev, startup không lỗi migration.</td>
+          </tr>
+          <tr>
+            <td>NFR-02</td>
+            <td>Performance</td>
+            <td>API CRUD có thời gian đáp ứng trung bình &lt; 800ms trong điều kiện dữ liệu dev vừa.</td>
+          </tr>
+          <tr>
+            <td>NFR-03</td>
+            <td>Security</td>
+            <td>Validation input cho trường bắt buộc; whitelist role; owner-scope enforcement khi update/delete store.</td>
+          </tr>
+          <tr>
+            <td>NFR-04</td>
+            <td>Compatibility</td>
+            <td>Mobile Android emulator dùng base URL 10.0.2.2 và cho phép cleartext traffic khi gọi HTTP local.</td>
+          </tr>
+          <tr>
+            <td>NFR-05</td>
+            <td>Maintainability</td>
+            <td>Mô hình dữ liệu dùng chung qua SharedLib, route API rõ ràng, migration có version.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>7. Bề mặt API hiện tại</h2>
+      <div class="two-col">
+        <div>
+          <h3>Auth</h3>
+          <ul>
+            <li>POST /api/auth/register</li>
+            <li>POST /api/auth/login</li>
+            <li>GET /api/auth/users</li>
+            <li>POST /api/auth/users</li>
+            <li>PUT /api/auth/users/{id}</li>
+            <li>PUT /api/auth/users/{id}/role</li>
+            <li>DELETE /api/auth/users/{id}</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Store + POI</h3>
+          <ul>
+            <li>POST /api/store-registrations</li>
+            <li>GET /api/store-registrations</li>
+            <li>GET /api/store-registrations/owner?ownerName=...</li>
+            <li>PUT /api/store-registrations/{id}</li>
+            <li>DELETE /api/store-registrations/{id}</li>
+            <li>GET/POST/PUT/DELETE /api/poi</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>8. Chỉ số thành công (KPI)</h2>
+      <ul>
+        <li>Tỷ lệ gửi đăng ký cửa hàng thành công từ mobile: >= 95%.</li>
+        <li>Tỷ lệ admin xử lý (duyệt hoặc từ chối/xóa) đăng ký trong 24h: >= 90%.</li>
+        <li>Tỷ lệ lỗi API 5xx trong giai đoạn UAT: &lt; 1%.</li>
+        <li>Thời gian trung bình từ lúc submit đến khi có POI hợp lệ: &lt; 1 ngày.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>9. Mốc triển khai</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Mốc</th>
+            <th>Phạm vi</th>
+            <th>Đầu ra</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>M1 - Ổn định backend lõi</td>
+            <td>Auth, Store Registrations, POI CRUD, migration + seed</td>
+            <td>Swagger pass toàn bộ smoke test endpoint lõi</td>
+          </tr>
+          <tr>
+            <td>M2 - Vận hành Admin</td>
+            <td>Admin login, user/store management, map-based review flow</td>
+            <td>Admin xử lý được end-to-end đăng ký từ seller</td>
+          </tr>
+          <tr>
+            <td>M3 - Trải nghiệm Seller trên Mobile</td>
+            <td>Register/login, submit/update/delete own registration, image upload</td>
+            <td>Seller flow hoàn chỉnh trên Android emulator</td>
+          </tr>
+          <tr>
+            <td>M4 - Hardening</td>
+            <td>Error handling, validation, deployment config split</td>
+            <td>Bản build sẵn sàng UAT</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>10. Rủi ro và phương án giảm thiểu</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rủi ro</th>
+            <th>Tác động</th>
+            <th>Giảm thiểu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chạy nhiều backend instance gây route mismatch</td>
+            <td>Admin/mobile gọi nhầm API cũ, dữ liệu không đồng bộ</td>
+            <td>Chuẩn hóa lệnh chạy, kiểm tra Swagger route trước test.</td>
+          </tr>
+          <tr>
+            <td>Xung đột port và file lock khi build</td>
+            <td>Chậm tiến độ dev/test</td>
+            <td>Stop process cũ, tách output folder tạm khi cần.</td>
+          </tr>
+          <tr>
+            <td>HTTP local trên Android bị chặn</td>
+            <td>Mobile không kết nối backend</td>
+            <td>Dùng 10.0.2.2 + cấu hình usesCleartextTraffic.</td>
+          </tr>
+          <tr>
+            <td>Validation model chưa đầy đủ ở mọi endpoint</td>
+            <td>Dữ liệu bẩn, phát sinh lỗi nghiệp vụ</td>
+            <td>Bổ sung validation rule + contract test.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>11. Tiêu chí nghiệm thu (Release Gate)</h2>
+      <ul>
+        <li>AC-01: Seller có thể đăng ký, đăng nhập và gửi đăng ký quán thành công trên mobile.</li>
+        <li>AC-02: Seller chỉ sửa/xóa được bản ghi của chính mình (owner-scope pass).</li>
+        <li>AC-03: Admin đăng nhập và thực hiện CRUD user, xem/duyệt store registrations.</li>
+        <li>AC-04: POI CRUD hoạt động và dữ liệu tồn tại đúng trên DB sau restart backend.</li>
+        <li>AC-05: Không có lỗi blocker trong smoke test backend/admin/mobile.</li>
+      </ul>
+      <div class="warning">
+        Lưu ý: hiện trạng chưa có cơ chế mã hóa mật khẩu và auth token cho mobile. Đây là hạng mục ưu tiên cao cho pha hardening tiếp theo.
+      </div>
+    </section>
+  </div>
+</body>
+</html>

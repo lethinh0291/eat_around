@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.LoadingPage"
@@ -8,23 +8,23 @@
         <Grid.Background>
             <RadialGradientBrush Center="0.28,0.12"
                                  Radius="0.95">
-                <GradientStop Color="#FFF9F2"
+                <GradientStop Color="#FFFDFB"
                               Offset="0"/>
-                <GradientStop Color="#FFF2E5"
-                              Offset="0.6"/>
-                <GradientStop Color="#FFE8D2"
+                <GradientStop Color="#FFF3E8"
+                              Offset="0.58"/>
+                <GradientStop Color="#FBE0C8"
                               Offset="1"/>
             </RadialGradientBrush>
         </Grid.Background>
 
-        <Ellipse Fill="#26F97316"
+        <Ellipse Fill="#26F15A24"
                  WidthRequest="300"
                  HeightRequest="300"
                  HorizontalOptions="Start"
                  VerticalOptions="Start"
                  Margin="-110,-100,0,0"/>
 
-        <Ellipse Fill="#1CF97316"
+        <Ellipse Fill="#1AF15A24"
                  WidthRequest="260"
                  HeightRequest="260"
                  HorizontalOptions="End"
@@ -41,10 +41,10 @@
                     WidthRequest="180"
                     HeightRequest="180">
                 <Border.Shadow>
-                    <Shadow Brush="#33000000"
+                    <Shadow Brush="#30000000"
                             Offset="0,14"
                             Radius="28"
-                            Opacity="0.85"/>
+                            Opacity="0.8"/>
                 </Border.Shadow>
 
                 <Grid>
@@ -96,7 +96,7 @@
                     <Border WidthRequest="48"
                             HeightRequest="48"
                             StrokeThickness="0"
-                            BackgroundColor="#FFF7ED"
+                            BackgroundColor="#FFF3E0"
                             StrokeShape="RoundRectangle 24">
                         <ActivityIndicator IsRunning="True"
                                            Color="{StaticResource Primary}"
@@ -122,3 +122,4 @@
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
+

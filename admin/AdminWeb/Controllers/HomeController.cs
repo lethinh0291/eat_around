@@ -7,7 +7,7 @@ using SharedLib.Models;
 
 namespace AdminWeb.Controllers;
 
-[Authorize]
+[Authorize(Roles = "admin")]
 public class HomeController : Controller
 {
     private readonly PoiApiClient _poiApiClient;
@@ -34,33 +34,7 @@ public class HomeController : Controller
                 .Count(),
             MediaPois = orderedPois.Count(poi => !string.IsNullOrWhiteSpace(poi.ImageUrl) || !string.IsNullOrWhiteSpace(poi.AudioUrl)),
             RecentPois = orderedPois.Take(6).ToList(),
-            ModuleCards = new List<AdminModuleCardViewModel>
-            {
-                new()
-                {
-                    Title = "Bản đồ",
-                    Description = "Điểm đến đang được hiển thị trên mobile app.",
-                    Badge = "Live"
-                },
-                new()
-                {
-                    Title = "Hành trình",
-                    Description = "Luồng nội dung hỗ trợ phần lưu lịch sử chuyến đi.",
-                    Badge = "Trips"
-                },
-                new()
-                {
-                    Title = "Cài đặt",
-                    Description = "Các cấu hình người dùng và trải nghiệm ứng dụng.",
-                    Badge = "Prefs"
-                },
-                new()
-                {
-                    Title = "Trợ giúp",
-                    Description = "Khu vực tiếp nhận phản hồi và hỗ trợ người dùng.",
-                    Badge = "Support"
-                }
-            }
+
         };
 
         return View(model);

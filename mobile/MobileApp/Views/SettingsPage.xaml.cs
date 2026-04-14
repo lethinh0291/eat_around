@@ -32,6 +32,7 @@ public partial class SettingsPage : ContentPage
             AutoPlaySwitch.IsToggled = data.AutoPlay;
             BatterySwitch.IsToggled = data.BatteryOptimized;
             NotificationSwitch.IsToggled = data.NotificationEnabled;
+            StoreNarrationSwitch.IsToggled = data.StoreNarrationEnabled;
         }
         catch
         {
@@ -45,7 +46,8 @@ public partial class SettingsPage : ContentPage
         {
             AutoPlay = AutoPlaySwitch.IsToggled,
             BatteryOptimized = BatterySwitch.IsToggled,
-            NotificationEnabled = NotificationSwitch.IsToggled
+            NotificationEnabled = NotificationSwitch.IsToggled,
+            StoreNarrationEnabled = StoreNarrationSwitch.IsToggled
         };
 
         Preferences.Default.Set(SettingsKey, JsonSerializer.Serialize(data));
@@ -62,5 +64,6 @@ public partial class SettingsPage : ContentPage
         public bool AutoPlay { get; set; }
         public bool BatteryOptimized { get; set; }
         public bool NotificationEnabled { get; set; }
+        public bool StoreNarrationEnabled { get; set; } = true;
     }
 }

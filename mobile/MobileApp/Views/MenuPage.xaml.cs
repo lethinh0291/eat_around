@@ -6,22 +6,48 @@ public partial class MenuPage : ContentPage
 {
     private readonly AppNavigator _navigator;
     private readonly AuthService _authService;
+    private readonly ApiService _apiService;
+    private bool _isBannerLoaded;
+    private bool _isSidebarOpen;
+    private bool _isSidebarAnimating;
 
     public MenuPage(AppNavigator navigator, AuthService authService)
     {
         _navigator = navigator;
         _authService = authService;
+        _apiService = new ApiService();
         InitializeComponent();
         BindingContext = new { User = _authService.CurrentUser };
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await CloseSidebarAsync(false);
         UpdateRoleBadge();
         var isSeller = IsSeller();
         StoreRegistrationCard.IsVisible = isSeller;
         StoreManagementCard.IsVisible = isSeller;
+
+        if (!_isBannerLoaded)
+        {
+            await LoadBannersAsync();
+            _isBannerLoaded = true;
+        }
+    }
+
+    private async Task LoadBannersAsync()
+    {
+        var banners = await _apiService.GetActiveAdBannersAsync();
+        if (banners.Count == 0)
+        {
+            BannerSection.IsVisible = false;
+            BannerCarousel.ItemsSource = null;
+            return;
+        }
+
+        BannerCarousel.ItemsSource = banners;
+        BannerSection.IsVisible = true;
     }
 
     private async Task ShowComingSoonAsync(string featureName)
@@ -101,6 +127,102 @@ public partial class MenuPage : ContentPage
         await _navigator.ShowMainFromMenuAsync();
     }
 
+    private async void OnOpenMapClicked(object? sender, EventArgs e)
+    {
+        await _navigator.ShowMainFromMenuAsync();
+    }
+
+    private async void OnOpenSidebarTapped(object? sender, TappedEventArgs e)
+    {
+        await OpenSidebarAsync();
+    }
+
+    private async void OnSidebarBackdropTapped(object? sender, TappedEventArgs e)
+    {
+        await CloseSidebarAsync();
+    }
+
+    private async void OnSidebarHomeTapped(object? sender, EventArgs e)
+    {
+        await CloseSidebarAsync();
+        await _navigator.ShowMainFromMenuAsync();
+    }
+
+    private async void OnSidebarProfileTapped(object? sender, EventArgs e)
+    {
+        await CloseSidebarAsync();
+        await _navigator.ShowProfileAsync();
+    }
+
+    private async void OnSidebarSettingsTapped(object? sender, EventArgs e)
+    {
+        await CloseSidebarAsync();
+        await _navigator.ShowSettingsAsync();
+    }
+
+    private async void OnSidebarSupportTapped(object? sender, EventArgs e)
+    {
+        await CloseSidebarAsync();
+        await _navigator.ShowHelpFeedbackAsync();
+    }
+
+    private async void OnSidebarLogoutTapped(object? sender, EventArgs e)
+    {
+        await CloseSidebarAsync();
+        await _authService.SignOutAsync();
+        await _navigator.ShowLoginAsync();
+    }
+
+    private async Task OpenSidebarAsync()
+    {
+        if (_isSidebarOpen || _isSidebarAnimating)
+        {
+            return;
+        }
+
+        _isSidebarAnimating = true;
+        SidebarBackdrop.IsVisible = true;
+        SidebarBackdrop.InputTransparent = false;
+        SidebarFab.IsVisible = false;
+
+        await Task.WhenAll(
+            SidebarBackdrop.FadeToAsync(1, 160, Easing.CubicOut),
+            SidebarPanel.TranslateToAsync(0, 0, 180, Easing.CubicOut)
+        );
+
+        _isSidebarOpen = true;
+        _isSidebarAnimating = false;
+    }
+
+    private async Task CloseSidebarAsync(bool animated = true)
+    {
+        if ((!_isSidebarOpen && SidebarBackdrop.IsVisible == false) || _isSidebarAnimating)
+        {
+            return;
+        }
+
+        _isSidebarAnimating = true;
+
+        if (animated)
+        {
+            await Task.WhenAll(
+                SidebarBackdrop.FadeToAsync(0, 140, Easing.CubicIn),
+                SidebarPanel.TranslateToAsync(320, 0, 170, Easing.CubicIn)
+            );
+        }
+        else
+        {
+            SidebarBackdrop.Opacity = 0;
+            SidebarPanel.TranslationX = 320;
+        }
+
+        SidebarBackdrop.IsVisible = false;
+        SidebarBackdrop.InputTransparent = true;
+        SidebarFab.IsVisible = true;
+        _isSidebarOpen = false;
+        _isSidebarAnimating = false;
+    }
+
     private async void OnMyTripsTapped(object? sender, TappedEventArgs e)
     {
         await _navigator.ShowMyTripsAsync();
@@ -160,8 +282,8 @@ public partial class MenuPage : ContentPage
         if (role == "seller")
         {
             RoleBadgeLabel.Text = "Người bán";
-            RoleBadgeBorder.BackgroundColor = Color.FromArgb("#DCFCE7");
-            RoleBadgeLabel.TextColor = Color.FromArgb("#166534");
+            RoleBadgeBorder.BackgroundColor = Color.FromArgb("#FFF1E8");
+            RoleBadgeLabel.TextColor = Color.FromArgb("#8E2F18");
             return;
         }
 
@@ -174,8 +296,8 @@ public partial class MenuPage : ContentPage
         }
 
         RoleBadgeLabel.Text = "Khách hàng";
-        RoleBadgeBorder.BackgroundColor = Color.FromArgb("#E0F2FE");
-        RoleBadgeLabel.TextColor = Color.FromArgb("#075985");
+        RoleBadgeBorder.BackgroundColor = Color.FromArgb("#FFE8DD");
+        RoleBadgeLabel.TextColor = Color.FromArgb("#A53A1D");
     }
 
     private async void OnProfileTapped(object? sender, TappedEventArgs e)
@@ -184,6 +306,12 @@ public partial class MenuPage : ContentPage
     }
 
     private async void OnSignOutClicked(object? sender, EventArgs e)
+    {
+        await _authService.SignOutAsync();
+        await _navigator.ShowLoginAsync();
+    }
+
+    private async void OnLogoutClicked(object? sender, EventArgs e)
     {
         await _authService.SignOutAsync();
         await _navigator.ShowLoginAsync();

@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<POI> POIs { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<StoreRegistration> StoreRegistrations { get; set; }
+    public DbSet<AdBanner> AdBanners { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,5 +30,16 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .Property(user => user.Role)
             .HasMaxLength(20);
+
+        modelBuilder.Entity<User>()
+            .Property(user => user.AvatarUrl)
+            .HasMaxLength(1000);
+
+        modelBuilder.Entity<AdBanner>()
+            .Property(banner => banner.ImageUrl)
+            .HasMaxLength(1000);
+
+        modelBuilder.Entity<AdBanner>()
+            .HasIndex(banner => new { banner.IsActive, banner.SortOrder });
     }
 }

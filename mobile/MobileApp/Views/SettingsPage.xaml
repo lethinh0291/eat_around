@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.SettingsPage"
@@ -6,14 +6,14 @@
              BackgroundColor="{StaticResource AppBackground}">
     <Grid>
         <ScrollView>
-            <VerticalStackLayout Padding="20,48,20,24"
+            <VerticalStackLayout Padding="16,34,16,20"
                                  Spacing="12">
                 <Grid ColumnDefinitions="Auto,*"
                       ColumnSpacing="10">
                     <Border WidthRequest="42"
                             HeightRequest="42"
                             StrokeThickness="0"
-                            BackgroundColor="#FFF1E6"
+                            BackgroundColor="#FFFFFF"
                             StrokeShape="RoundRectangle 14">
                         <Label Text="←"
                                FontSize="18"
@@ -29,7 +29,7 @@
                                          Spacing="2"
                                          VerticalOptions="Center">
                         <Label Text="Cài đặt"
-                               FontSize="22"
+                               FontSize="20"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
                         <Label Text="Tùy chỉnh trải nghiệm sử dụng"
@@ -38,43 +38,94 @@
                     </VerticalStackLayout>
                 </Grid>
 
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDark}"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="12,10">
+                    <Label Text="Các lựa chọn dưới đây được lưu cục bộ trên thiết bị của bạn."
+                           FontSize="11"
+                           TextColor="#FFF1E8"/>
+                </Border>
+
                 <Border StrokeThickness="1"
-                        Stroke="{StaticResource BorderSoftBrush}"
+                        Stroke="#E8D6CA"
                         BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 16"
+                        StrokeShape="RoundRectangle 18"
                         Padding="12">
                     <VerticalStackLayout Spacing="10">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Bật tự động phát"
-                                   TextColor="{StaticResource TextPrimary}"
-                                   VerticalTextAlignment="Center"/>
-                            <Switch Grid.Column="1"
-                                    x:Name="AutoPlaySwitch"/>
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Tối ưu pin"
-                                   TextColor="{StaticResource TextPrimary}"
-                                   VerticalTextAlignment="Center"/>
-                            <Switch Grid.Column="1"
-                                    x:Name="BatterySwitch"/>
-                        </Grid>
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Nhận thông báo"
-                                   TextColor="{StaticResource TextPrimary}"
-                                   VerticalTextAlignment="Center"/>
-                            <Switch Grid.Column="1"
-                                    x:Name="NotificationSwitch"/>
-                        </Grid>
+                        <Label Text="Tuỳ chọn hệ thống"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource PrimaryDark}"/>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#FFF9F6"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Bật tự động phát"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalTextAlignment="Center"/>
+                                <Switch Grid.Column="1"
+                                        x:Name="AutoPlaySwitch"/>
+                            </Grid>
+                        </Border>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#FFF9F6"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Tối ưu pin"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalTextAlignment="Center"/>
+                                <Switch Grid.Column="1"
+                                        x:Name="BatterySwitch"/>
+                            </Grid>
+                        </Border>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#FFF9F6"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Nhận thông báo"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalTextAlignment="Center"/>
+                                <Switch Grid.Column="1"
+                                        x:Name="NotificationSwitch"/>
+                            </Grid>
+                        </Border>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#FFF9F6"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Đọc mô tả quán ăn"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalTextAlignment="Center"/>
+                                <Switch Grid.Column="1"
+                                        x:Name="StoreNarrationSwitch"/>
+                            </Grid>
+                        </Border>
                     </VerticalStackLayout>
                 </Border>
 
                 <Button Text="Lưu cài đặt"
                         Clicked="OnSaveClicked"
-                        HeightRequest="50"
-                        CornerRadius="16"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="White"/>
+                        HeightRequest="46"
+                        CornerRadius="14"
+                        BackgroundColor="{StaticResource PrimaryDark}"
+                        TextColor="White"
+                        FontAttributes="Bold"/>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
 </ContentPage>
+
+

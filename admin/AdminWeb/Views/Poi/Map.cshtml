@@ -37,11 +37,11 @@
             <span>Map</span>
         </div>
         <h1 class="page-title">Bản đồ POI</h1>
-        <p class="page-subtitle">Ban do chi hien thi POI trong pham vi Pho am thuc Vinh Khanh.</p>
+        <p class="page-subtitle">Chỉ hiển thị POI trong phạm vi Phố ăn uống Vĩnh Khánh.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a class="btn btn-admin btn-admin-soft" asp-action="Index">Danh sach POI</a>
-        <a class="btn btn-admin btn-admin-primary" asp-action="Create">+ Them POI</a>
+        <a class="btn btn-admin btn-admin-soft" asp-action="Index">Danh sách POI</a>
+        <a class="btn btn-admin btn-admin-primary" asp-action="Create">+ Thêm POI</a>
     </div>
 </div>
 
@@ -49,29 +49,29 @@
     @if (visiblePoiCount == 0)
     {
         <div class="empty-state">
-            <div>Khong co POI nao nam trong khu vuc Vinh Khanh.</div>
+            <div>Không có POI nào trong khu vực phố ẩm thực Vĩnh Khánh.</div>
         </div>
     }
     else
     {
         <div class="d-flex flex-wrap align-items-end gap-3 mb-3">
             <div>
-                <label for="rangeStrokeColor" class="form-label mb-1">Mau vien pham vi</label>
+                <label for="rangeStrokeColor" class="form-label mb-1">Màu viền phạm vi</label>
                 <input id="rangeStrokeColor" type="color" class="form-control form-control-color" value="#f97316"
                        title="Mau vien" />
             </div>
             <div>
-                <label for="rangeFillColor" class="form-label mb-1">Mau nen pham vi</label>
+                <label for="rangeFillColor" class="form-label mb-1">Màu nền phạm vi</label>
                 <input id="rangeFillColor" type="color" class="form-control form-control-color" value="#f97316"
                        title="Mau nen" />
             </div>
             <div style="min-width: 220px;">
-                <label for="rangeFillOpacity" class="form-label mb-1">Do trong suot: <span
+                <label for="rangeFillOpacity" class="form-label mb-1">Độ trong suốt: <span
                     id="rangeFillOpacityLabel">0.12</span></label>
                     <input id="rangeFillOpacity" type="range" class="form-range" min="0.02" max="0.8" step="0.01"
                            value="0.12" />
                 </div>
-                <button type="button" id="resetRangeStyle" class="btn btn-admin btn-admin-soft btn-sm">Dat lai mac dinh</button>
+                <button type="button" id="resetRangeStyle" class="btn btn-admin btn-admin-soft btn-sm">Đặt lại mặc định</button>
             </div>
 
             <div class="admin-map-wrap mb-3">
@@ -79,9 +79,9 @@
             </div>
 
             <div class="d-flex flex-wrap gap-2">
-                <span class="helper-chip">So POI trong khu vuc: <strong>@visiblePoiCount</strong></span>
-                <span class="helper-chip">Tip: Bam marker de xem chi tiet</span>
-                <span class="helper-chip">Vi tri cua ban se duoc danh dau neu trinh duyet cho phep</span>
+                <span class="helper-chip">Số POI trong khu vực: <strong>@visiblePoiCount</strong></span>
+                <span class="helper-chip">Tip: Bấm marker để xem chi tiết</span>
+                <span class="helper-chip">Vị trí của bạn sẽ được đánh dấu nếu trình duyệt cho phép</span>
             </div>
         }
     </div>

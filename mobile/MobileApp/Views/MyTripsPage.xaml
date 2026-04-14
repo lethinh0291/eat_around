@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.MyTripsPage"
@@ -6,14 +6,14 @@
              BackgroundColor="{StaticResource AppBackground}">
     <Grid>
         <ScrollView>
-            <VerticalStackLayout Padding="20,48,20,24"
+            <VerticalStackLayout Padding="16,34,16,20"
                                  Spacing="12">
                 <Grid ColumnDefinitions="Auto,*"
                       ColumnSpacing="10">
                     <Border WidthRequest="42"
                             HeightRequest="42"
                             StrokeThickness="0"
-                            BackgroundColor="#FFF1E6"
+                            BackgroundColor="#FFFFFF"
                             StrokeShape="RoundRectangle 14">
                         <Label Text="←"
                                FontSize="18"
@@ -29,28 +29,37 @@
                                          Spacing="2"
                                          VerticalOptions="Center">
                         <Label Text="Hành trình của tôi"
-                               FontSize="22"
+                               FontSize="20"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
-                        <Label Text="Danh sách điểm đến bạn đã chọn trên bản đồ"
+                        <Label Text="Địa điểm bạn đã chọn để đến"
                                FontSize="11"
                                TextColor="{StaticResource TextSecondary}"/>
                     </VerticalStackLayout>
                 </Grid>
+
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource PrimaryDark}"
+                        StrokeShape="RoundRectangle 18"
+                        Padding="12,10">
+                    <Label Text="Lịch sử mới nhất sẽ xuất hiện ở đây để bạn mở lại nhanh hơn."
+                           FontSize="11"
+                           TextColor="#FFF1E8"/>
+                </Border>
 
                 <CollectionView x:Name="TripsCollectionView"
                                 SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Border StrokeThickness="1"
-                                    Stroke="{StaticResource BorderSoftBrush}"
+                                    Stroke="#E8D6CA"
                                     BackgroundColor="#FFFFFF"
-                                    StrokeShape="RoundRectangle 14"
+                                    StrokeShape="RoundRectangle 16"
                                     Padding="12"
                                     Margin="0,0,0,8">
                                 <VerticalStackLayout Spacing="4">
                                     <Label Text="{Binding Name}"
-                                           FontSize="14"
+                                           FontSize="15"
                                            FontAttributes="Bold"
                                            TextColor="{StaticResource TextPrimary}"/>
                                     <Label Text="{Binding Description}"
@@ -58,15 +67,25 @@
                                            TextColor="{StaticResource TextSecondary}"/>
                                     <Label Text="{Binding CreatedAtText}"
                                            FontSize="10"
-                                           TextColor="#93A3B8"/>
+                                           TextColor="{StaticResource PrimaryDark}"/>
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
+                <Button x:Name="ClearSelectedTripButton"
+                        Text="Xóa địa điểm đã chọn"
+                        Clicked="OnClearSelectedTripClicked"
+                        IsVisible="False"
+                        HeightRequest="44"
+                        CornerRadius="14"
+                        BackgroundColor="#FFF1E8"
+                        TextColor="{StaticResource PrimaryDark}"
+                        FontAttributes="Bold"/>
+
                 <Label x:Name="EmptyLabel"
-                       Text="Bạn chưa có hành trình nào."
+                       Text="Bạn chưa chọn địa điểm nào để đến."
                        FontSize="12"
                        TextColor="{StaticResource TextSecondary}"
                        IsVisible="False"
@@ -75,3 +94,5 @@
         </ScrollView>
     </Grid>
 </ContentPage>
+
+

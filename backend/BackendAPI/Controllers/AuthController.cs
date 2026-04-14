@@ -63,6 +63,7 @@ public class AuthController : ControllerBase
             Username = username,
             Email = email,
             Password = password,
+            AvatarUrl = string.IsNullOrWhiteSpace(request.AvatarUrl) ? null : request.AvatarUrl.Trim(),
             Role = role
         });
 
@@ -98,6 +99,7 @@ public class AuthController : ControllerBase
                 user.Name,
                 user.Email,
                 user.Username,
+                user.AvatarUrl,
                 user.Role
             }
         });
@@ -134,6 +136,7 @@ public class AuthController : ControllerBase
                 user.Name,
                 user.Email,
                 user.Username,
+                user.AvatarUrl,
                 user.Role
             })
             .ToListAsync();
@@ -171,6 +174,7 @@ public class AuthController : ControllerBase
             Username = username,
             Email = email,
             Password = request.Password,
+            AvatarUrl = string.IsNullOrWhiteSpace(request.AvatarUrl) ? null : request.AvatarUrl.Trim(),
             Role = role
         });
 
@@ -212,10 +216,31 @@ public class AuthController : ControllerBase
         user.Username = username;
         user.Email = email;
         user.Password = request.Password;
+        user.AvatarUrl = string.IsNullOrWhiteSpace(request.AvatarUrl) ? user.AvatarUrl : request.AvatarUrl.Trim();
         user.Role = role;
 
         await _dbContext.SaveChangesAsync();
         return Ok(new { message = "Cập nhật người dùng thành công." });
+    }
+
+    [HttpPut("users/{userId:int}/avatar")]
+    public async Task<IActionResult> UpdateUserAvatar(int userId, [FromBody] UpdateAvatarRequest request)
+    {
+        var avatarUrl = request.AvatarUrl?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(avatarUrl) || !Uri.TryCreate(avatarUrl, UriKind.Absolute, out _))
+        {
+            return BadRequest(new { message = "URL ảnh đại diện không hợp lệ." });
+        }
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(item => item.Id == userId);
+        if (user is null)
+        {
+            return NotFound(new { message = "Không tìm thấy người dùng." });
+        }
+
+        user.AvatarUrl = avatarUrl;
+        await _dbContext.SaveChangesAsync();
+        return Ok(new { message = "Cập nhật ảnh đại diện thành công.", avatarUrl });
     }
 
     [HttpDelete("users/{userId:int}")]
@@ -249,7 +274,13 @@ public class AuthController : ControllerBase
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string? AvatarUrl { get; set; }
         public string Role { get; set; } = "customer";
+    }
+
+    public sealed class UpdateAvatarRequest
+    {
+        public string AvatarUrl { get; set; } = string.Empty;
     }
 
     private IActionResult? ValidateUpsertUserRequest(UpsertUserRequest request, out string role)

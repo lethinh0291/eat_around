@@ -6,6 +6,8 @@ using Microsoft.Maui.Storage;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace ZesTour.Views;
 
@@ -17,15 +19,19 @@ public partial class MainPage : ContentPage
     private readonly AppNavigator _navigator;
     private readonly Location _defaultLocation = new(10.7724, 106.6981);
     private readonly Location _vinhKhanhCenter = new(10.7589, 106.7072);
+    private static readonly HttpClient StoreGeoLookupClient = new();
     private const double VinhKhanhRadiusMeters = 1200;
     private const double VinhKhanhMinLat = 10.7530;
     private const double VinhKhanhMaxLat = 10.7648;
     private const double VinhKhanhMinLng = 106.6992;
     private const double VinhKhanhMaxLng = 106.7152;
     private const double LeafletZoom = 16;
+    private const string SettingsKey = "zes_settings_v1";
     private const string TripsHistoryKey = "zes_trip_history_v1";
+    private const double DefaultStoreNarrationRadiusMeters = 140;
     private bool _autoPlayEnabled = true;
     private bool _batteryOptimized;
+    private bool _storeNarrationEnabled = true;
     private bool _isSidebarOpen;
     private bool _sidebarAnimating;
     private bool _dataLoaded;
@@ -34,6 +40,7 @@ public partial class MainPage : ContentPage
     private CancellationTokenSource? _trackingCts;
     private Task? _trackingTask;
     private List<POI> _allPois = new();
+    private List<StoreNarrationPoint> _storeNarrationPoints = new();
     private POI? _currentPoi;
     private Location? _userLocation;
     private double? _selectedLat;
@@ -64,6 +71,8 @@ public partial class MainPage : ContentPage
 
         _loadingCts?.Cancel();
         _loadingCts = new CancellationTokenSource();
+
+        LoadFeatureSettings();
 
         // Render a lightweight default map immediately to avoid a blank first frame.
         InitializeMap(null);
@@ -110,6 +119,7 @@ public partial class MainPage : ContentPage
         }
 
         _allPois = pois.Where(IsInsideVinhKhanhBounds).ToList();
+        await LoadStoreNarrationPointsAsync(cancellationToken);
 
         _currentPoi = FindNearestPoi(_allPois);
 
@@ -189,6 +199,85 @@ public partial class MainPage : ContentPage
         return nearest;
     }
 
+    private StoreNarrationPoint? FindNearestStoreInRange(Location userLocation)
+    {
+        StoreNarrationPoint? nearest = null;
+        var minDistance = double.MaxValue;
+
+        foreach (var store in _storeNarrationPoints)
+        {
+            var distance = _locationService.CalculateDistance(
+                userLocation.Latitude,
+                userLocation.Longitude,
+                store.Latitude,
+                store.Longitude);
+
+            if (distance > store.RadiusMeters || distance >= minDistance)
+            {
+                continue;
+            }
+
+            minDistance = distance;
+            nearest = store;
+        }
+
+        return nearest;
+    }
+
+    private async Task LoadStoreNarrationPointsAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (!_storeNarrationEnabled)
+            {
+                _storeNarrationPoints = [];
+                return;
+            }
+
+            var registrations = await _apiService.GetStoreRegistrationsAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var points = new List<StoreNarrationPoint>();
+            foreach (var registration in registrations)
+            {
+                if (!registration.Latitude.HasValue || !registration.Longitude.HasValue)
+                {
+                    continue;
+                }
+
+                if (registration.Latitude.Value < VinhKhanhMinLat || registration.Latitude.Value > VinhKhanhMaxLat ||
+                    registration.Longitude.Value < VinhKhanhMinLng || registration.Longitude.Value > VinhKhanhMaxLng)
+                {
+                    continue;
+                }
+
+                var description = string.IsNullOrWhiteSpace(registration.Description)
+                    ? $"Bạn đang ở gần cửa hàng {registration.StoreName}."
+                    : registration.Description.Trim();
+                var radiusMeters = registration.RadiusMeters is > 0 ? registration.RadiusMeters.Value : DefaultStoreNarrationRadiusMeters;
+
+                points.Add(new StoreNarrationPoint(
+                    registration.Id,
+                    registration.StoreName?.Trim() ?? "Cửa hàng",
+                    description,
+                    registration.Latitude.Value,
+                    registration.Longitude.Value,
+                    radiusMeters));
+            }
+
+            _storeNarrationPoints = points;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Load store narration points failed: {ex.Message}");
+            _storeNarrationPoints = new List<StoreNarrationPoint>();
+        }
+    }
+
     private void BindPoi(POI poi)
     {
         PoiBadgeLabel.Text = "ĐỊA ĐIỂM";
@@ -261,6 +350,31 @@ public partial class MainPage : ContentPage
             color: #4b5563;
             font-size: 12px;
         }}
+        .store-poi-icon-wrapper {{
+            background: transparent;
+            border: 0;
+        }}
+        .store-poi-icon {{
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            background: #f97316;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35);
+        }}
+        .poi-name-label {{
+            background: #111827;
+            border: 0;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 999px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        }}
+        .poi-name-label:before {{
+            display: none;
+        }}
     </style>
 </head>
 <body>
@@ -276,6 +390,12 @@ public partial class MainPage : ContentPage
         const selectedPoiDesc = '{selectedPoiDesc}';
         const shouldRestoreSelection = {shouldRestoreSelection};
         const pois = {poisScriptArray};
+        const storeIcon = L.divIcon({{
+            className: 'store-poi-icon-wrapper',
+            html: '<div class=""store-poi-icon""></div>',
+            iconSize: [18, 18],
+            iconAnchor: [9, 9]
+        }});
 
         const map = L.map('map', {{
             zoomControl: false,
@@ -432,7 +552,15 @@ public partial class MainPage : ContentPage
 
         function addPoiMarker(item, focus) {{
             const popup = `<div class='poi-popup-name'>${{item.name}}</div><div class='poi-popup-desc'>${{item.desc}}</div>`;
-            const marker = L.marker([item.lat, item.lng]).addTo(map).bindPopup(popup);
+            const marker = L.marker([item.lat, item.lng], {{ icon: storeIcon, riseOnHover: true }})
+                .addTo(map)
+                .bindPopup(popup)
+                .bindTooltip(item.name, {{
+                    permanent: true,
+                    direction: 'top',
+                    offset: [0, -14],
+                    className: 'poi-name-label'
+                }});
 
             const onSelect = async function() {{
                 await routeTo(item.lat, item.lng);
@@ -641,7 +769,7 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (!_autoPlayEnabled || _allPois.Count == 0)
+                if (!_autoPlayEnabled || (_allPois.Count == 0 && (!_storeNarrationEnabled || _storeNarrationPoints.Count == 0)))
                 {
                     await Task.Delay(GetTrackingInterval(), cancellationToken);
                     continue;
@@ -655,6 +783,34 @@ public partial class MainPage : ContentPage
                 }
 
                 _userLocation = latestLocation;
+
+                if (_storeNarrationEnabled)
+                {
+                    var candidateStore = FindNearestStoreInRange(latestLocation);
+                    if (candidateStore is not null)
+                    {
+                        var narratedStore = await _locationService.NarrateTextAsync(
+                            $"store:{candidateStore.Id}",
+                            candidateStore.Description,
+                            "vi",
+                            cancellationToken);
+
+                        if (narratedStore)
+                        {
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                PoiBadgeLabel.Text = "CỬA HÀNG";
+                                LocationTitleLabel.Text = "Cửa hàng gần bạn";
+                                NowPlayingLabel.Text = candidateStore.Name;
+                                AddressLabel.Text = candidateStore.Description;
+                            });
+                        }
+
+                        await Task.Delay(GetTrackingInterval(), cancellationToken);
+                        continue;
+                    }
+                }
+
                 var candidatePoi = _locationService.FindBestPoiInRange(latestLocation, _allPois);
 
                 if (candidatePoi is not null)
@@ -669,7 +825,6 @@ public partial class MainPage : ContentPage
                             PoiBadgeLabel.Text = "TỰ ĐỘNG";
                         });
 
-                        SaveTripSelection(candidatePoi.Name, candidatePoi.Description ?? "Không có mô tả");
                     }
                 }
 
@@ -758,6 +913,12 @@ public partial class MainPage : ContentPage
     private async void OnSidebarHomeClicked(object? sender, EventArgs e)
     {
         await CloseSidebarAsync();
+    }
+
+    private async void OnSidebarMenuClicked(object? sender, EventArgs e)
+    {
+        await CloseSidebarAsync();
+        await _navigator.ShowMenuAsync();
     }
 
     private async void OnSidebarProfileClicked(object? sender, EventArgs e)
@@ -860,40 +1021,40 @@ public partial class MainPage : ContentPage
 
     private static void SaveTripSelection(string name, string description)
     {
-        var items = LoadTripHistory();
-        items.Add(new TripHistoryItem
+        var selectedTrip = new TripHistoryItem
         {
             Name = string.IsNullOrWhiteSpace(name) ? "Điểm đã chọn" : name,
             Description = string.IsNullOrWhiteSpace(description) ? "Không có mô tả" : description,
             CreatedAtUtc = DateTime.UtcNow
-        });
+        };
 
-        if (items.Count > 100)
-        {
-            items = items
-                .OrderByDescending(item => item.CreatedAtUtc)
-                .Take(100)
-                .ToList();
-        }
-
-        Preferences.Default.Set(TripsHistoryKey, JsonSerializer.Serialize(items));
+        Preferences.Default.Set(TripsHistoryKey, JsonSerializer.Serialize(selectedTrip));
     }
 
-    private static List<TripHistoryItem> LoadTripHistory()
+    private static TripHistoryItem? LoadTripHistory()
     {
         var json = Preferences.Default.Get(TripsHistoryKey, string.Empty);
         if (string.IsNullOrWhiteSpace(json))
         {
-            return new List<TripHistoryItem>();
+            return null;
         }
 
         try
         {
-            return JsonSerializer.Deserialize<List<TripHistoryItem>>(json) ?? new List<TripHistoryItem>();
+            var selectedTrip = JsonSerializer.Deserialize<TripHistoryItem>(json);
+            if (selectedTrip is not null)
+            {
+                return selectedTrip;
+            }
+
+            var legacyTrips = JsonSerializer.Deserialize<List<TripHistoryItem>>(json);
+            return legacyTrips?
+                .OrderByDescending(item => item.CreatedAtUtc)
+                .FirstOrDefault();
         }
         catch
         {
-            return new List<TripHistoryItem>();
+            return null;
         }
     }
 
@@ -956,5 +1117,68 @@ public partial class MainPage : ContentPage
         _batteryOptimized = e.Value;
         var text = _batteryOptimized ? "Chế độ pin: Tối ưu" : "Chế độ pin: Bình thường";
         PoiBadgeLabel.Text = text.ToUpperInvariant();
+    }
+
+    private void LoadFeatureSettings()
+    {
+        var json = Preferences.Default.Get(SettingsKey, string.Empty);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return;
+        }
+
+        try
+        {
+            var data = JsonSerializer.Deserialize<SettingData>(json);
+            if (data is null)
+            {
+                return;
+            }
+
+            _autoPlayEnabled = data.AutoPlay;
+            _batteryOptimized = data.BatteryOptimized;
+            _storeNarrationEnabled = data.StoreNarrationEnabled;
+        }
+        catch
+        {
+            // Ignore invalid settings.
+        }
+    }
+
+    private sealed class SettingData
+    {
+        public bool AutoPlay { get; set; }
+        public bool BatteryOptimized { get; set; }
+        public bool NotificationEnabled { get; set; }
+        public bool StoreNarrationEnabled { get; set; } = true;
+    }
+
+    private sealed class StoreNarrationPoint
+    {
+        public StoreNarrationPoint(int id, string name, string description, double latitude, double longitude, double radiusMeters)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            Latitude = latitude;
+            Longitude = longitude;
+            RadiusMeters = radiusMeters;
+        }
+
+        public int Id { get; }
+        public string Name { get; }
+        public string Description { get; }
+        public double Latitude { get; }
+        public double Longitude { get; }
+        public double RadiusMeters { get; }
+    }
+
+    private sealed class NominatimGeoResult
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("lat")]
+        public string Lat { get; set; } = string.Empty;
+
+        [System.Text.Json.Serialization.JsonPropertyName("lon")]
+        public string Lon { get; set; } = string.Empty;
     }
 }

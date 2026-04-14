@@ -100,4 +100,4 @@ D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\AdminWeb.pdb
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\AdminWeb.genruntimeconfig.cache
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\ref\AdminWeb.dll
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\rwpoizm49l-{0}-p3jniqsbvc-p3jniqsbvc.gz
-D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\9uhfwwg3ek-{0}-kr1nb1k3ak-kr1nb1k3ak.gz
+D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\9uhfwwg3ek-{0}-a4wnk7zvls-a4wnk7zvls.gz

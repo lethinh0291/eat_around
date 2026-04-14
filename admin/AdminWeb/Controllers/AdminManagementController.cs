@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace AdminWeb.Controllers;
 
-[Authorize]
+[Authorize(Roles = "admin")]
 public class AdminManagementController : Controller
 {
     private readonly AdminManagementApiClient _adminManagementApiClient;
@@ -160,6 +160,7 @@ public class AdminManagementController : Controller
         string storeName,
         string ownerName,
         string? imageUrl,
+        List<string>? imageUrls,
         string phone,
         string address,
         string? category,
@@ -170,6 +171,7 @@ public class AdminManagementController : Controller
             StoreName = storeName,
             OwnerName = ownerName,
             ImageUrl = imageUrl,
+            ImageUrls = imageUrls,
             Phone = phone,
             Address = address,
             Category = category ?? string.Empty,
@@ -204,7 +206,7 @@ public class AdminManagementController : Controller
         {
             Name = store.StoreName,
             Description = description,
-            ImageUrl = store.ImageUrl,
+            ImageUrl = GetPrimaryImageUrl(store),
             Latitude = latitude,
             Longitude = longitude,
             Radius = 250,
@@ -257,6 +259,18 @@ public class AdminManagementController : Controller
         }
 
         return parts.Count == 0 ? "Quán ăn do người bán gửi đăng ký." : string.Join(" | ", parts);
+    }
+
+    private static string? GetPrimaryImageUrl(AdminManagementApiClient.AdminStoreRegistrationDto store)
+    {
+        if (!string.IsNullOrWhiteSpace(store.ImageUrl))
+        {
+            return store.ImageUrl.Trim();
+        }
+
+        return store.ImageUrls?
+            .Select(url => url?.Trim())
+            .FirstOrDefault(url => !string.IsNullOrWhiteSpace(url));
     }
 
     private static List<string> BuildOwnedStores(

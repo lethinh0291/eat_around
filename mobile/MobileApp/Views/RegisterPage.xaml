@@ -1,157 +1,189 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.RegisterPage"
              NavigationPage.HasNavigationBar="False"
              BackgroundColor="{StaticResource AppBackground}">
-        <Grid>
-                <Grid.Background>
-                        <LinearGradientBrush StartPoint="0,0"
-                                             EndPoint="1,1">
-                                <GradientStop Color="#FFF9F2"
-                                              Offset="0"/>
-                                <GradientStop Color="#FFF2E5"
-                                              Offset="0.55"/>
-                                <GradientStop Color="#FFE8D2"
-                                              Offset="1"/>
-                        </LinearGradientBrush>
-                </Grid.Background>
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                 EndPoint="1,1">
+                <GradientStop Color="#F4F8FA"
+                              Offset="0"/>
+                <GradientStop Color="#EDF3F6"
+                              Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
 
-                <ScrollView>
-                        <VerticalStackLayout Padding="24,54,24,28"
-                                             Spacing="18">
-                                <Border StrokeThickness="0"
-                                        BackgroundColor="#FFFFFF"
-                                        StrokeShape="RoundRectangle 32"
-                                        Padding="20">
-                                        <VerticalStackLayout Spacing="14">
-                                                <Label Text="Tạo tài khoản"
-                                                       FontSize="28"
-                                                       FontAttributes="Bold"
-                                                       TextColor="{StaticResource TextPrimary}"/>
-                                                <Label Text="Nhập thông tin để bắt đầu lưu hành trình và hồ sơ cá nhân"
-                                                       FontSize="12"
-                                                       TextColor="{StaticResource TextSecondary}"/>
-                                        </VerticalStackLayout>
-                                </Border>
+        <ScrollView>
+            <VerticalStackLayout Padding="22,44,22,24"
+                                 Spacing="14">
+                <Border StrokeThickness="0"
+                        BackgroundColor="{StaticResource Primary}"
+                        StrokeShape="RoundRectangle 24"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Tạo tài khoản mới"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+                        <Label Text="Đăng ký nhanh để lưu hành trình, khám phá và mở cửa hàng"
+                               FontSize="12"
+                               TextColor="#FFF7F1"/>
+                    </VerticalStackLayout>
+                </Border>
 
-                                <Border StrokeThickness="1"
-                                        Stroke="{StaticResource BorderSoftBrush}"
-                                        BackgroundColor="#FFFFFF"
-                                        StrokeShape="RoundRectangle 28"
-                                        Padding="18">
-                                        <VerticalStackLayout Spacing="14">
-                                                <VerticalStackLayout Spacing="8">
-                                                        <Label Text="Họ và tên"
-                                                               FontSize="12"
-                                                               TextColor="{StaticResource TextSecondary}"/>
-                                                        <Entry x:Name="NameEntry"
-                                                               Placeholder="vd: Nguyễn Văn A"
-                                                               TextColor="{StaticResource TextPrimary}"
-                                                               PlaceholderColor="{StaticResource Gray500}"
-                                                               BackgroundColor="#FFF7ED"/>
-                                                </VerticalStackLayout>
+                <Border StrokeThickness="1"
+                        Stroke="#D6E1E9"
+                        BackgroundColor="#FFFFFF"
+                        StrokeShape="RoundRectangle 22"
+                        Padding="14">
+                    <VerticalStackLayout Spacing="10">
+                        <Border StrokeThickness="1"
+                                Stroke="#D6E1E9"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Họ và tên"
+                                       FontSize="11"
+                                       TextColor="#475569"/>
+                                <Entry x:Name="NameEntry"
+                                       Placeholder="vd: Nguyễn Văn A"
+                                       TextColor="#0F172A"
+                                       PlaceholderColor="#64748B"
+                                       BackgroundColor="Transparent"/>
+                            </VerticalStackLayout>
+                        </Border>
 
-                                                <VerticalStackLayout Spacing="8">
-                                                        <Label Text="Tên đăng nhập"
-                                                               FontSize="12"
-                                                               TextColor="{StaticResource TextSecondary}"/>
-                                                        <Entry x:Name="UsernameEntry"
-                                                               Placeholder="vd: nguyenvana"
-                                                               TextColor="{StaticResource TextPrimary}"
-                                                               PlaceholderColor="{StaticResource Gray500}"
-                                                               BackgroundColor="#FFF7ED"/>
-                                                </VerticalStackLayout>
+                        <Border StrokeThickness="1"
+                                Stroke="#D6E1E9"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Tên đăng nhập"
+                                       FontSize="11"
+                                       TextColor="#475569"/>
+                                <Entry x:Name="UsernameEntry"
+                                       Placeholder="vd: nguyenvana"
+                                       TextColor="#0F172A"
+                                       PlaceholderColor="#64748B"
+                                       BackgroundColor="Transparent"/>
+                            </VerticalStackLayout>
+                        </Border>
 
-                                                <VerticalStackLayout Spacing="8">
-                                                        <Label Text="Email"
-                                                               FontSize="12"
-                                                               TextColor="{StaticResource TextSecondary}"/>
-                                                        <Entry x:Name="EmailEntry"
-                                                               Placeholder="vd: a@zestour.vn"
-                                                               Keyboard="Email"
-                                                               TextColor="{StaticResource TextPrimary}"
-                                                               PlaceholderColor="{StaticResource Gray500}"
-                                                               BackgroundColor="#FFF7ED"/>
-                                                </VerticalStackLayout>
+                        <Border StrokeThickness="1"
+                                Stroke="#D6E1E9"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Email"
+                                       FontSize="11"
+                                       TextColor="#475569"/>
+                                <Entry x:Name="EmailEntry"
+                                       Placeholder="vd: a@zestour.vn"
+                                       Keyboard="Email"
+                                       TextColor="#0F172A"
+                                       PlaceholderColor="#64748B"
+                                       BackgroundColor="Transparent"/>
+                            </VerticalStackLayout>
+                        </Border>
 
-                                                <VerticalStackLayout Spacing="8">
-                                                        <Label Text="Mật khẩu"
-                                                               FontSize="12"
-                                                               TextColor="{StaticResource TextSecondary}"/>
-                                                        <Entry x:Name="PasswordEntry"
-                                                               Placeholder="Nhập mật khẩu"
-                                                               IsPassword="True"
-                                                               TextColor="{StaticResource TextPrimary}"
-                                                               PlaceholderColor="{StaticResource Gray500}"
-                                                               BackgroundColor="#FFF7ED"/>
-                                                </VerticalStackLayout>
+                        <Border StrokeThickness="1"
+                                Stroke="#D6E1E9"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Mật khẩu"
+                                       FontSize="11"
+                                       TextColor="#475569"/>
+                                <Entry x:Name="PasswordEntry"
+                                       Placeholder="Nhập mật khẩu"
+                                       IsPassword="True"
+                                       TextColor="#0F172A"
+                                       PlaceholderColor="#64748B"
+                                       BackgroundColor="Transparent"/>
+                            </VerticalStackLayout>
+                        </Border>
 
-                                                <VerticalStackLayout Spacing="8">
-                                                        <Label Text="Xác nhận mật khẩu"
-                                                               FontSize="12"
-                                                               TextColor="{StaticResource TextSecondary}"/>
-                                                        <Entry x:Name="ConfirmPasswordEntry"
-                                                               Placeholder="Nhập lại mật khẩu"
-                                                               IsPassword="True"
-                                                               TextColor="{StaticResource TextPrimary}"
-                                                               PlaceholderColor="{StaticResource Gray500}"
-                                                               BackgroundColor="#FFF7ED"/>
-                                                </VerticalStackLayout>
+                        <Border StrokeThickness="1"
+                                Stroke="#D6E1E9"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <VerticalStackLayout Spacing="3">
+                                <Label Text="Xác nhận mật khẩu"
+                                       FontSize="11"
+                                       TextColor="#475569"/>
+                                <Entry x:Name="ConfirmPasswordEntry"
+                                       Placeholder="Nhập lại mật khẩu"
+                                       IsPassword="True"
+                                       TextColor="#0F172A"
+                                       PlaceholderColor="#64748B"
+                                       BackgroundColor="Transparent"/>
+                            </VerticalStackLayout>
+                        </Border>
 
-                                                <Border StrokeThickness="1"
-                                                        Stroke="{StaticResource BorderSoftBrush}"
-                                                        BackgroundColor="#FFFDF9"
-                                                        StrokeShape="RoundRectangle 14"
-                                                        Padding="12,10">
-                                                        <Grid ColumnDefinitions="*,Auto"
-                                                              ColumnSpacing="10">
-                                                                <VerticalStackLayout Spacing="2">
-                                                                        <Label Text="Đăng ký tài khoản người bán"
-                                                                               FontSize="13"
-                                                                               FontAttributes="Bold"
-                                                                               TextColor="{StaticResource TextPrimary}"/>
-                                                                        <Label Text="Bật nếu bạn muốn mở cửa hàng sau khi tạo tài khoản"
-                                                                               FontSize="11"
-                                                                               TextColor="{StaticResource TextSecondary}"/>
-                                                                </VerticalStackLayout>
+                        <Border StrokeThickness="1"
+                                Stroke="#D6E1E9"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <Grid ColumnDefinitions="*,Auto"
+                                  ColumnSpacing="10">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Tạo tài khoản người bán"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="#0F172A"/>
+                                    <Label Text="Bật nếu bạn muốn đăng ký và quản lý cửa hàng"
+                                           FontSize="11"
+                                           TextColor="#64748B"/>
+                                </VerticalStackLayout>
 
-                                                                <Switch Grid.Column="1"
-                                                                        x:Name="SellerSwitch"
-                                                                        IsToggled="False"
-                                                                        Toggled="OnSellerSwitchToggled"
-                                                                        VerticalOptions="Center"/>
-                                                        </Grid>
-                                                </Border>
+                                <Switch Grid.Column="1"
+                                        x:Name="SellerSwitch"
+                                        IsToggled="False"
+                                        Toggled="OnSellerSwitchToggled"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
 
-                                                <Label x:Name="SelectedRoleLabel"
-                                                       Text="Vai trò sẽ tạo: Khách hàng"
-                                                       FontSize="12"
-                                                       TextColor="{StaticResource TextSecondary}"/>
+                        <Label x:Name="SelectedRoleLabel"
+                               Text="Vai trò sẽ tạo: Khách hàng"
+                               FontSize="12"
+                               TextColor="#475569"/>
 
-                                                <Button Text="Tạo tài khoản"
-                                                        Clicked="OnRegisterClicked"
-                                                        BackgroundColor="{StaticResource Primary}"
-                                                        TextColor="White"
-                                                        CornerRadius="18"
-                                                        HeightRequest="52"/>
+                        <Button Text="Tạo tài khoản"
+                                Clicked="OnRegisterClicked"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                CornerRadius="14"
+                                HeightRequest="48"
+                                FontAttributes="Bold"/>
 
-                                                <Label x:Name="MessageLabel"
-                                                       Text=""
-                                                       FontSize="12"
-                                                       TextColor="#FCA5A5"/>
+                        <Label x:Name="MessageLabel"
+                               Text=""
+                               FontSize="12"
+                               TextColor="#DC2626"/>
 
-                                                <Button Text="Quay lại đăng nhập"
-                                                        Clicked="OnBackToLoginClicked"
-                                                        BackgroundColor="#FFFFFF"
-                                                        TextColor="{StaticResource TextPrimary}"
-                                                        BorderColor="{StaticResource BorderSoftBrush}"
-                                                        BorderWidth="1"
-                                                        CornerRadius="18"
-                                                        HeightRequest="48"/>
-                                        </VerticalStackLayout>
-                                </Border>
-                        </VerticalStackLayout>
-                </ScrollView>
-        </Grid>
+                        <Button Text="Quay lại đăng nhập"
+                                Clicked="OnBackToLoginClicked"
+                                BackgroundColor="{StaticResource Secondary}"
+                                TextColor="{StaticResource PrimaryDark}"
+                                BorderColor="#F5D0BF"
+                                BorderWidth="1"
+                                CornerRadius="14"
+                                HeightRequest="46"
+                                FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>
+
+

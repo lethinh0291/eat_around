@@ -23,6 +23,12 @@ public class StoreRegistrationsController : ControllerBase
         var ownerName = request.OwnerName.Trim();
         var phone = request.Phone.Trim();
         var address = request.Address.Trim();
+        var primaryImageUrl = request.ImageUrl?.Trim();
+        var imageUrls = NormalizeImageUrls(request.ImageUrls, primaryImageUrl);
+        var resolvedPrimaryImageUrl = !string.IsNullOrWhiteSpace(primaryImageUrl)
+            ? primaryImageUrl
+            : imageUrls.FirstOrDefault();
+        var resolvedRadiusMeters = ResolveRadiusMeters(request.RadiusMeters);
 
         if (string.IsNullOrWhiteSpace(storeName) ||
             string.IsNullOrWhiteSpace(ownerName) ||
@@ -36,9 +42,13 @@ public class StoreRegistrationsController : ControllerBase
         {
             StoreName = storeName,
             OwnerName = ownerName,
-            ImageUrl = request.ImageUrl?.Trim(),
+            ImageUrl = resolvedPrimaryImageUrl,
+            ImageUrls = imageUrls,
             Phone = phone,
             Address = address,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
+            RadiusMeters = resolvedRadiusMeters,
             Category = request.Category?.Trim() ?? string.Empty,
             Description = request.Description?.Trim() ?? string.Empty,
             SubmittedAtUtc = DateTime.UtcNow
@@ -82,6 +92,12 @@ public class StoreRegistrationsController : ControllerBase
         var storeName = request.StoreName.Trim();
         var phone = request.Phone.Trim();
         var address = request.Address.Trim();
+        var primaryImageUrl = request.ImageUrl?.Trim();
+        var imageUrls = NormalizeImageUrls(request.ImageUrls, primaryImageUrl);
+        var resolvedPrimaryImageUrl = !string.IsNullOrWhiteSpace(primaryImageUrl)
+            ? primaryImageUrl
+            : imageUrls.FirstOrDefault();
+        var resolvedRadiusMeters = ResolveRadiusMeters(request.RadiusMeters);
 
         if (string.IsNullOrWhiteSpace(ownerName) ||
             string.IsNullOrWhiteSpace(storeName) ||
@@ -103,9 +119,13 @@ public class StoreRegistrationsController : ControllerBase
         }
 
         item.StoreName = storeName;
-        item.ImageUrl = request.ImageUrl?.Trim();
+        item.ImageUrl = resolvedPrimaryImageUrl;
+        item.ImageUrls = imageUrls;
         item.Phone = phone;
         item.Address = address;
+        item.Latitude = request.Latitude;
+        item.Longitude = request.Longitude;
+        item.RadiusMeters = resolvedRadiusMeters;
         item.Category = request.Category?.Trim() ?? string.Empty;
         item.Description = request.Description?.Trim() ?? string.Empty;
 
@@ -138,9 +158,42 @@ public class StoreRegistrationsController : ControllerBase
         public string StoreName { get; set; } = string.Empty;
         public string OwnerName { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
+        public List<string>? ImageUrls { get; set; }
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        public double? RadiusMeters { get; set; }
         public string Category { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+    }
+
+    private static double ResolveRadiusMeters(double? radiusMeters)
+    {
+        if (radiusMeters is null || radiusMeters <= 0)
+        {
+            return 140;
+        }
+
+        return radiusMeters.Value;
+    }
+
+    private static List<string> NormalizeImageUrls(IEnumerable<string>? imageUrls, string? primaryImageUrl = null)
+    {
+        var normalized = imageUrls?
+            .Select(url => url?.Trim())
+            .Where(url => !string.IsNullOrWhiteSpace(url))
+            .Select(url => url!)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList() ?? [];
+
+        var primary = primaryImageUrl?.Trim();
+        if (!string.IsNullOrWhiteSpace(primary) &&
+            !normalized.Any(url => string.Equals(url, primary, StringComparison.OrdinalIgnoreCase)))
+        {
+            normalized.Insert(0, primary);
+        }
+
+        return normalized;
     }
 }

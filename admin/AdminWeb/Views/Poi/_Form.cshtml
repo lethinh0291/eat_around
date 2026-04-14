@@ -21,7 +21,8 @@
             </div>
             <div class="col-12">
                 <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả ngắn về địa điểm"></textarea>
+                <textarea asp-for="Description" class="form-control" rows="4"
+                          placeholder="Mô tả ngắn về địa điểm"></textarea>
                 <span asp-validation-for="Description" class="text-danger small"></span>
             </div>
             <div class="col-md-6 col-lg-3">
@@ -46,19 +47,181 @@
             </div>
             <div class="col-lg-6">
                 <label asp-for="ImageUrl" class="form-label"></label>
-                <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+                <input asp-for="ImageUrl" type="hidden" />
+                <div class="input-group input-group-sm mb-2">
+                    <input id="poiImageFile" type="file" class="form-control" accept="image/*" />
+                    <button type="button" id="uploadPoiImageButton" class="btn btn-outline-primary">Tải ảnh</button>
+                </div>
+                <div id="poiImageUploadStatus" class="small text-muted mb-2">Chọn ảnh từ máy để cập nhật ảnh POI.</div>
+                <img id="poiImagePreview" src="@Model.ImageUrl" alt="POI preview"
+                     style="@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "display:none;" : "display:block;")width:100%;max-height:220px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;" />
                 <span asp-validation-for="ImageUrl" class="text-danger small"></span>
             </div>
             <div class="col-lg-6">
                 <label asp-for="AudioUrl" class="form-label"></label>
-                <input asp-for="AudioUrl" class="form-control" placeholder="https://..." />
-                <span asp-validation-for="AudioUrl" class="text-danger small"></span>
+                <input asp-for="AudioUrl" type="hidden" />
+                <div class="input-group input-group-sm mb-2">
+                    <input id="poiAudioFile" type="file" class="form-control" accept="audio/*" />
+                    <button type="button" id="uploadPoiAudioButton" class="btn btn-outline-primary">Tải audio</button>
+                </div>
+                <div id="poiAudioUploadStatus" class="small text-muted mb-2">Chọn audio từ máy để cập nhật file thuyết
+                    minh.</div>
+                    <span asp-validation-for="AudioUrl" class="text-danger small"></span>
+                </div>
             </div>
-        </div>
 
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4">
-            <a class="btn btn-admin btn-admin-soft" asp-action="Index">Quay lại</a>
-            <button type="submit" class="btn btn-admin btn-admin-primary">Lưu POI</button>
-        </div>
-    </form>
-</div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4">
+                <a class="btn btn-admin btn-admin-soft" asp-action="Index">Quay lại</a>
+                <button type="submit" class="btn btn-admin btn-admin-primary">Lưu POI</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        (function () {
+            const cloudinaryCloudName = 'dmpaepela';
+            const cloudinaryUploadPreset = 'zestour';
+            const uploadButton = document.getElementById('uploadPoiImageButton');
+            if (!uploadButton) {
+                return;
+            }
+
+            uploadButton.addEventListener('click', async function () {
+                const fileInput = document.getElementById('poiImageFile');
+                const hiddenImageInput = document.getElementById('ImageUrl');
+                const status = document.getElementById('poiImageUploadStatus');
+                const preview = document.getElementById('poiImagePreview');
+                const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+                if (!file) {
+                    if (status) {
+                        status.className = 'small text-danger mb-2';
+                        status.textContent = 'Vui lòng chọn 1 ảnh trước khi tải.';
+                    }
+                    return;
+                }
+
+                uploadButton.setAttribute('disabled', 'disabled');
+                if (status) {
+                    status.className = 'small text-muted mb-2';
+                    status.textContent = 'Đang tải ảnh lên Cloudinary...';
+                }
+
+                try {
+                    const endpoint = `https://api.cloudinary.com/v1_1/${encodeURIComponent(cloudinaryCloudName)}/image/upload`;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', cloudinaryUploadPreset);
+                    formData.append('folder', 'zestour/poi');
+
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const payload = await response.json().catch(() => ({}));
+                    if (!response.ok) {
+                        const detail = payload && payload.error && payload.error.message
+                            ? payload.error.message
+                            : 'Không thể upload ảnh POI lên Cloudinary.';
+                        throw new Error(detail);
+                    }
+
+                    const uploadedUrl = payload && payload.secure_url ? String(payload.secure_url).trim() : '';
+                    if (!uploadedUrl) {
+                        throw new Error('Không nhận được URL ảnh từ Cloudinary.');
+                    }
+
+                    if (hiddenImageInput) {
+                        hiddenImageInput.value = uploadedUrl;
+                    }
+                    if (preview) {
+                        preview.src = uploadedUrl;
+                        preview.style.display = 'block';
+                    }
+                    if (fileInput) {
+                        fileInput.value = '';
+                    }
+                    if (status) {
+                        status.className = 'small text-success mb-2';
+                        status.textContent = 'Đã cập nhật ảnh POI.';
+                    }
+                } catch (error) {
+                    if (status) {
+                        status.className = 'small text-danger mb-2';
+                        status.textContent = error && error.message ? error.message : 'Không thể upload ảnh POI.';
+                    }
+                } finally {
+                    uploadButton.removeAttribute('disabled');
+                }
+            });
+
+            const uploadAudioButton = document.getElementById('uploadPoiAudioButton');
+            if (!uploadAudioButton) {
+                return;
+            }
+
+            uploadAudioButton.addEventListener('click', async function () {
+                const fileInput = document.getElementById('poiAudioFile');
+                const hiddenAudioInput = document.getElementById('AudioUrl');
+                const status = document.getElementById('poiAudioUploadStatus');
+                const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+                if (!file) {
+                    if (status) {
+                        status.className = 'small text-danger mb-2';
+                        status.textContent = 'Vui lòng chọn 1 file audio trước khi tải.';
+                    }
+                    return;
+                }
+
+                uploadAudioButton.setAttribute('disabled', 'disabled');
+                if (status) {
+                    status.className = 'small text-muted mb-2';
+                    status.textContent = 'Đang tải audio lên Cloudinary...';
+                }
+
+                try {
+                    const endpoint = `https://api.cloudinary.com/v1_1/${encodeURIComponent(cloudinaryCloudName)}/auto/upload`;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('upload_preset', cloudinaryUploadPreset);
+                    formData.append('folder', 'zestour/audio');
+
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const payload = await response.json().catch(() => ({}));
+                    if (!response.ok) {
+                        const detail = payload && payload.error && payload.error.message
+                            ? payload.error.message
+                            : 'Không thể upload audio POI lên Cloudinary.';
+                        throw new Error(detail);
+                    }
+
+                    const uploadedUrl = payload && payload.secure_url ? String(payload.secure_url).trim() : '';
+                    if (!uploadedUrl) {
+                        throw new Error('Không nhận được URL audio từ Cloudinary.');
+                    }
+
+                    if (hiddenAudioInput) {
+                        hiddenAudioInput.value = uploadedUrl;
+                    }
+                    if (fileInput) {
+                        fileInput.value = '';
+                    }
+                    if (status) {
+                        status.className = 'small text-success mb-2';
+                        status.textContent = 'Đã cập nhật audio POI.';
+                    }
+                } catch (error) {
+                    if (status) {
+                        status.className = 'small text-danger mb-2';
+                        status.textContent = error && error.message ? error.message : 'Không thể upload audio POI.';
+                    }
+                } finally {
+                    uploadAudioButton.removeAttribute('disabled');
+                }
+            });
+        })();
+    </script>

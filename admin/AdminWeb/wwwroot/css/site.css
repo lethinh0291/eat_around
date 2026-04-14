@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
 html {
   font-size: 14px;
   position: relative;
@@ -493,4 +495,217 @@ body.admin-body {
   color: #fff;
   box-shadow: 0 8px 20px rgba(249, 115, 22, 0.5);
   transform: scale(1.05);
+}
+
+/* Mobile-aligned refresh for admin web */
+
+:root {
+  --admin-bg: #fff8f3;
+  --admin-surface: #ffffff;
+  --admin-surface-soft: #fff1e8;
+  --admin-border: #e8d6ca;
+  --admin-text: #24120c;
+  --admin-muted: #6b4a3a;
+  --admin-accent: #f15a24;
+  --admin-accent-dark: #d94827;
+  --admin-accent-soft: rgba(241, 90, 36, 0.12);
+}
+
+body.admin-body {
+  font-family: 'Be Vietnam Pro', 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(241, 90, 36, 0.12), transparent 34%),
+    radial-gradient(circle at 100% 0%, rgba(217, 72, 39, 0.14), transparent 30%),
+    linear-gradient(180deg, #fffaf7 0%, var(--admin-bg) 100%);
+  color: var(--admin-text);
+}
+
+.admin-navbar {
+  background: linear-gradient(135deg, #fff7f2 0%, #ffe8da 100%);
+  border-bottom: 1px solid var(--admin-border);
+  box-shadow: 0 12px 28px rgba(36, 18, 12, 0.08);
+}
+
+.brand-mark {
+  color: var(--admin-text) !important;
+}
+
+.admin-nav-link {
+  color: var(--admin-text) !important;
+  border: 1px solid transparent;
+  font-weight: 600;
+}
+
+.admin-nav-link:hover,
+.admin-nav-link:focus {
+  color: var(--admin-accent-dark) !important;
+  border-color: var(--admin-border);
+  background: var(--admin-surface-soft);
+}
+
+.navbar-toggler {
+  border-color: var(--admin-border) !important;
+  color: var(--admin-text) !important;
+  background: #fff;
+}
+
+.admin-card {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 22px;
+  box-shadow: 0 14px 30px rgba(36, 18, 12, 0.06);
+  padding: 1.25rem;
+}
+
+.table,
+.admin-table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--admin-text);
+  --bs-table-border-color: var(--admin-border);
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.8rem 0.7rem;
+}
+
+.table thead th {
+  color: var(--admin-muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table tbody tr:hover {
+  background: rgba(241, 90, 36, 0.04);
+}
+
+.btn {
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.btn-primary,
+.btn-admin-primary {
+  background: var(--admin-accent);
+  border-color: var(--admin-accent);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-admin-primary:hover,
+.btn-admin-primary:focus {
+  background: var(--admin-accent-dark);
+  border-color: var(--admin-accent-dark);
+}
+
+.btn-outline-primary {
+  color: var(--admin-accent-dark);
+  border-color: #e9b59d;
+  background: #fff;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  color: #fff;
+  background: var(--admin-accent-dark);
+  border-color: var(--admin-accent-dark);
+}
+
+.btn-outline-danger {
+  color: #b42318;
+  border-color: #efb2ac;
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
+  color: #fff;
+  background: #c43223;
+  border-color: #c43223;
+}
+
+.btn-success {
+  background: #c95f2b;
+  border-color: #c95f2b;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background: #ad4f21;
+  border-color: #ad4f21;
+}
+
+.btn-outline-secondary {
+  color: var(--admin-text);
+  border-color: var(--admin-border);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  background: var(--admin-surface-soft);
+  color: var(--admin-text);
+  border-color: var(--admin-border);
+}
+
+.form-control,
+.form-select,
+textarea.form-control {
+  border-color: var(--admin-border);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.form-control.form-control-sm,
+.form-select.form-select-sm {
+  border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea.form-control:focus {
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 0.18rem rgba(241, 90, 36, 0.15);
+}
+
+.alert {
+  border: 1px solid var(--admin-border);
+  border-radius: 14px;
+}
+
+.alert-success {
+  background: #eef9f1;
+  border-color: #bde8c7;
+  color: #14532d;
+}
+
+.alert-danger {
+  background: #fff2f0;
+  border-color: #f2c4bd;
+  color: #7f1d1d;
+}
+
+.modal-content {
+  border-radius: 20px;
+  border: 1px solid var(--admin-border);
+  box-shadow: 0 24px 60px rgba(36, 18, 12, 0.14);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #f1dfd2;
+}
+
+.text-muted,
+.text-secondary,
+.text-secondary-emphasis {
+  color: var(--admin-muted) !important;
+}
+
+.badge.text-bg-secondary {
+  background: #f4e3d8 !important;
+  color: #8e2f18 !important;
+}
+
+.badge.text-bg-light {
+  background: #fff4ec !important;
+  color: #6b4a3a !important;
 }

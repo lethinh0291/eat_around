@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using AdminWeb.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -10,10 +11,12 @@ namespace AdminWeb.Controllers;
 public class AccountController : Controller
 {
     private readonly IConfiguration _configuration;
+    private readonly AdminManagementApiClient _adminManagementApiClient;
 
-    public AccountController(IConfiguration configuration)
+    public AccountController(IConfiguration configuration, AdminManagementApiClient adminManagementApiClient)
     {
         _configuration = configuration;
+        _adminManagementApiClient = adminManagementApiClient;
     }
 
     [HttpGet]
@@ -37,16 +40,43 @@ public class AccountController : Controller
         var expectedUsername = _configuration["AdminAuth:Username"] ?? string.Empty;
         var expectedPassword = _configuration["AdminAuth:Password"] ?? string.Empty;
 
-        if (!string.Equals(model.Username, expectedUsername, StringComparison.Ordinal) ||
-            !string.Equals(model.Password, expectedPassword, StringComparison.Ordinal))
+        var loginResult = await _adminManagementApiClient.AuthenticateAsync(model.Username, model.Password);
+
+        // Keep config-based admin login as fallback for emergency access.
+        if (loginResult is null &&
+            string.Equals(model.Username, expectedUsername, StringComparison.Ordinal) &&
+            string.Equals(model.Password, expectedPassword, StringComparison.Ordinal))
+        {
+            loginResult = new AdminManagementApiClient.LoginResultDto
+            {
+                Name = expectedUsername,
+                Username = expectedUsername,
+                Email = string.Empty,
+                Role = "admin"
+            };
+        }
+
+        if (loginResult is null)
         {
             ModelState.AddModelError(string.Empty, "Sai tên đăng nhập hoặc mật khẩu.");
             return View(model);
         }
 
+        var normalizedRole = (loginResult.Role ?? string.Empty).Trim().ToLowerInvariant();
+        if (!string.Equals(normalizedRole, "admin", StringComparison.Ordinal) &&
+            !string.Equals(normalizedRole, "seller", StringComparison.Ordinal))
+        {
+            ModelState.AddModelError(string.Empty, "Tài khoản này không có quyền truy cập admin web.");
+            return View(model);
+        }
+
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Name, model.Username)
+            new(ClaimTypes.Name, string.IsNullOrWhiteSpace(loginResult.Name) ? loginResult.Username : loginResult.Name),
+            new(ClaimTypes.NameIdentifier, loginResult.Id.ToString()),
+            new(ClaimTypes.Role, normalizedRole),
+            new(ClaimTypes.GivenName, loginResult.Username),
+            new(ClaimTypes.Email, loginResult.Email)
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -64,6 +94,11 @@ public class AccountController : Controller
         if (!string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
         {
             return Redirect(model.ReturnUrl);
+        }
+
+        if (string.Equals(normalizedRole, "seller", StringComparison.Ordinal))
+        {
+            return RedirectToAction("Index", "OwnerPortal");
         }
 
         return RedirectToAction("Index", "Home");
