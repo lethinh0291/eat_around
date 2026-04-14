@@ -1,0 +1,13 @@
+@{
+    var action = (ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty).ToLowerInvariant();
+
+    string ActiveIf(string name) => action == name.ToLowerInvariant() ? "active" : string.Empty;
+}
+
+<div class="dashboard-tabs mb-4">
+    <a class="dashboard-tab @ActiveIf("Overview")" asp-controller="Dashboard" asp-action="Overview">Overview</a>
+    <a class="dashboard-tab @ActiveIf("Analytics")" asp-controller="Dashboard" asp-action="Analytics">Analytics</a>
+    <a class="dashboard-tab @ActiveIf("Logs")" asp-controller="Dashboard" asp-action="Logs">System Logs</a>
+    <a class="dashboard-tab @ActiveIf("Tours")" asp-controller="Dashboard" asp-action="Tours">Tours</a>
+    <a class="dashboard-tab @ActiveIf("Translations")" asp-controller="Dashboard" asp-action="Translations">Translations</a>
+</div>

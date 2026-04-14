@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Maui.Storage;
+using MobileApp.Resources.Localization;
 
 namespace ZesTour.Views;
 
@@ -10,6 +11,17 @@ public partial class HelpFeedbackPage : ContentPage
     public HelpFeedbackPage()
     {
         InitializeComponent();
+        ApplyLocalizedText();
+    }
+
+    private void ApplyLocalizedText()
+    {
+        HelpTitleLabel.Text = AppText.Get("Help_Title");
+        HelpSubtitleLabel.Text = AppText.Get("Help_Subtitle");
+        EmailEntry.Placeholder = AppText.Get("Help_EmailPlaceholder");
+        TitleEntry.Placeholder = AppText.Get("Help_TitlePlaceholder");
+        ContentEditor.Placeholder = AppText.Get("Help_ContentPlaceholder");
+        SubmitButton.Text = AppText.Get("Help_Submit");
     }
 
     private async void OnSubmitClicked(object? sender, EventArgs e)
@@ -22,7 +34,7 @@ public partial class HelpFeedbackPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(content))
         {
-            MessageLabel.Text = "Vui lòng nhập tiêu đề và nội dung phản hồi.";
+            MessageLabel.Text = AppText.Get("Help_Validation");
             return;
         }
 
@@ -36,7 +48,10 @@ public partial class HelpFeedbackPage : ContentPage
         });
 
         Preferences.Default.Set(FeedbackKey, JsonSerializer.Serialize(items));
-        await DisplayAlertAsync("Cảm ơn", "Phản hồi của bạn đã được ghi nhận.", "OK");
+        await DisplayAlertAsync(
+            AppText.Get("Help_ThanksTitle"),
+            AppText.Get("Help_ThanksMessage"),
+            AppText.Get("Common_Ok"));
 
         EmailEntry.Text = string.Empty;
         TitleEntry.Text = string.Empty;

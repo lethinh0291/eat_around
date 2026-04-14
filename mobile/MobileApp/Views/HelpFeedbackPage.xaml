@@ -28,11 +28,13 @@
                     <VerticalStackLayout Grid.Column="1"
                                          Spacing="2"
                                          VerticalOptions="Center">
-                        <Label Text="Trợ giúp và phản hồi"
+                           <Label x:Name="HelpTitleLabel"
+                               Text="Trợ giúp và phản hồi"
                                FontSize="22"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
-                        <Label Text="Gửi góp ý để cải thiện trải nghiệm"
+                           <Label x:Name="HelpSubtitleLabel"
+                               Text="Gửi góp ý để cải thiện trải nghiệm"
                                FontSize="11"
                                TextColor="{StaticResource TextSecondary}"/>
                     </VerticalStackLayout>
@@ -56,7 +58,8 @@
                         <Label x:Name="MessageLabel"
                                FontSize="12"
                                TextColor="#B91C1C"/>
-                        <Button Text="Gửi phản hồi"
+                        <Button x:Name="SubmitButton"
+                            Text="Gửi phản hồi"
                                 Clicked="OnSubmitClicked"
                                 HeightRequest="50"
                                 CornerRadius="16"

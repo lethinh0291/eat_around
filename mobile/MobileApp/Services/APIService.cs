@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using SharedLib.Models;
+using Microsoft.Maui.Storage;
 using BackendStoreRegistration = MobileApp.Services.ApiService.StoreRegistrationRequest;
 
 namespace MobileApp.Services;
@@ -66,6 +67,7 @@ public class ApiService
     private readonly HttpClient _httpClient;
     // Dùng 10.0.2.2 nếu dùng máy ảo Android, hoặc IP máy tính nếu dùng máy thật
     private const string BaseUrl = "http://10.0.2.2:5069/api/";
+    private const string DeviceIdKey = "zes_device_id_v1";
 
     public ApiService()
     {
@@ -86,6 +88,78 @@ public class ApiService
         {
             Console.WriteLine($"Lỗi khi lấy POIs từ API: {ex.Message}");
             return new List<POI>();
+        }
+    }
+    
+    public async Task<PoiTranslationResponse?> GetApprovedPoiTranslationAsync(
+        int poiId,
+        string languageCode,
+        CancellationToken cancellationToken = default)
+    {
+        if (poiId <= 0)
+        {
+            return null;
+        }
+
+        var normalizedLanguage = string.IsNullOrWhiteSpace(languageCode)
+            ? "vi"
+            : languageCode.Trim().ToLowerInvariant();
+
+        var endpoint = $"poi-translations?poiId={poiId}&languageCode={Uri.EscapeDataString(normalizedLanguage)}&status=approved";
+
+        try
+        {
+            var result = await _httpClient.GetFromJsonAsync<List<PoiTranslationResponse>>(endpoint, cancellationToken);
+            return result?.FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi khi lấy bản dịch POI {poiId}: {ex.Message}");
+            return null;
+        }
+    }
+
+    public async Task<bool> RecordListenLogAsync(
+        int poiId,
+        string languageCode,
+        string contentType,
+        double durationSeconds,
+        double latitude,
+        double longitude,
+        DateTime? playedAtUtc = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (poiId <= 0)
+        {
+            return false;
+        }
+
+        if (latitude is < -90 or > 90 || longitude is < -180 or > 180)
+        {
+            return false;
+        }
+
+        var payload = new CreateListenLogRequest
+        {
+            DeviceId = GetOrCreateDeviceId(),
+            PoiId = poiId,
+            LanguageCode = string.IsNullOrWhiteSpace(languageCode) ? "vi" : languageCode.Trim().ToLowerInvariant(),
+            ContentType = string.IsNullOrWhiteSpace(contentType) ? "tts" : contentType.Trim().ToLowerInvariant(),
+            DurationSeconds = Math.Max(0, durationSeconds),
+            Latitude = latitude,
+            Longitude = longitude,
+            PlayedAtUtc = playedAtUtc ?? DateTime.UtcNow
+        };
+
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("listen-logs", payload, cancellationToken);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi ghi listen log POI {poiId}: {ex.Message}");
+            return false;
         }
     }
 
@@ -519,6 +593,46 @@ public class ApiService
         public string ImageUrl { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public int SortOrder { get; set; }
+    }
+    
+    public sealed class PoiTranslationResponse
+    {
+        public int Id { get; set; }
+        public int PoiId { get; set; }
+        public string LanguageCode { get; set; } = "vi";
+        public string? Title { get; set; }
+        public string ContentText { get; set; } = string.Empty;
+        public string? AudioUrl { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string? SubmittedBy { get; set; }
+        public string? ReviewedBy { get; set; }
+        public DateTime SubmittedAtUtc { get; set; }
+        public DateTime? ReviewedAtUtc { get; set; }
+    }
+
+    public sealed class CreateListenLogRequest
+    {
+        public string DeviceId { get; set; } = string.Empty;
+        public int PoiId { get; set; }
+        public string? LanguageCode { get; set; }
+        public string? ContentType { get; set; }
+        public double DurationSeconds { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public DateTime? PlayedAtUtc { get; set; }
+    }
+
+    private static string GetOrCreateDeviceId()
+    {
+        var deviceId = Preferences.Default.Get(DeviceIdKey, string.Empty);
+        if (!string.IsNullOrWhiteSpace(deviceId))
+        {
+            return deviceId;
+        }
+
+        deviceId = Guid.NewGuid().ToString("N");
+        Preferences.Default.Set(DeviceIdKey, deviceId);
+        return deviceId;
     }
 
     private static List<string> NormalizeImageUrls(IEnumerable<string>? imageUrls)

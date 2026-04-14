@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Microsoft.Maui.Storage;
+using MobileApp.Resources.Localization;
+using System.Globalization;
 
 namespace ZesTour.Views;
 
@@ -10,6 +12,16 @@ public partial class MyTripsPage : ContentPage
     public MyTripsPage()
     {
         InitializeComponent();
+        ApplyLocalizedText();
+    }
+
+    private void ApplyLocalizedText()
+    {
+        TripsTitleLabel.Text = AppText.Get("Trips_Title");
+        TripsSubtitleLabel.Text = AppText.Get("Trips_Subtitle");
+        TripsHintLabel.Text = AppText.Get("Trips_Hint");
+        ClearSelectedTripButton.Text = AppText.Get("Trips_ClearSelected");
+        EmptyLabel.Text = AppText.Get("Trips_Empty");
     }
 
     protected override void OnAppearing()
@@ -34,10 +46,10 @@ public partial class MyTripsPage : ContentPage
     private async void OnClearSelectedTripClicked(object? sender, EventArgs e)
     {
         var confirm = await DisplayAlertAsync(
-            "Xóa địa điểm",
-            "Bạn có chắc muốn xóa địa điểm đã chọn không?",
-            "Xóa",
-            "Hủy");
+            AppText.Get("Trips_ClearTitle"),
+            AppText.Get("Trips_ClearConfirm"),
+            AppText.Get("Trips_Delete"),
+            AppText.Get("Trips_Cancel"));
 
         if (!confirm)
         {
@@ -86,9 +98,9 @@ public partial class MyTripsPage : ContentPage
     {
         return new TripItemViewModel
         {
-            Name = string.IsNullOrWhiteSpace(item.Name) ? "Điểm đã chọn" : item.Name,
-            Description = string.IsNullOrWhiteSpace(item.Description) ? "Không có mô tả" : item.Description,
-            CreatedAtText = item.CreatedAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+            Name = string.IsNullOrWhiteSpace(item.Name) ? AppText.Get("Trips_DefaultName") : item.Name,
+            Description = string.IsNullOrWhiteSpace(item.Description) ? AppText.Get("Trips_DefaultDescription") : item.Description,
+            CreatedAtText = item.CreatedAtUtc.ToLocalTime().ToString("g", CultureInfo.CurrentCulture)
         };
     }
 

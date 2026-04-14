@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, ...</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
+  </resheader>
+  <data name="Common_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Loading_ErrorTitle" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="Loading_StartupError" xml:space="preserve">
+    <value>Lỗi khởi động: {0}</value>
+  </data>
+  <data name="Language_AutoDevice" xml:space="preserve">
+    <value>Tự động theo thiết bị</value>
+  </data>
+  <data name="Language_Vietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Japanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="Language_Korean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="Language_Chinese" xml:space="preserve">
+    <value>中文</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="Settings_Subtitle" xml:space="preserve">
+    <value>Tùy chỉnh trải nghiệm sử dụng</value>
+  </data>
+  <data name="Settings_LocalStorageHint" xml:space="preserve">
+    <value>Các lựa chọn dưới đây được lưu cục bộ trên thiết bị của bạn.</value>
+  </data>
+  <data name="Settings_SystemOptions" xml:space="preserve">
+    <value>Tuỳ chọn hệ thống</value>
+  </data>
+  <data name="Settings_AutoPlay" xml:space="preserve">
+    <value>Bật tự động phát</value>
+  </data>
+  <data name="Settings_Battery" xml:space="preserve">
+    <value>Tối ưu pin</value>
+  </data>
+  <data name="Settings_Notifications" xml:space="preserve">
+    <value>Nhận thông báo</value>
+  </data>
+  <data name="Settings_StoreNarration" xml:space="preserve">
+    <value>Đọc mô tả quán ăn</value>
+  </data>
+  <data name="Settings_InterfaceLanguage" xml:space="preserve">
+    <value>Ngôn ngữ giao diện</value>
+  </data>
+  <data name="Settings_NarrationLanguage" xml:space="preserve">
+    <value>Ngôn ngữ thuyết minh</value>
+  </data>
+  <data name="Settings_SelectLanguage" xml:space="preserve">
+    <value>Chọn ngôn ngữ</value>
+  </data>
+  <data name="Settings_Save" xml:space="preserve">
+    <value>Lưu cài đặt</value>
+  </data>
+  <data name="Settings_SaveSuccessTitle" xml:space="preserve">
+    <value>Đã lưu</value>
+  </data>
+  <data name="Settings_SaveSuccessMessage" xml:space="preserve">
+    <value>Cài đặt của bạn đã được cập nhật.</value>
+  </data>
+  <data name="Settings_SaveAndReloadMessage" xml:space="preserve">
+    <value>Đã lưu cài đặt. Giao diện sẽ được tải lại theo ngôn ngữ mới.</value>
+  </data>
+  <data name="Settings_AutoDeviceDetail" xml:space="preserve">
+    <value>Tự động theo thiết bị ({0})</value>
+  </data>
+  <data name="Login_WelcomeBack" xml:space="preserve">
+    <value>Chào mừng quay lại</value>
+  </data>
+  <data name="Login_ContinueDescription" xml:space="preserve">
+    <value>Đăng nhập để tiếp tục bản đồ, hành trình và cửa hàng của bạn</value>
+  </data>
+  <data name="Login_AccountInfo" xml:space="preserve">
+    <value>Thông tin tài khoản</value>
+  </data>
+  <data name="Login_IdentifierLabel" xml:space="preserve">
+    <value>Email hoặc tên đăng nhập</value>
+  </data>
+  <data name="Login_IdentifierPlaceholder" xml:space="preserve">
+    <value>vd: minh@zestour.vn</value>
+  </data>
+  <data name="Login_PasswordLabel" xml:space="preserve">
+    <value>Mật khẩu</value>
+  </data>
+  <data name="Login_PasswordPlaceholder" xml:space="preserve">
+    <value>Nhập mật khẩu</value>
+  </data>
+  <data name="Login_Remember" xml:space="preserve">
+    <value>Ghi nhớ đăng nhập trên thiết bị này</value>
+  </data>
+  <data name="Login_Button" xml:space="preserve">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="Login_CreateAccount" xml:space="preserve">
+    <value>Tạo tài khoản mới</value>
+  </data>
+  <data name="Menu_Hello" xml:space="preserve">
+    <value>Xin chào</value>
+  </data>
+  <data name="Menu_RoleCustomer" xml:space="preserve">
+    <value>Khách hàng</value>
+  </data>
+  <data name="Menu_RoleSeller" xml:space="preserve">
+    <value>Người bán</value>
+  </data>
+  <data name="Menu_RoleAdmin" xml:space="preserve">
+    <value>Quản trị viên</value>
+  </data>
+  <data name="Menu_SearchPlaceholder" xml:space="preserve">
+    <value>Tìm tính năng: bản đồ, cài đặt, cửa hàng...</value>
+  </data>
+  <data name="Menu_ExploreSection" xml:space="preserve">
+    <value>Khám phá</value>
+  </data>
+  <data name="Menu_DiscoverTitle" xml:space="preserve">
+    <value>Khám phá điểm đến</value>
+  </data>
+  <data name="Menu_DiscoverSubtitle" xml:space="preserve">
+    <value>Bản đồ, chỉ đường và phát mô tả tự động</value>
+  </data>
+  <data name="Menu_QrTriggerTitle" xml:space="preserve">
+    <value>Kích hoạt thuyết minh bằng QR</value>
+  </data>
+  <data name="Menu_QrTriggerSubtitle" xml:space="preserve">
+    <value>Quét mã QR để mở nội dung thuyết minh phù hợp</value>
+  </data>
+  <data name="Menu_MyTripsTitle" xml:space="preserve">
+    <value>Hành trình của tôi</value>
+  </data>
+  <data name="Menu_MyTripsSubtitle" xml:space="preserve">
+    <value>Xem lại các điểm bạn đã chọn</value>
+  </data>
+  <data name="Menu_AccountSection" xml:space="preserve">
+    <value>Tài khoản</value>
+  </data>
+  <data name="Menu_AccountPayment" xml:space="preserve">
+    <value>Tài khoản và thanh toán</value>
+  </data>
+  <data name="Menu_SellerSection" xml:space="preserve">
+    <value>Dành cho người bán</value>
+  </data>
+  <data name="Menu_StoreManagement" xml:space="preserve">
+    <value>Quản lý cửa hàng của tôi</value>
+  </data>
+  <data name="Menu_StoreRegistration" xml:space="preserve">
+    <value>Gửi đăng ký cửa hàng</value>
+  </data>
+  <data name="Menu_SupportTitle" xml:space="preserve">
+    <value>Trợ giúp và phản hồi</value>
+  </data>
+  <data name="Menu_SupportSubtitle" xml:space="preserve">
+    <value>Báo lỗi hoặc góp ý để cải thiện ứng dụng</value>
+  </data>
+  <data name="Menu_QuickActionsTitle" xml:space="preserve">
+    <value>Chức năng nhanh</value>
+  </data>
+  <data name="Menu_QuickActionsSubtitle" xml:space="preserve">
+    <value>Truy cập các thao tác chính mà không cần kéo xuống cuối trang.</value>
+  </data>
+  <data name="Menu_Home" xml:space="preserve">
+    <value>Trang chính</value>
+  </data>
+  <data name="Menu_Profile" xml:space="preserve">
+    <value>Hồ sơ người dùng</value>
+  </data>
+  <data name="Menu_HelpFeedback" xml:space="preserve">
+    <value>Trợ giúp và phản hồi</value>
+  </data>
+  <data name="Menu_Logout" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="Menu_FeatureTitle" xml:space="preserve">
+    <value>Tính năng</value>
+  </data>
+  <data name="Menu_ComingSoonFormat" xml:space="preserve">
+    <value>{0} sẽ được hoàn thiện trong bản cập nhật tiếp theo.</value>
+  </data>
+  <data name="Menu_Close" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="Menu_RoleMismatchTitle" xml:space="preserve">
+    <value>Vai trò chưa phù hợp</value>
+  </data>
+  <data name="Menu_RoleMismatchSellerFeature" xml:space="preserve">
+    <value>Tính năng đăng ký cửa hàng chỉ hiển thị cho tài khoản Người bán.</value>
+  </data>
+  <data name="Menu_RoleMismatchSellerRequired" xml:space="preserve">
+    <value>Bạn cần đăng nhập bằng tài khoản Người bán để dùng tính năng này.</value>
+  </data>
+  <data name="Menu_NotFoundFormat" xml:space="preserve">
+    <value>Không tìm thấy mục khớp với: {0}</value>
+  </data>
+  <data name="Main_Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Hồ sơ</value>
+  </data>
+  <data name="Main_MapTitle" xml:space="preserve">
+    <value>Bản đồ khám phá</value>
+  </data>
+  <data name="Main_MapSubtitle" xml:space="preserve">
+    <value>Chạm vào điểm trên bản đồ để nghe mô tả</value>
+  </data>
+  <data name="Main_QrTriggerButton" xml:space="preserve">
+    <value>QR</value>
+  </data>
+  <data name="Main_BadgePlace" xml:space="preserve">
+    <value>ĐỊA ĐIỂM</value>
+  </data>
+  <data name="Main_LocationOnMap" xml:space="preserve">
+    <value>Địa điểm trên bản đồ</value>
+  </data>
+  <data name="Main_TapToSelect" xml:space="preserve">
+    <value>Chạm vào bản đồ để chọn địa điểm</value>
+  </data>
+  <data name="Main_AddressPrefix" xml:space="preserve">
+    <value>Số nhà, đường: {0}</value>
+  </data>
+  <data name="Main_NoAddress" xml:space="preserve">
+    <value>Chưa có thông tin</value>
+  </data>
+  <data name="Main_CurrentViewing" xml:space="preserve">
+    <value>Địa điểm đang xem</value>
+  </data>
+  <data name="Main_SelectedLocation" xml:space="preserve">
+    <value>Địa điểm đã chọn</value>
+  </data>
+  <data name="Main_DefaultPointName" xml:space="preserve">
+    <value>Điểm đã chọn</value>
+  </data>
+  <data name="Main_NoDescription" xml:space="preserve">
+    <value>Không có mô tả</value>
+  </data>
+  <data name="Main_AutoPlay" xml:space="preserve">
+    <value>Tự động phát</value>
+  </data>
+  <data name="Main_BatterySaver" xml:space="preserve">
+    <value>Tiết kiệm pin</value>
+  </data>
+  <data name="Main_SidebarTitle" xml:space="preserve">
+    <value>Bảng điều hướng</value>
+  </data>
+  <data name="Main_SidebarSubtitle" xml:space="preserve">
+    <value>Truy cập nhanh các chức năng chính để thao tác ít bước hơn.</value>
+  </data>
+  <data name="Main_SidebarMapPage" xml:space="preserve">
+    <value>Trang bản đồ</value>
+  </data>
+  <data name="Main_SidebarHome" xml:space="preserve">
+    <value>Về trang chính</value>
+  </data>
+  <data name="Main_SidebarProfile" xml:space="preserve">
+    <value>Hồ sơ người dùng</value>
+  </data>
+  <data name="Main_SidebarRecenter" xml:space="preserve">
+    <value>Định vị lại</value>
+  </data>
+  <data name="Main_NotificationTitle" xml:space="preserve">
+    <value>Thông báo</value>
+  </data>
+  <data name="Main_NotificationMessage" xml:space="preserve">
+    <value>Bạn chưa có thông báo mới.</value>
+  </data>
+  <data name="Main_InfoTitle" xml:space="preserve">
+    <value>Thông tin</value>
+  </data>
+  <data name="Main_InfoMessage" xml:space="preserve">
+    <value>Khu vực này đang có 12 điểm ăn uống nổi bật.</value>
+  </data>
+  <data name="Main_LocationTitle" xml:space="preserve">
+    <value>Vị trí</value>
+  </data>
+  <data name="Main_LocationUnavailable" xml:space="preserve">
+    <value>Không lấy được vị trí hiện tại của bạn.</value>
+  </data>
+  <data name="Main_BadgeStore" xml:space="preserve">
+    <value>CỬA HÀNG</value>
+  </data>
+  <data name="Main_StoreNearby" xml:space="preserve">
+    <value>Cửa hàng gần bạn</value>
+  </data>
+  <data name="Main_BadgeAuto" xml:space="preserve">
+    <value>TỰ ĐỘNG</value>
+  </data>
+  <data name="Main_BadgeManual" xml:space="preserve">
+    <value>THỦ CÔNG</value>
+  </data>
+  <data name="Main_BatteryModeOptimized" xml:space="preserve">
+    <value>Chế độ pin: Tối ưu</value>
+  </data>
+  <data name="Main_BatteryModeNormal" xml:space="preserve">
+    <value>Chế độ pin: Bình thường</value>
+  </data>
+  <data name="Main_LoadError" xml:space="preserve">
+    <value>Lỗi tải dữ liệu: {0}</value>
+  </data>
+  <data name="Main_StoreFallbackName" xml:space="preserve">
+    <value>Cửa hàng</value>
+  </data>
+  <data name="Main_StoreNearbyDescriptionTemplate" xml:space="preserve">
+    <value>Bạn đang ở gần cửa hàng {0}.</value>
+  </data>
+  <data name="QrTrigger_Title" xml:space="preserve">
+    <value>Quét mã QR</value>
+  </data>
+  <data name="QrTrigger_Subtitle" xml:space="preserve">
+    <value>Hướng camera vào mã QR để phát thuyết minh</value>
+  </data>
+  <data name="QrTrigger_OverlayHint" xml:space="preserve">
+    <value>Đưa QR vào vùng khung</value>
+  </data>
+  <data name="QrTrigger_Ready" xml:space="preserve">
+    <value>Sẵn sàng quét</value>
+  </data>
+  <data name="QrTrigger_Retry" xml:space="preserve">
+    <value>Quét lại</value>
+  </data>
+  <data name="QrTrigger_Processing" xml:space="preserve">
+    <value>Đang xử lý mã QR...</value>
+  </data>
+  <data name="QrTrigger_UnsupportedTitle" xml:space="preserve">
+    <value>Mã QR không hỗ trợ</value>
+  </data>
+  <data name="QrTrigger_Unsupported" xml:space="preserve">
+    <value>Mã QR này không đúng định dạng hỗ trợ. Vui lòng thử mã khác.</value>
+  </data>
+  <data name="QrTrigger_NotFoundTitle" xml:space="preserve">
+    <value>Không tìm thấy nội dung</value>
+  </data>
+  <data name="QrTrigger_PoiNotFound" xml:space="preserve">
+    <value>Không tìm thấy địa điểm tương ứng với mã QR.</value>
+  </data>
+  <data name="QrTrigger_PoiNotFoundOffline" xml:space="preserve">
+    <value>Không tìm thấy địa điểm và thiết bị đang ngoại tuyến. Vui lòng kết nối mạng rồi quét lại.</value>
+  </data>
+  <data name="QrTrigger_PlaybackFailedTitle" xml:space="preserve">
+    <value>Không thể phát thuyết minh</value>
+  </data>
+  <data name="QrTrigger_PlaybackFailed" xml:space="preserve">
+    <value>Đã nhận diện mã QR nhưng chưa phát được nội dung. Vui lòng thử lại.</value>
+  </data>
+  <data name="QrTrigger_SuccessTitle" xml:space="preserve">
+    <value>Đã phát thuyết minh</value>
+  </data>
+  <data name="QrTrigger_Success" xml:space="preserve">
+    <value>Đang phát thuyết minh cho: {0}</value>
+  </data>
+  <data name="Profile_Title" xml:space="preserve">
+    <value>Hồ sơ người dùng</value>
+  </data>
+  <data name="Profile_Subtitle" xml:space="preserve">
+    <value>Tài khoản và ảnh đại diện</value>
+  </data>
+  <data name="Profile_DefaultUser" xml:space="preserve">
+    <value>Người dùng</value>
+  </data>
+  <data name="Profile_DefaultEmail" xml:space="preserve">
+    <value>user@zestour.vn</value>
+  </data>
+  <data name="Profile_SignedIn" xml:space="preserve">
+    <value>Đang đăng nhập</value>
+  </data>
+  <data name="Profile_Username" xml:space="preserve">
+    <value>Tên đăng nhập</value>
+  </data>
+  <data name="Profile_AccountNumber" xml:space="preserve">
+    <value>Số tài khoản</value>
+  </data>
+  <data name="Profile_Avatar" xml:space="preserve">
+    <value>Ảnh đại diện</value>
+  </data>
+  <data name="Profile_AvatarHint" xml:space="preserve">
+    <value>Chọn từ máy và lưu lên Cloudinary để dùng cho hồ sơ của bạn</value>
+  </data>
+  <data name="Profile_ChangeAvatar" xml:space="preserve">
+    <value>Đổi ảnh đại diện</value>
+  </data>
+  <data name="Profile_QuickActions" xml:space="preserve">
+    <value>Hành động nhanh</value>
+  </data>
+  <data name="Profile_Map" xml:space="preserve">
+    <value>Bản đồ</value>
+  </data>
+  <data name="Profile_BackToHome" xml:space="preserve">
+    <value>Quay lại trang chính</value>
+  </data>
+  <data name="Profile_Status" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="Profile_LocalSync" xml:space="preserve">
+    <value>Đồng bộ cục bộ</value>
+  </data>
+  <data name="Profile_Logout" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="Profile_NotSignedIn" xml:space="preserve">
+    <value>Chưa đăng nhập</value>
+  </data>
+  <data name="Profile_PleaseSignIn" xml:space="preserve">
+    <value>Hãy đăng nhập để xem hồ sơ.</value>
+  </data>
+  <data name="Profile_GuestUsername" xml:space="preserve">
+    <value>guest</value>
+  </data>
+  <data name="Profile_NoSession" xml:space="preserve">
+    <value>Không có phiên đăng nhập</value>
+  </data>
+  <data name="Profile_Active" xml:space="preserve">
+    <value>Đang hoạt động</value>
+  </data>
+  <data name="Profile_PickAvatar" xml:space="preserve">
+    <value>Chọn ảnh đại diện</value>
+  </data>
+  <data name="Profile_UpdateAvatarFailed" xml:space="preserve">
+    <value>Không thể cập nhật ảnh đại diện.</value>
+  </data>
+  <data name="Help_Title" xml:space="preserve">
+    <value>Trợ giúp và phản hồi</value>
+  </data>
+  <data name="Help_Subtitle" xml:space="preserve">
+    <value>Gửi góp ý để cải thiện trải nghiệm</value>
+  </data>
+  <data name="Help_EmailPlaceholder" xml:space="preserve">
+    <value>Email liên hệ</value>
+  </data>
+  <data name="Help_TitlePlaceholder" xml:space="preserve">
+    <value>Tiêu đề phản hồi</value>
+  </data>
+  <data name="Help_ContentPlaceholder" xml:space="preserve">
+    <value>Mô tả chi tiết phản hồi của bạn</value>
+  </data>
+  <data name="Help_Submit" xml:space="preserve">
+    <value>Gửi phản hồi</value>
+  </data>
+  <data name="Help_Validation" xml:space="preserve">
+    <value>Vui lòng nhập tiêu đề và nội dung phản hồi.</value>
+  </data>
+  <data name="Help_ThanksTitle" xml:space="preserve">
+    <value>Cảm ơn</value>
+  </data>
+  <data name="Help_ThanksMessage" xml:space="preserve">
+    <value>Phản hồi của bạn đã được ghi nhận.</value>
+  </data>
+  <data name="Trips_Title" xml:space="preserve">
+    <value>Hành trình của tôi</value>
+  </data>
+  <data name="Trips_Subtitle" xml:space="preserve">
+    <value>Địa điểm bạn đã chọn để đến</value>
+  </data>
+  <data name="Trips_Hint" xml:space="preserve">
+    <value>Lịch sử mới nhất sẽ xuất hiện ở đây để bạn mở lại nhanh hơn.</value>
+  </data>
+  <data name="Trips_ClearSelected" xml:space="preserve">
+    <value>Xóa địa điểm đã chọn</value>
+  </data>
+  <data name="Trips_Empty" xml:space="preserve">
+    <value>Bạn chưa chọn địa điểm nào để đến.</value>
+  </data>
+  <data name="Trips_ClearTitle" xml:space="preserve">
+    <value>Xóa địa điểm</value>
+  </data>
+  <data name="Trips_ClearConfirm" xml:space="preserve">
+    <value>Bạn có chắc muốn xóa địa điểm đã chọn không?</value>
+  </data>
+  <data name="Trips_Delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Trips_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Trips_DefaultName" xml:space="preserve">
+    <value>Điểm đã chọn</value>
+  </data>
+  <data name="Trips_DefaultDescription" xml:space="preserve">
+    <value>Không có mô tả</value>
+  </data>
+  <data name="Common_NoPermissionTitle" xml:space="preserve">
+    <value>Không có quyền</value>
+  </data>
+  <data name="Register_Title" xml:space="preserve">
+    <value>Tạo tài khoản mới</value>
+  </data>
+  <data name="Register_Subtitle" xml:space="preserve">
+    <value>Đăng ký nhanh để lưu hành trình, khám phá và mở cửa hàng</value>
+  </data>
+  <data name="Register_Name" xml:space="preserve">
+    <value>Họ và tên</value>
+  </data>
+  <data name="Register_NamePlaceholder" xml:space="preserve">
+    <value>vd: Nguyễn Văn A</value>
+  </data>
+  <data name="Register_Username" xml:space="preserve">
+    <value>Tên đăng nhập</value>
+  </data>
+  <data name="Register_UsernamePlaceholder" xml:space="preserve">
+    <value>vd: nguyenvana</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_EmailPlaceholder" xml:space="preserve">
+    <value>vd: a@zestour.vn</value>
+  </data>
+  <data name="Register_Password" xml:space="preserve">
+    <value>Mật khẩu</value>
+  </data>
+  <data name="Register_PasswordPlaceholder" xml:space="preserve">
+    <value>Nhập mật khẩu</value>
+  </data>
+  <data name="Register_ConfirmPassword" xml:space="preserve">
+    <value>Xác nhận mật khẩu</value>
+  </data>
+  <data name="Register_ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>Nhập lại mật khẩu</value>
+  </data>
+  <data name="Register_SellerTitle" xml:space="preserve">
+    <value>Tạo tài khoản người bán</value>
+  </data>
+  <data name="Register_SellerHint" xml:space="preserve">
+    <value>Bật nếu bạn muốn đăng ký và quản lý cửa hàng</value>
+  </data>
+  <data name="Register_Submit" xml:space="preserve">
+    <value>Tạo tài khoản</value>
+  </data>
+  <data name="Register_BackToLogin" xml:space="preserve">
+    <value>Quay lại đăng nhập</value>
+  </data>
+  <data name="Register_PasswordMismatch" xml:space="preserve">
+    <value>Mật khẩu xác nhận không khớp.</value>
+  </data>
+  <data name="Register_AlertTitle" xml:space="preserve">
+    <value>Đăng ký</value>
+  </data>
+  <data name="Register_RoleSeller" xml:space="preserve">
+    <value>Vai trò sẽ tạo: Người bán</value>
+  </data>
+  <data name="Register_RoleCustomer" xml:space="preserve">
+    <value>Vai trò sẽ tạo: Khách hàng</value>
+  </data>
+  <data name="StoreRegistration_Title" xml:space="preserve">
+    <value>Đăng ký cửa hàng</value>
+  </data>
+  <data name="StoreRegistration_Subtitle" xml:space="preserve">
+    <value>Gửi thông tin để xét duyệt xuất hiện trên ứng dụng</value>
+  </data>
+  <data name="StoreRegistration_StoreName" xml:space="preserve">
+    <value>Tên cửa hàng</value>
+  </data>
+  <data name="StoreRegistration_OwnerName" xml:space="preserve">
+    <value>Tên chủ cửa hàng</value>
+  </data>
+  <data name="StoreRegistration_Phone" xml:space="preserve">
+    <value>Số điện thoại</value>
+  </data>
+  <data name="StoreRegistration_Address" xml:space="preserve">
+    <value>Địa chỉ</value>
+  </data>
+  <data name="StoreRegistration_AddressPosition" xml:space="preserve">
+    <value>Vị trí địa chỉ</value>
+  </data>
+  <data name="StoreRegistration_Category" xml:space="preserve">
+    <value>Loại hình (ăn uống, cafe,...)</value>
+  </data>
+  <data name="StoreRegistration_Description" xml:space="preserve">
+    <value>Mô tả ngắn về cửa hàng</value>
+  </data>
+  <data name="StoreRegistration_AddImage" xml:space="preserve">
+    <value>Thêm ảnh</value>
+  </data>
+  <data name="StoreRegistration_ImageHint" xml:space="preserve">
+    <value>Kéo thả để sắp xếp, bấm Đặt chính để chọn ảnh đại diện.</value>
+  </data>
+  <data name="StoreRegistration_Submit" xml:space="preserve">
+    <value>Gửi đăng ký</value>
+  </data>
+  <data name="StoreRegistration_SellerOnly" xml:space="preserve">
+    <value>Chỉ tài khoản Người bán mới có thể đăng ký cửa hàng.</value>
+  </data>
+  <data name="StoreRegistration_RequiredFields" xml:space="preserve">
+    <value>Vui lòng nhập đủ thông tin bắt buộc.</value>
+  </data>
+  <data name="StoreRegistration_AddressNotResolved" xml:space="preserve">
+    <value>Không xác định được vị trí địa chỉ. Vui lòng chọn gợi ý phù hợp.</value>
+  </data>
+  <data name="StoreRegistration_SubmitSuccessTitle" xml:space="preserve">
+    <value>Gửi thành công</value>
+  </data>
+  <data name="StoreRegistration_PickImages" xml:space="preserve">
+    <value>Chọn nhiều ảnh cho cửa hàng</value>
+  </data>
+  <data name="StoreRegistration_PickImagesFailed" xml:space="preserve">
+    <value>Không thể chọn ảnh. Vui lòng thử lại.</value>
+  </data>
+  <data name="StoreRegistration_AddressPositionFormat" xml:space="preserve">
+    <value>Vị trí địa chỉ: {0}</value>
+  </data>
+  <data name="StoreRegistration_RestoreDraftTitle" xml:space="preserve">
+    <value>Khôi phục bản nháp</value>
+  </data>
+  <data name="StoreRegistration_RestoreDraftMessage" xml:space="preserve">
+    <value>Đã tự khôi phục thông tin đăng ký cửa hàng chưa gửi xong.</value>
+  </data>
+  <data name="StoreRegistration_NoImageSelected" xml:space="preserve">
+    <value>Chưa chọn ảnh</value>
+  </data>
+  <data name="StoreRegistration_SelectedImagesFormat" xml:space="preserve">
+    <value>Đã chọn: {0} ảnh</value>
+  </data>
+  <data name="StoreManagement_Title" xml:space="preserve">
+    <value>Quản lý cửa hàng</value>
+  </data>
+  <data name="StoreManagement_Subtitle" xml:space="preserve">
+    <value>Sửa nhanh thông tin, ảnh, địa chỉ và tọa độ cho quán của bạn</value>
+  </data>
+  <data name="StoreManagement_EditRegistration" xml:space="preserve">
+    <value>Chỉnh sửa đăng ký</value>
+  </data>
+  <data name="StoreManagement_EditRegistrationTitle" xml:space="preserve">
+    <value>Chọn một quán bên dưới rồi cập nhật từ form này.</value>
+  </data>
+  <data name="StoreManagement_EditRegistrationHint" xml:space="preserve">
+    <value>Có gợi ý địa chỉ, xem trước map và lưu ảnh chính.</value>
+  </data>
+  <data name="StoreManagement_Refresh" xml:space="preserve">
+    <value>Tải lại</value>
+  </data>
+  <data name="StoreManagement_RegistrationListTitle" xml:space="preserve">
+    <value>Danh sách đăng ký</value>
+  </data>
+  <data name="StoreManagement_RegistrationListSubtitle" xml:space="preserve">
+    <value>Chạm vào một quán để chỉnh sửa ngay bên dưới.</value>
+  </data>
+  <data name="StoreManagement_SelectOne" xml:space="preserve">
+    <value>Chọn 1</value>
+  </data>
+  <data name="StoreManagement_StoreInfoTitle" xml:space="preserve">
+    <value>Thông tin cửa hàng</value>
+  </data>
+  <data name="StoreManagement_StoreInfoSubtitle" xml:space="preserve">
+    <value>Tách rõ thông tin, địa chỉ, ảnh và xem trước bản đồ.</value>
+  </data>
+  <data name="StoreManagement_StoreName" xml:space="preserve">
+    <value>Tên cửa hàng</value>
+  </data>
+  <data name="StoreManagement_Phone" xml:space="preserve">
+    <value>Số điện thoại</value>
+  </data>
+  <data name="StoreManagement_Category" xml:space="preserve">
+    <value>Loại hình</value>
+  </data>
+  <data name="StoreManagement_Address" xml:space="preserve">
+    <value>Địa chỉ</value>
+  </data>
+  <data name="StoreManagement_AddressPlaceholder" xml:space="preserve">
+    <value>Nhập địa chỉ để được gợi ý</value>
+  </data>
+  <data name="StoreManagement_AddressPreview" xml:space="preserve">
+    <value>Xem trước địa chỉ</value>
+  </data>
+  <data name="StoreManagement_AddressPreviewHint" xml:space="preserve">
+    <value>Bản đồ xem trước sẽ bám theo địa chỉ đã chọn.</value>
+  </data>
+  <data name="StoreManagement_Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="StoreManagement_Description" xml:space="preserve">
+    <value>Mô tả ngắn</value>
+  </data>
+  <data name="StoreManagement_AddImage" xml:space="preserve">
+    <value>Chọn ảnh từ máy</value>
+  </data>
+  <data name="StoreManagement_AddImageHint" xml:space="preserve">
+    <value>Không nhập link tay, chỉ chọn ảnh trực tiếp.</value>
+  </data>
+  <data name="StoreManagement_AlbumPreview" xml:space="preserve">
+    <value>Xem trước album</value>
+  </data>
+  <data name="StoreManagement_AlbumPreviewHint" xml:space="preserve">
+    <value>Các ảnh hợp lệ sẽ hiện ở đây để chọn nhanh ảnh chính.</value>
+  </data>
+  <data name="StoreManagement_Update" xml:space="preserve">
+    <value>Cập nhật</value>
+  </data>
+  <data name="StoreManagement_Delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="StoreManagement_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="StoreManagement_SellerOnly" xml:space="preserve">
+    <value>Chỉ tài khoản Người bán mới có thể quản lý cửa hàng.</value>
+  </data>
+  <data name="StoreManagement_CannotResolveOwner" xml:space="preserve">
+    <value>Không xác định được chủ cửa hàng hiện tại.</value>
+  </data>
+  <data name="StoreManagement_NoRegistrations" xml:space="preserve">
+    <value>Bạn chưa có đăng ký cửa hàng nào.</value>
+  </data>
+  <data name="StoreManagement_AddressPositionFormat" xml:space="preserve">
+    <value>Vị trí địa chỉ: {0}</value>
+  </data>
+  <data name="StoreManagement_PickImages" xml:space="preserve">
+    <value>Chọn ảnh cho cửa hàng</value>
+  </data>
+  <data name="StoreManagement_AddedImagesFormat" xml:space="preserve">
+    <value>Đã thêm {0} ảnh từ máy.</value>
+  </data>
+  <data name="StoreManagement_PickImagesFailed" xml:space="preserve">
+    <value>Không thể chọn ảnh từ máy.</value>
+  </data>
+  <data name="StoreManagement_SelectToUpdate" xml:space="preserve">
+    <value>Vui lòng chọn một đăng ký để cập nhật.</value>
+  </data>
+  <data name="StoreManagement_RequiredFields" xml:space="preserve">
+    <value>Tên cửa hàng, số điện thoại và địa chỉ là bắt buộc.</value>
+  </data>
+  <data name="StoreManagement_AddressNotResolved" xml:space="preserve">
+    <value>Không xác định được vị trí địa chỉ. Vui lòng chọn gợi ý phù hợp.</value>
+  </data>
+  <data name="StoreManagement_SelectToDelete" xml:space="preserve">
+    <value>Vui lòng chọn một đăng ký để xóa.</value>
+  </data>
+  <data name="StoreManagement_DeleteConfirmTitle" xml:space="preserve">
+    <value>Xác nhận</value>
+  </data>
+  <data name="StoreManagement_DeleteConfirmMessage" xml:space="preserve">
+    <value>Bạn có chắc muốn xóa đăng ký này?</value>
+  </data>
+  <data name="Common_Delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="StoreRegistration_PrimaryImage" xml:space="preserve">
+    <value>Ảnh chính</value>
+  </data>
+  <data name="StoreRegistration_SetPrimary" xml:space="preserve">
+    <value>Đặt chính</value>
+  </data>
+  <data name="StoreManagement_MyStoreBadge" xml:space="preserve">
+    <value>Quán của tôi</value>
+  </data>
+  <data name="StoreManagement_AutoPoint" xml:space="preserve">
+    <value>Auto point</value>
+  </data>
+  <data name="StoreManagement_AlbumBadge" xml:space="preserve">
+    <value>Ảnh đẹp hơn</value>
+  </data>
+  <data name="StoreManagement_PrimaryImage" xml:space="preserve">
+    <value>Ảnh chính</value>
+  </data>
+</root>

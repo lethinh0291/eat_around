@@ -40,10 +40,12 @@
                     <VerticalStackLayout Grid.Column="1"
                                          Spacing="2"
                                          VerticalOptions="Center">
-                        <Label Text="Hồ sơ người dùng"
+                           <Label x:Name="ProfileTitleLabel"
+                               Text="Hồ sơ người dùng"
                                FontSize="12"
                                TextColor="{StaticResource TextSecondary}"/>
-                        <Label Text="Tài khoản và ảnh đại diện"
+                           <Label x:Name="ProfileSubtitleLabel"
+                               Text="Tài khoản và ảnh đại diện"
                                FontSize="24"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
@@ -105,7 +107,8 @@
                                     StrokeShape="RoundRectangle 18"
                                     Padding="12">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Tên đăng nhập"
+                                     <Label x:Name="UsernameTitleLabel"
+                                         Text="Tên đăng nhập"
                                            FontSize="11"
                                            TextColor="{StaticResource TextSecondary}"/>
                                     <Label x:Name="UsernameLabel"
@@ -123,7 +126,8 @@
                                     StrokeShape="RoundRectangle 18"
                                     Padding="12">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Số tài khoản"
+                                     <Label x:Name="AccountNumberTitleLabel"
+                                         Text="Số tài khoản"
                                            FontSize="11"
                                            TextColor="{StaticResource TextSecondary}"/>
                                     <Label x:Name="UserIdLabel"
@@ -141,16 +145,19 @@
                                 StrokeShape="RoundRectangle 18"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="4">
-                                <Label Text="Ảnh đại diện"
+                                <Label x:Name="AvatarTitleLabel"
+                                    Text="Ảnh đại diện"
                                        FontSize="11"
                                        TextColor="{StaticResource TextSecondary}"/>
-                                <Label Text="Chọn từ máy và lưu lên Cloudinary để dùng cho hồ sơ của bạn"
+                                <Label x:Name="AvatarHintLabel"
+                                    Text="Chọn từ máy và lưu lên Cloudinary để dùng cho hồ sơ của bạn"
                                        FontSize="12"
                                        TextColor="{StaticResource TextPrimary}"/>
                             </VerticalStackLayout>
                         </Border>
 
-                        <Button Text="Đổi ảnh đại diện"
+                           <Button x:Name="ChangeAvatarButton"
+                                Text="Đổi ảnh đại diện"
                                 Clicked="OnChangeAvatarClicked"
                                 BackgroundColor="{StaticResource Primary}"
                                 TextColor="White"
@@ -171,7 +178,8 @@
                         StrokeShape="RoundRectangle 28"
                         Padding="18">
                     <VerticalStackLayout Spacing="14">
-                        <Label Text="Hành động nhanh"
+                           <Label x:Name="QuickActionsTitleLabel"
+                               Text="Hành động nhanh"
                                FontSize="18"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
@@ -184,10 +192,12 @@
                                     StrokeShape="RoundRectangle 18"
                                     Padding="14">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Bản đồ"
+                                     <Label x:Name="MapTitleLabel"
+                                         Text="Bản đồ"
                                            FontSize="12"
                                            TextColor="{StaticResource TextSecondary}"/>
-                                    <Label Text="Quay lại trang chính"
+                                     <Label x:Name="BackToHomeLabel"
+                                         Text="Quay lại trang chính"
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            TextColor="{StaticResource TextPrimary}"/>
@@ -201,10 +211,12 @@
                                     StrokeShape="RoundRectangle 18"
                                     Padding="14">
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Trạng thái"
+                                     <Label x:Name="StatusTitleLabel"
+                                         Text="Trạng thái"
                                            FontSize="12"
                                            TextColor="{StaticResource TextSecondary}"/>
-                                    <Label Text="Đồng bộ cục bộ"
+                                     <Label x:Name="LocalSyncLabel"
+                                         Text="Đồng bộ cục bộ"
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            TextColor="{StaticResource TextPrimary}"/>
@@ -212,7 +224,8 @@
                             </Border>
                         </Grid>
 
-                        <Button Text="Đăng xuất"
+                               <Button x:Name="SignOutButton"
+                                    Text="Đăng xuất"
                                 Clicked="OnSignOutClicked"
                                 BackgroundColor="#FEE2E2"
                                 TextColor="#B91C1C"

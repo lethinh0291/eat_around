@@ -1,4 +1,5 @@
 using MobileApp.Services;
+using MobileApp.Resources.Localization;
 using System.IO;
 using Microsoft.Maui.Storage;
 
@@ -14,6 +15,24 @@ public partial class ProfilePage : ContentPage
         _authService = authService;
         _navigator = navigator;
         InitializeComponent();
+        ApplyLocalizedText();
+    }
+
+    private void ApplyLocalizedText()
+    {
+        ProfileTitleLabel.Text = AppText.Get("Profile_Title");
+        ProfileSubtitleLabel.Text = AppText.Get("Profile_Subtitle");
+        UsernameTitleLabel.Text = AppText.Get("Profile_Username");
+        AccountNumberTitleLabel.Text = AppText.Get("Profile_AccountNumber");
+        AvatarTitleLabel.Text = AppText.Get("Profile_Avatar");
+        AvatarHintLabel.Text = AppText.Get("Profile_AvatarHint");
+        ChangeAvatarButton.Text = AppText.Get("Profile_ChangeAvatar");
+        QuickActionsTitleLabel.Text = AppText.Get("Profile_QuickActions");
+        MapTitleLabel.Text = AppText.Get("Profile_Map");
+        BackToHomeLabel.Text = AppText.Get("Profile_BackToHome");
+        StatusTitleLabel.Text = AppText.Get("Profile_Status");
+        LocalSyncLabel.Text = AppText.Get("Profile_LocalSync");
+        SignOutButton.Text = AppText.Get("Profile_Logout");
     }
 
     protected override void OnAppearing()
@@ -27,11 +46,11 @@ public partial class ProfilePage : ContentPage
         var user = _authService.CurrentUser;
         if (user is null)
         {
-            NameLabel.Text = "Chưa đăng nhập";
-            EmailLabel.Text = "Hãy đăng nhập để xem hồ sơ.";
-            UsernameLabel.Text = "guest";
+            NameLabel.Text = AppText.Get("Profile_NotSignedIn");
+            EmailLabel.Text = AppText.Get("Profile_PleaseSignIn");
+            UsernameLabel.Text = AppText.Get("Profile_GuestUsername");
             UserIdLabel.Text = "#0000";
-            StatusLabel.Text = "Không có phiên đăng nhập";
+            StatusLabel.Text = AppText.Get("Profile_NoSession");
             AvatarInitialsLabel.Text = "U";
             AvatarInitialsLabel.IsVisible = true;
             AvatarImage.IsVisible = false;
@@ -43,7 +62,7 @@ public partial class ProfilePage : ContentPage
         EmailLabel.Text = user.Email;
         UsernameLabel.Text = user.Username;
         UserIdLabel.Text = $"#{user.Id:0000}";
-        StatusLabel.Text = "Đang hoạt động";
+        StatusLabel.Text = AppText.Get("Profile_Active");
         AvatarInitialsLabel.Text = _authService.GetInitials(user);
 
         if (!string.IsNullOrWhiteSpace(user.AvatarUrl) && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out var avatarUri))
@@ -66,7 +85,7 @@ public partial class ProfilePage : ContentPage
 
         var pickedFile = await FilePicker.Default.PickAsync(new PickOptions
         {
-            PickerTitle = "Chọn ảnh đại diện",
+            PickerTitle = AppText.Get("Profile_PickAvatar"),
             FileTypes = FilePickerFileType.Images
         });
 
@@ -93,7 +112,7 @@ public partial class ProfilePage : ContentPage
         catch (Exception ex)
         {
             MessageLabel.TextColor = Color.FromArgb("#B91C1C");
-            MessageLabel.Text = "Không thể cập nhật ảnh đại diện.";
+            MessageLabel.Text = AppText.Get("Profile_UpdateAvatarFailed");
             Console.WriteLine($"Lỗi cập nhật avatar: {ex.Message}");
         }
     }

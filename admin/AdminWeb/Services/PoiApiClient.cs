@@ -81,4 +81,78 @@ public class PoiApiClient
             return false;
         }
     }
+
+    public async Task<(bool Success, string Message)> GenerateQrAsync(int poiId, string languageCode)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsync($"api/poi/{poiId}/generate-qr?languageCode={Uri.EscapeDataString(languageCode)}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                return (true, "Tao QR thanh cong.");
+            }
+
+            var payload = await response.Content.ReadFromJsonAsync<ApiMessageResponse>();
+            return (false, payload?.Message ?? "Khong the tao QR cho POI.");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            _logger.LogWarning(ex, "Cannot generate QR for POI {PoiId}.", poiId);
+            return (false, "Khong the ket noi backend API.");
+        }
+    }
+
+    public async Task<List<PoiQrTriggerSummaryDto>> GetQrTriggersForPoiAsync(int poiId)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<PoiQrTriggerSummaryDto>>($"api/poi/{poiId}/qr-triggers") ?? [];
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            _logger.LogWarning(ex, "Cannot load QR triggers for POI {PoiId}.", poiId);
+            return [];
+        }
+    }
+
+    public async Task<PoiQrTriggerDetailDto?> GetQrTriggerByIdAsync(int qrId)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<PoiQrTriggerDetailDto>($"api/poi/qr-triggers/{qrId}");
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            _logger.LogWarning(ex, "Cannot load QR trigger {QrId}.", qrId);
+            return null;
+        }
+    }
+
+    public sealed class PoiQrTriggerSummaryDto
+    {
+        public int Id { get; set; }
+        public string QrContent { get; set; } = string.Empty;
+        public string LanguageCode { get; set; } = "vi";
+        public int ScanCount { get; set; }
+        public DateTime CreatedAtUtc { get; set; }
+        public string? ImagePreview { get; set; }
+    }
+
+    public sealed class PoiQrTriggerDetailDto
+    {
+        public int Id { get; set; }
+        public int PoiId { get; set; }
+        public string QrContent { get; set; } = string.Empty;
+        public string LanguageCode { get; set; } = "vi";
+        public string QrImageBase64 { get; set; } = string.Empty;
+        public int ScanCount { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public DateTime CreatedAtUtc { get; set; }
+        public DateTime UpdatedAtUtc { get; set; }
+    }
+
+    private sealed class ApiMessageResponse
+    {
+        public string Message { get; set; } = string.Empty;
+    }
 }

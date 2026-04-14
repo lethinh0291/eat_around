@@ -1,0 +1,277 @@
+@model AdminWeb.Models.DashboardOverviewViewModel
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Dashboard Overview";
+    var byDayJson = JsonSerializer.Serialize(Model.ListenByDay);
+    var byHourJson = JsonSerializer.Serialize(Model.ListenByHour);
+}
+
+<partial name="_Tabs" />
+
+@if (TempData["AdminMessage"] is string message && !string.IsNullOrWhiteSpace(message))
+{
+    <div class="alert alert-success">@message</div>
+}
+@if (TempData["AdminError"] is string error && !string.IsNullOrWhiteSpace(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<div class="dashboard-panel p-4 mb-4">
+    <h1 class="page-title">Overview</h1>
+    <p class="page-subtitle">Trang tổng quan điều phối theo module: analytics, logs, tour và bản dịch.</p>
+
+    <div class="row g-3 mt-1">
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-accent">
+                <div class="metric-title">POI</div>
+                <div class="metric-value">@Model.Summary.TotalPois</div>
+                <div class="metric-note">Đang hoạt động</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-neutral">
+                <div class="metric-title">Users</div>
+                <div class="metric-value">@Model.Summary.TotalUsers</div>
+                <div class="metric-note">@Model.Summary.SellerUsers chủ quán</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-warm">
+                <div class="metric-title">Lượt nghe hôm nay</div>
+                <div class="metric-value">@Model.TodayListenLogs</div>
+                <div class="metric-note">@Model.WeekListenLogs trong 7 ngày</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-soft">
+                <div class="metric-title">Ngôn ngữ nghe</div>
+                <div class="metric-value">@Model.DistinctListenLanguages</div>
+                <div class="metric-note">TTS + Audio</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_ListenIntelligence" model="Model" />
+
+<div class="row g-3">
+    <div class="col-xxl-8">
+        <div class="dashboard-panel p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h2 class="section-title">Biểu đồ lượt nghe</h2>
+                    <p class="section-subtitle">Theo ngày và theo khung giờ trong dữ liệu hiện có.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="Analytics">Xem Analytics</a>
+                    <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="Logs">Mở Listen Logs</a>
+                </div>
+            </div>
+            <div class="row g-3 mt-1">
+                <div class="col-lg-6">
+                    <canvas id="listenByDayChart" height="220"></canvas>
+                </div>
+                <div class="col-lg-6">
+                    <canvas id="listenByHourChart" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-4">
+        <div class="dashboard-panel p-4 h-100">
+            <h2 class="section-title">Top 5 POI được nghe nhiều</h2>
+            <p class="section-subtitle">Bao gồm số lượt và tỷ trọng trong nhóm top.</p>
+            @if (!Model.TopListenPois.Any())
+            {
+                <p class="text-muted mt-3 mb-0">Chưa có dữ liệu nghe.</p>
+            }
+            else
+            {
+                <div class="d-grid gap-2 mt-3">
+                    @foreach (var item in Model.TopListenPois)
+                    {
+                        <div class="helper-chip justify-content-between">
+                            <span>@item.PoiName</span>
+                            <strong>@item.Listens (@item.Percent.ToString("0.##")%)</strong>
+                        </div>
+                    }
+                </div>
+            }
+            <div class="mt-3 small text-muted">Tổng tour: @Model.TotalTours | Bản dịch: @Model.TotalTranslations</div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="dashboard-panel p-4 h-100">
+            <h2 class="section-title">Operational Logs</h2>
+            <p class="section-subtitle">Dữ liệu thật từ listen logs và system logs.</p>
+            <div class="d-grid gap-2 mt-3">
+                <div class="helper-chip justify-content-between"><span>Listen Logs</span><strong>@Model.TotalListenLogs</strong></div>
+                <div class="helper-chip justify-content-between"><span>System Logs</span><strong>@Model.TotalSystemLogs</strong></div>
+            </div>
+            <div class="mt-3">
+                <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="Analytics">Mở Analytics</a>
+                <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="Logs">Mở Logs</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="dashboard-panel p-4 h-100">
+            <h2 class="section-title">Hoạt động gần đây</h2>
+            <p class="section-subtitle">POI mới nghe, cập nhật tour, trạng thái bản dịch, lỗi hệ thống.</p>
+            @if (!Model.RecentActivities.Any())
+            {
+                <p class="text-muted mt-3 mb-0">Chưa có hoạt động gần đây.</p>
+            }
+            else
+            {
+                <div class="d-grid gap-2 mt-3">
+                    @foreach (var item in Model.RecentActivities)
+                    {
+                        <div class="p-2 rounded-3" style="border:1px solid var(--admin-border); background: var(--admin-surface-soft);">
+                            <div class="d-flex justify-content-between align-items-center gap-2">
+                                <strong>@item.Title</strong>
+                                <small class="text-muted">@item.TimeLabel</small>
+                            </div>
+                            <div class="small text-muted mt-1">@item.Description</div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-panel p-4 mt-3">
+    <h2 class="section-title">Shortcut hành động</h2>
+    <p class="section-subtitle">Đi nhanh đến các tác vụ vận hành chính.</p>
+    <div class="quick-link-stack mt-3">
+        <a class="quick-link" asp-action="Tours"><span>Quản lý Tour</span><span>CRUD + QR Tour</span></a>
+        <a class="quick-link" asp-action="Translations"><span>Quản lý Bản dịch</span><span>Duyệt + Audio + TTS</span></a>
+        <a class="quick-link" asp-controller="Poi" asp-action="Index"><span>Quản lý POI</span><span>Map + QR + lọc</span></a>
+        <a class="quick-link" asp-controller="AdminManagement" asp-action="Users"><span>Quản lý User</span><span>Gán POI cho seller</span></a>
+        <a class="quick-link" asp-action="Analytics"><span>Analytics</span><span>Heatmap + Xuất CSV</span></a>
+        <a class="quick-link" asp-action="Logs"><span>Listen Logs</span><span>Lọc và giám sát</span></a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        (function () {
+            const byDay = @Html.Raw(byDayJson);
+            const byHour = @Html.Raw(byHourJson);
+            let pendingStoreCount = @Model.Summary.PendingStoreRegistrations;
+
+            const dayCanvas = document.getElementById('listenByDayChart');
+            if (dayCanvas && Array.isArray(byDay)) {
+                new Chart(dayCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: byDay.map(x => x.label),
+                        datasets: [{
+                            label: 'Lượt nghe theo ngày',
+                            data: byDay.map(x => x.count),
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249,115,22,0.2)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            const hourCanvas = document.getElementById('listenByHourChart');
+            if (hourCanvas && Array.isArray(byHour)) {
+                new Chart(hourCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: byHour.map(x => x.label),
+                        datasets: [{
+                            label: 'Lượt nghe theo giờ',
+                            data: byHour.map(x => x.count),
+                            backgroundColor: '#fb923c',
+                            borderRadius: 8,
+                            maxBarThickness: 20
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { x: { ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 } } }
+                    }
+                });
+            }
+
+            function showPendingStoreToast(message) {
+                let container = document.getElementById('adminToastContainer');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'adminToastContainer';
+                    container.className = 'toast-container position-fixed top-0 end-0 p-3';
+                    document.body.appendChild(container);
+                }
+
+                const toastElement = document.createElement('div');
+                toastElement.className = 'toast align-items-center text-bg-dark border-0';
+                toastElement.role = 'alert';
+                toastElement.ariaLive = 'assertive';
+                toastElement.ariaAtomic = 'true';
+                toastElement.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">${message}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>`;
+                container.appendChild(toastElement);
+
+                const toast = new bootstrap.Toast(toastElement, { delay: 4500 });
+                toast.show();
+                toastElement.addEventListener('hidden.bs.toast', function () {
+                    toastElement.remove();
+                });
+            }
+
+            async function pollPendingStores() {
+                try {
+                    const response = await fetch('/AdminManagement/PendingStoreRegistrationsCount', {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    const payload = await response.json();
+                    const nextCount = Number(payload && payload.count ? payload.count : 0);
+                    if (!Number.isFinite(nextCount)) {
+                        return;
+                    }
+
+                    if (nextCount > pendingStoreCount) {
+                        const delta = nextCount - pendingStoreCount;
+                        showPendingStoreToast(`Có ${delta} POI mới chờ duyệt.`);
+                    }
+
+                    pendingStoreCount = nextCount;
+                } catch {
+                }
+            }
+
+            setInterval(pollPendingStores, 20000);
+        })();
+    </script>
+}
+            <div class="quick-link-stack mt-3">
+                <a class="quick-link" asp-action="Tours"><span>Quản lý Tour</span><span>CRUD</span></a>
+                <a class="quick-link" asp-action="Translations"><span>Quản lý Bản dịch</span><span>CRUD</span></a>
+                <a class="quick-link" asp-controller="Poi" asp-action="Index"><span>Quản lý POI</span><span>Open</span></a>
+                <a class="quick-link" asp-controller="AdminManagement" asp-action="Users"><span>Quản lý User</span><span>Open</span></a>
+            </div>
+        </div>
+    </div>
+</div>

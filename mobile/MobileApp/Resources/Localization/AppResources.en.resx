@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, ...</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
+  </resheader>
+  <data name="Common_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Loading_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Loading_StartupError" xml:space="preserve">
+    <value>Startup error: {0}</value>
+  </data>
+  <data name="Language_AutoDevice" xml:space="preserve">
+    <value>Automatic (device)</value>
+  </data>
+  <data name="Language_Vietnamese" xml:space="preserve">
+    <value>Vietnamese</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Japanese" xml:space="preserve">
+    <value>Japanese</value>
+  </data>
+  <data name="Language_Korean" xml:space="preserve">
+    <value>Korean</value>
+  </data>
+  <data name="Language_Chinese" xml:space="preserve">
+    <value>Chinese</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_Subtitle" xml:space="preserve">
+    <value>Customize your app experience</value>
+  </data>
+  <data name="Settings_LocalStorageHint" xml:space="preserve">
+    <value>The options below are saved locally on your device.</value>
+  </data>
+  <data name="Settings_SystemOptions" xml:space="preserve">
+    <value>System options</value>
+  </data>
+  <data name="Settings_AutoPlay" xml:space="preserve">
+    <value>Enable auto play</value>
+  </data>
+  <data name="Settings_Battery" xml:space="preserve">
+    <value>Battery optimization</value>
+  </data>
+  <data name="Settings_Notifications" xml:space="preserve">
+    <value>Receive notifications</value>
+  </data>
+  <data name="Settings_StoreNarration" xml:space="preserve">
+    <value>Read store descriptions</value>
+  </data>
+  <data name="Settings_InterfaceLanguage" xml:space="preserve">
+    <value>Interface language</value>
+  </data>
+  <data name="Settings_NarrationLanguage" xml:space="preserve">
+    <value>Narration language</value>
+  </data>
+  <data name="Settings_SelectLanguage" xml:space="preserve">
+    <value>Select language</value>
+  </data>
+  <data name="Settings_Save" xml:space="preserve">
+    <value>Save settings</value>
+  </data>
+  <data name="Settings_SaveSuccessTitle" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="Settings_SaveSuccessMessage" xml:space="preserve">
+    <value>Your settings have been updated.</value>
+  </data>
+  <data name="Settings_SaveAndReloadMessage" xml:space="preserve">
+    <value>Settings saved. The UI will reload in the new language.</value>
+  </data>
+  <data name="Settings_AutoDeviceDetail" xml:space="preserve">
+    <value>Automatic (device: {0})</value>
+  </data>
+  <data name="Login_WelcomeBack" xml:space="preserve">
+    <value>Welcome back</value>
+  </data>
+  <data name="Login_ContinueDescription" xml:space="preserve">
+    <value>Sign in to continue with your map, trips, and store experience</value>
+  </data>
+  <data name="Login_AccountInfo" xml:space="preserve">
+    <value>Account information</value>
+  </data>
+  <data name="Login_IdentifierLabel" xml:space="preserve">
+    <value>Email or username</value>
+  </data>
+  <data name="Login_IdentifierPlaceholder" xml:space="preserve">
+    <value>e.g. alex@zestour.vn</value>
+  </data>
+  <data name="Login_PasswordLabel" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_PasswordPlaceholder" xml:space="preserve">
+    <value>Enter password</value>
+  </data>
+  <data name="Login_Remember" xml:space="preserve">
+    <value>Remember sign in on this device</value>
+  </data>
+  <data name="Login_Button" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="Login_CreateAccount" xml:space="preserve">
+    <value>Create new account</value>
+  </data>
+  <data name="Menu_Hello" xml:space="preserve">
+    <value>Hello</value>
+  </data>
+  <data name="Menu_RoleCustomer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Menu_RoleSeller" xml:space="preserve">
+    <value>Seller</value>
+  </data>
+  <data name="Menu_RoleAdmin" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="Menu_SearchPlaceholder" xml:space="preserve">
+    <value>Find feature: map, settings, store...</value>
+  </data>
+  <data name="Menu_ExploreSection" xml:space="preserve">
+    <value>Explore</value>
+  </data>
+  <data name="Menu_DiscoverTitle" xml:space="preserve">
+    <value>Discover destinations</value>
+  </data>
+  <data name="Menu_DiscoverSubtitle" xml:space="preserve">
+    <value>Map, directions, and automatic narration</value>
+  </data>
+  <data name="Menu_QrTriggerTitle" xml:space="preserve">
+    <value>QR narration trigger</value>
+  </data>
+  <data name="Menu_QrTriggerSubtitle" xml:space="preserve">
+    <value>Scan a QR code to play the right narration content</value>
+  </data>
+  <data name="Menu_MyTripsTitle" xml:space="preserve">
+    <value>My trips</value>
+  </data>
+  <data name="Menu_MyTripsSubtitle" xml:space="preserve">
+    <value>Review places you selected</value>
+  </data>
+  <data name="Menu_AccountSection" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Menu_AccountPayment" xml:space="preserve">
+    <value>Account and payment</value>
+  </data>
+  <data name="Menu_SellerSection" xml:space="preserve">
+    <value>For sellers</value>
+  </data>
+  <data name="Menu_StoreManagement" xml:space="preserve">
+    <value>Manage my store</value>
+  </data>
+  <data name="Menu_StoreRegistration" xml:space="preserve">
+    <value>Submit store registration</value>
+  </data>
+  <data name="Menu_SupportTitle" xml:space="preserve">
+    <value>Help and feedback</value>
+  </data>
+  <data name="Menu_SupportSubtitle" xml:space="preserve">
+    <value>Report issues or share feedback to improve the app</value>
+  </data>
+  <data name="Menu_QuickActionsTitle" xml:space="preserve">
+    <value>Quick actions</value>
+  </data>
+  <data name="Menu_QuickActionsSubtitle" xml:space="preserve">
+    <value>Access key actions without scrolling to the bottom.</value>
+  </data>
+  <data name="Menu_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Menu_Profile" xml:space="preserve">
+    <value>User profile</value>
+  </data>
+  <data name="Menu_HelpFeedback" xml:space="preserve">
+    <value>Help and feedback</value>
+  </data>
+  <data name="Menu_Logout" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="Menu_FeatureTitle" xml:space="preserve">
+    <value>Feature</value>
+  </data>
+  <data name="Menu_ComingSoonFormat" xml:space="preserve">
+    <value>{0} will be completed in a future update.</value>
+  </data>
+  <data name="Menu_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Menu_RoleMismatchTitle" xml:space="preserve">
+    <value>Role mismatch</value>
+  </data>
+  <data name="Menu_RoleMismatchSellerFeature" xml:space="preserve">
+    <value>Store registration is only available for Seller accounts.</value>
+  </data>
+  <data name="Menu_RoleMismatchSellerRequired" xml:space="preserve">
+    <value>You need to sign in with a Seller account to use this feature.</value>
+  </data>
+  <data name="Menu_NotFoundFormat" xml:space="preserve">
+    <value>No feature found for: {0}</value>
+  </data>
+  <data name="Main_Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Main_MapTitle" xml:space="preserve">
+    <value>Discovery map</value>
+  </data>
+  <data name="Main_MapSubtitle" xml:space="preserve">
+    <value>Tap a point on the map to listen to narration</value>
+  </data>
+  <data name="Main_QrTriggerButton" xml:space="preserve">
+    <value>QR</value>
+  </data>
+  <data name="Main_BadgePlace" xml:space="preserve">
+    <value>PLACE</value>
+  </data>
+  <data name="Main_LocationOnMap" xml:space="preserve">
+    <value>Location on map</value>
+  </data>
+  <data name="Main_TapToSelect" xml:space="preserve">
+    <value>Tap the map to select a location</value>
+  </data>
+  <data name="Main_AddressPrefix" xml:space="preserve">
+    <value>Address: {0}</value>
+  </data>
+  <data name="Main_NoAddress" xml:space="preserve">
+    <value>Not available</value>
+  </data>
+  <data name="Main_CurrentViewing" xml:space="preserve">
+    <value>Currently viewing</value>
+  </data>
+  <data name="Main_SelectedLocation" xml:space="preserve">
+    <value>Selected location</value>
+  </data>
+  <data name="Main_DefaultPointName" xml:space="preserve">
+    <value>Selected point</value>
+  </data>
+  <data name="Main_NoDescription" xml:space="preserve">
+    <value>No description</value>
+  </data>
+  <data name="Main_AutoPlay" xml:space="preserve">
+    <value>Auto play</value>
+  </data>
+  <data name="Main_BatterySaver" xml:space="preserve">
+    <value>Battery saver</value>
+  </data>
+  <data name="Main_SidebarTitle" xml:space="preserve">
+    <value>Navigation panel</value>
+  </data>
+  <data name="Main_SidebarSubtitle" xml:space="preserve">
+    <value>Quick access to key features with fewer steps.</value>
+  </data>
+  <data name="Main_SidebarMapPage" xml:space="preserve">
+    <value>Map page</value>
+  </data>
+  <data name="Main_SidebarHome" xml:space="preserve">
+    <value>Back to home</value>
+  </data>
+  <data name="Main_SidebarProfile" xml:space="preserve">
+    <value>User profile</value>
+  </data>
+  <data name="Main_SidebarRecenter" xml:space="preserve">
+    <value>Recenter</value>
+  </data>
+  <data name="Main_NotificationTitle" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Main_NotificationMessage" xml:space="preserve">
+    <value>You do not have new notifications.</value>
+  </data>
+  <data name="Main_InfoTitle" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Main_InfoMessage" xml:space="preserve">
+    <value>This area currently has 12 highlighted food spots.</value>
+  </data>
+  <data name="Main_LocationTitle" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="Main_LocationUnavailable" xml:space="preserve">
+    <value>Unable to get your current location.</value>
+  </data>
+  <data name="Main_BadgeStore" xml:space="preserve">
+    <value>STORE</value>
+  </data>
+  <data name="Main_StoreNearby" xml:space="preserve">
+    <value>Store near you</value>
+  </data>
+  <data name="Main_BadgeAuto" xml:space="preserve">
+    <value>AUTO</value>
+  </data>
+  <data name="Main_BadgeManual" xml:space="preserve">
+    <value>MANUAL</value>
+  </data>
+  <data name="Main_BatteryModeOptimized" xml:space="preserve">
+    <value>Battery mode: Optimized</value>
+  </data>
+  <data name="Main_BatteryModeNormal" xml:space="preserve">
+    <value>Battery mode: Normal</value>
+  </data>
+  <data name="Main_LoadError" xml:space="preserve">
+    <value>Data load error: {0}</value>
+  </data>
+  <data name="Main_StoreFallbackName" xml:space="preserve">
+    <value>Store</value>
+  </data>
+  <data name="Main_StoreNearbyDescriptionTemplate" xml:space="preserve">
+    <value>You are near store {0}.</value>
+  </data>
+  <data name="QrTrigger_Title" xml:space="preserve">
+    <value>Scan QR code</value>
+  </data>
+  <data name="QrTrigger_Subtitle" xml:space="preserve">
+    <value>Point your camera at a QR code to start narration</value>
+  </data>
+  <data name="QrTrigger_OverlayHint" xml:space="preserve">
+    <value>Align QR inside the frame</value>
+  </data>
+  <data name="QrTrigger_Ready" xml:space="preserve">
+    <value>Ready to scan</value>
+  </data>
+  <data name="QrTrigger_Retry" xml:space="preserve">
+    <value>Scan again</value>
+  </data>
+  <data name="QrTrigger_Processing" xml:space="preserve">
+    <value>Processing QR code...</value>
+  </data>
+  <data name="QrTrigger_UnsupportedTitle" xml:space="preserve">
+    <value>Unsupported QR code</value>
+  </data>
+  <data name="QrTrigger_Unsupported" xml:space="preserve">
+    <value>This QR code format is not supported. Please try another one.</value>
+  </data>
+  <data name="QrTrigger_NotFoundTitle" xml:space="preserve">
+    <value>Content not found</value>
+  </data>
+  <data name="QrTrigger_PoiNotFound" xml:space="preserve">
+    <value>Could not find a matching place for this QR code.</value>
+  </data>
+  <data name="QrTrigger_PoiNotFoundOffline" xml:space="preserve">
+    <value>No matching place found and the device is offline. Connect to the internet and scan again.</value>
+  </data>
+  <data name="QrTrigger_PlaybackFailedTitle" xml:space="preserve">
+    <value>Narration unavailable</value>
+  </data>
+  <data name="QrTrigger_PlaybackFailed" xml:space="preserve">
+    <value>QR code was recognized but narration playback failed. Please try again.</value>
+  </data>
+  <data name="QrTrigger_SuccessTitle" xml:space="preserve">
+    <value>Narration started</value>
+  </data>
+  <data name="QrTrigger_Success" xml:space="preserve">
+    <value>Playing narration for: {0}</value>
+  </data>
+  <data name="Profile_Title" xml:space="preserve">
+    <value>User profile</value>
+  </data>
+  <data name="Profile_Subtitle" xml:space="preserve">
+    <value>Account and avatar</value>
+  </data>
+  <data name="Profile_DefaultUser" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Profile_DefaultEmail" xml:space="preserve">
+    <value>user@zestour.vn</value>
+  </data>
+  <data name="Profile_SignedIn" xml:space="preserve">
+    <value>Signed in</value>
+  </data>
+  <data name="Profile_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Profile_AccountNumber" xml:space="preserve">
+    <value>Account number</value>
+  </data>
+  <data name="Profile_Avatar" xml:space="preserve">
+    <value>Avatar</value>
+  </data>
+  <data name="Profile_AvatarHint" xml:space="preserve">
+    <value>Pick from your device and upload to Cloudinary for your profile.</value>
+  </data>
+  <data name="Profile_ChangeAvatar" xml:space="preserve">
+    <value>Change avatar</value>
+  </data>
+  <data name="Profile_QuickActions" xml:space="preserve">
+    <value>Quick actions</value>
+  </data>
+  <data name="Profile_Map" xml:space="preserve">
+    <value>Map</value>
+  </data>
+  <data name="Profile_BackToHome" xml:space="preserve">
+    <value>Back to home</value>
+  </data>
+  <data name="Profile_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Profile_LocalSync" xml:space="preserve">
+    <value>Local sync</value>
+  </data>
+  <data name="Profile_Logout" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="Profile_NotSignedIn" xml:space="preserve">
+    <value>Not signed in</value>
+  </data>
+  <data name="Profile_PleaseSignIn" xml:space="preserve">
+    <value>Please sign in to view your profile.</value>
+  </data>
+  <data name="Profile_GuestUsername" xml:space="preserve">
+    <value>guest</value>
+  </data>
+  <data name="Profile_NoSession" xml:space="preserve">
+    <value>No active session</value>
+  </data>
+  <data name="Profile_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Profile_PickAvatar" xml:space="preserve">
+    <value>Select avatar image</value>
+  </data>
+  <data name="Profile_UpdateAvatarFailed" xml:space="preserve">
+    <value>Unable to update avatar.</value>
+  </data>
+  <data name="Help_Title" xml:space="preserve">
+    <value>Help and feedback</value>
+  </data>
+  <data name="Help_Subtitle" xml:space="preserve">
+    <value>Send feedback to improve your experience</value>
+  </data>
+  <data name="Help_EmailPlaceholder" xml:space="preserve">
+    <value>Contact email</value>
+  </data>
+  <data name="Help_TitlePlaceholder" xml:space="preserve">
+    <value>Feedback title</value>
+  </data>
+  <data name="Help_ContentPlaceholder" xml:space="preserve">
+    <value>Describe your feedback in detail</value>
+  </data>
+  <data name="Help_Submit" xml:space="preserve">
+    <value>Submit feedback</value>
+  </data>
+  <data name="Help_Validation" xml:space="preserve">
+    <value>Please enter both title and feedback content.</value>
+  </data>
+  <data name="Help_ThanksTitle" xml:space="preserve">
+    <value>Thank you</value>
+  </data>
+  <data name="Help_ThanksMessage" xml:space="preserve">
+    <value>Your feedback has been received.</value>
+  </data>
+  <data name="Trips_Title" xml:space="preserve">
+    <value>My trips</value>
+  </data>
+  <data name="Trips_Subtitle" xml:space="preserve">
+    <value>Places you selected to visit</value>
+  </data>
+  <data name="Trips_Hint" xml:space="preserve">
+    <value>Your latest history appears here for quick reopen.</value>
+  </data>
+  <data name="Trips_ClearSelected" xml:space="preserve">
+    <value>Clear selected place</value>
+  </data>
+  <data name="Trips_Empty" xml:space="preserve">
+    <value>You have not selected any destination yet.</value>
+  </data>
+  <data name="Trips_ClearTitle" xml:space="preserve">
+    <value>Clear place</value>
+  </data>
+  <data name="Trips_ClearConfirm" xml:space="preserve">
+    <value>Are you sure you want to clear the selected place?</value>
+  </data>
+  <data name="Trips_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Trips_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Trips_DefaultName" xml:space="preserve">
+    <value>Selected point</value>
+  </data>
+  <data name="Trips_DefaultDescription" xml:space="preserve">
+    <value>No description</value>
+  </data>
+  <data name="Common_NoPermissionTitle" xml:space="preserve">
+    <value>No permission</value>
+  </data>
+  <data name="Register_Title" xml:space="preserve">
+    <value>Create new account</value>
+  </data>
+  <data name="Register_Subtitle" xml:space="preserve">
+    <value>Sign up quickly to save trips, explore, and open your store</value>
+  </data>
+  <data name="Register_Name" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <data name="Register_NamePlaceholder" xml:space="preserve">
+    <value>e.g. John Doe</value>
+  </data>
+  <data name="Register_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Register_UsernamePlaceholder" xml:space="preserve">
+    <value>e.g. johndoe</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_EmailPlaceholder" xml:space="preserve">
+    <value>e.g. john@zestour.vn</value>
+  </data>
+  <data name="Register_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Register_PasswordPlaceholder" xml:space="preserve">
+    <value>Enter password</value>
+  </data>
+  <data name="Register_ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="Register_ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>Re-enter password</value>
+  </data>
+  <data name="Register_SellerTitle" xml:space="preserve">
+    <value>Create seller account</value>
+  </data>
+  <data name="Register_SellerHint" xml:space="preserve">
+    <value>Turn on if you want to register and manage a store</value>
+  </data>
+  <data name="Register_Submit" xml:space="preserve">
+    <value>Create account</value>
+  </data>
+  <data name="Register_BackToLogin" xml:space="preserve">
+    <value>Back to sign in</value>
+  </data>
+  <data name="Register_PasswordMismatch" xml:space="preserve">
+    <value>Confirmation password does not match.</value>
+  </data>
+  <data name="Register_AlertTitle" xml:space="preserve">
+    <value>Registration</value>
+  </data>
+  <data name="Register_RoleSeller" xml:space="preserve">
+    <value>Role to create: Seller</value>
+  </data>
+  <data name="Register_RoleCustomer" xml:space="preserve">
+    <value>Role to create: Customer</value>
+  </data>
+  <data name="StoreRegistration_Title" xml:space="preserve">
+    <value>Store registration</value>
+  </data>
+  <data name="StoreRegistration_Subtitle" xml:space="preserve">
+    <value>Submit information for review to appear in the app</value>
+  </data>
+  <data name="StoreRegistration_StoreName" xml:space="preserve">
+    <value>Store name</value>
+  </data>
+  <data name="StoreRegistration_OwnerName" xml:space="preserve">
+    <value>Owner name</value>
+  </data>
+  <data name="StoreRegistration_Phone" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="StoreRegistration_Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="StoreRegistration_AddressPosition" xml:space="preserve">
+    <value>Address location</value>
+  </data>
+  <data name="StoreRegistration_Category" xml:space="preserve">
+    <value>Category (food, cafe,...)</value>
+  </data>
+  <data name="StoreRegistration_Description" xml:space="preserve">
+    <value>Short store description</value>
+  </data>
+  <data name="StoreRegistration_AddImage" xml:space="preserve">
+    <value>Add image</value>
+  </data>
+  <data name="StoreRegistration_ImageHint" xml:space="preserve">
+    <value>Drag to reorder, tap Set primary to choose cover image.</value>
+  </data>
+  <data name="StoreRegistration_Submit" xml:space="preserve">
+    <value>Submit registration</value>
+  </data>
+  <data name="StoreRegistration_SellerOnly" xml:space="preserve">
+    <value>Only seller accounts can register stores.</value>
+  </data>
+  <data name="StoreRegistration_RequiredFields" xml:space="preserve">
+    <value>Please fill all required fields.</value>
+  </data>
+  <data name="StoreRegistration_AddressNotResolved" xml:space="preserve">
+    <value>Unable to resolve address location. Please select a suitable suggestion.</value>
+  </data>
+  <data name="StoreRegistration_SubmitSuccessTitle" xml:space="preserve">
+    <value>Submitted</value>
+  </data>
+  <data name="StoreRegistration_PickImages" xml:space="preserve">
+    <value>Select multiple images for store</value>
+  </data>
+  <data name="StoreRegistration_PickImagesFailed" xml:space="preserve">
+    <value>Unable to select images. Please try again.</value>
+  </data>
+  <data name="StoreRegistration_AddressPositionFormat" xml:space="preserve">
+    <value>Address location: {0}</value>
+  </data>
+  <data name="StoreRegistration_RestoreDraftTitle" xml:space="preserve">
+    <value>Draft restored</value>
+  </data>
+  <data name="StoreRegistration_RestoreDraftMessage" xml:space="preserve">
+    <value>Unsubmitted store registration information was restored automatically.</value>
+  </data>
+  <data name="StoreRegistration_NoImageSelected" xml:space="preserve">
+    <value>No image selected</value>
+  </data>
+  <data name="StoreRegistration_SelectedImagesFormat" xml:space="preserve">
+    <value>Selected: {0} images</value>
+  </data>
+  <data name="StoreManagement_Title" xml:space="preserve">
+    <value>Store management</value>
+  </data>
+  <data name="StoreManagement_Subtitle" xml:space="preserve">
+    <value>Quickly edit your store info, images, address, and coordinates</value>
+  </data>
+  <data name="StoreManagement_EditRegistration" xml:space="preserve">
+    <value>Edit registration</value>
+  </data>
+  <data name="StoreManagement_EditRegistrationTitle" xml:space="preserve">
+    <value>Select a store below and update it from this form.</value>
+  </data>
+  <data name="StoreManagement_EditRegistrationHint" xml:space="preserve">
+    <value>Address suggestions, map preview, and primary image are supported.</value>
+  </data>
+  <data name="StoreManagement_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="StoreManagement_RegistrationListTitle" xml:space="preserve">
+    <value>Registration list</value>
+  </data>
+  <data name="StoreManagement_RegistrationListSubtitle" xml:space="preserve">
+    <value>Tap a store to edit it below.</value>
+  </data>
+  <data name="StoreManagement_SelectOne" xml:space="preserve">
+    <value>Select 1</value>
+  </data>
+  <data name="StoreManagement_StoreInfoTitle" xml:space="preserve">
+    <value>Store information</value>
+  </data>
+  <data name="StoreManagement_StoreInfoSubtitle" xml:space="preserve">
+    <value>Separate fields for info, address, images, and map preview.</value>
+  </data>
+  <data name="StoreManagement_StoreName" xml:space="preserve">
+    <value>Store name</value>
+  </data>
+  <data name="StoreManagement_Phone" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="StoreManagement_Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="StoreManagement_Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="StoreManagement_AddressPlaceholder" xml:space="preserve">
+    <value>Enter address for suggestions</value>
+  </data>
+  <data name="StoreManagement_AddressPreview" xml:space="preserve">
+    <value>Address preview</value>
+  </data>
+  <data name="StoreManagement_AddressPreviewHint" xml:space="preserve">
+    <value>Preview map follows the selected address.</value>
+  </data>
+  <data name="StoreManagement_Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="StoreManagement_Description" xml:space="preserve">
+    <value>Short description</value>
+  </data>
+  <data name="StoreManagement_AddImage" xml:space="preserve">
+    <value>Select images from device</value>
+  </data>
+  <data name="StoreManagement_AddImageHint" xml:space="preserve">
+    <value>Do not paste links, only select images directly.</value>
+  </data>
+  <data name="StoreManagement_AlbumPreview" xml:space="preserve">
+    <value>Album preview</value>
+  </data>
+  <data name="StoreManagement_AlbumPreviewHint" xml:space="preserve">
+    <value>Valid images appear here to quickly select primary image.</value>
+  </data>
+  <data name="StoreManagement_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="StoreManagement_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="StoreManagement_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="StoreManagement_SellerOnly" xml:space="preserve">
+    <value>Only seller accounts can manage stores.</value>
+  </data>
+  <data name="StoreManagement_CannotResolveOwner" xml:space="preserve">
+    <value>Unable to resolve current store owner.</value>
+  </data>
+  <data name="StoreManagement_NoRegistrations" xml:space="preserve">
+    <value>You do not have any store registrations yet.</value>
+  </data>
+  <data name="StoreManagement_AddressPositionFormat" xml:space="preserve">
+    <value>Address location: {0}</value>
+  </data>
+  <data name="StoreManagement_PickImages" xml:space="preserve">
+    <value>Select images for store</value>
+  </data>
+  <data name="StoreManagement_AddedImagesFormat" xml:space="preserve">
+    <value>Added {0} images from device.</value>
+  </data>
+  <data name="StoreManagement_PickImagesFailed" xml:space="preserve">
+    <value>Unable to select images from device.</value>
+  </data>
+  <data name="StoreManagement_SelectToUpdate" xml:space="preserve">
+    <value>Please select a registration to update.</value>
+  </data>
+  <data name="StoreManagement_RequiredFields" xml:space="preserve">
+    <value>Store name, phone number, and address are required.</value>
+  </data>
+  <data name="StoreManagement_AddressNotResolved" xml:space="preserve">
+    <value>Unable to resolve address location. Please select a suitable suggestion.</value>
+  </data>
+  <data name="StoreManagement_SelectToDelete" xml:space="preserve">
+    <value>Please select a registration to delete.</value>
+  </data>
+  <data name="StoreManagement_DeleteConfirmTitle" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="StoreManagement_DeleteConfirmMessage" xml:space="preserve">
+    <value>Are you sure you want to delete this registration?</value>
+  </data>
+  <data name="Common_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="StoreRegistration_PrimaryImage" xml:space="preserve">
+    <value>Primary</value>
+  </data>
+  <data name="StoreRegistration_SetPrimary" xml:space="preserve">
+    <value>Set primary</value>
+  </data>
+  <data name="StoreManagement_MyStoreBadge" xml:space="preserve">
+    <value>My store</value>
+  </data>
+  <data name="StoreManagement_AutoPoint" xml:space="preserve">
+    <value>Auto point</value>
+  </data>
+  <data name="StoreManagement_AlbumBadge" xml:space="preserve">
+    <value>Better photos</value>
+  </data>
+  <data name="StoreManagement_PrimaryImage" xml:space="preserve">
+    <value>Primary</value>
+  </data>
+</root>

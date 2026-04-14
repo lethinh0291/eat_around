@@ -31,7 +31,8 @@
                             <VerticalStackLayout Grid.Column="1"
                                                  Spacing="2"
                                                  VerticalOptions="Center">
-                                <Label Text="Xin chào"
+                                <Label x:Name="HelloLabel"
+                                    Text="Xin chào"
                                        FontSize="11"
                                        TextColor="#FFF7F1"/>
                                 <Label Text="{Binding User.Name}"
@@ -75,7 +76,8 @@
                         StrokeShape="RoundRectangle 20"
                         Padding="12">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="Khám phá"
+                           <Label x:Name="ExploreSectionLabel"
+                               Text="Khám phá"
                                FontSize="13"
                                FontAttributes="Bold"
                                TextColor="#0F172A"/>
@@ -124,11 +126,13 @@
                                   ColumnSpacing="10">
                                 <VerticalStackLayout Grid.Column="0"
                                                      Spacing="1">
-                                    <Label Text="Khám phá điểm đến"
+                                     <Label x:Name="DiscoverTitleLabel"
+                                         Text="Khám phá điểm đến"
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            TextColor="#0F172A"/>
-                                    <Label Text="Bản đồ, chỉ đường và phát mô tả tự động"
+                                     <Label x:Name="DiscoverSubtitleLabel"
+                                         Text="Bản đồ, chỉ đường và phát mô tả tự động"
                                            FontSize="11"
                                            TextColor="#64748B"/>
                                 </VerticalStackLayout>
@@ -152,11 +156,43 @@
                                   ColumnSpacing="10">
                                 <VerticalStackLayout Grid.Column="0"
                                                      Spacing="1">
-                                    <Label Text="Hành trình của tôi"
+                                     <Label x:Name="MyTripsTitleLabel"
+                                         Text="Hành trình của tôi"
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            TextColor="#0F172A"/>
-                                    <Label Text="Xem lại các điểm bạn đã chọn"
+                                     <Label x:Name="MyTripsSubtitleLabel"
+                                         Text="Xem lại các điểm bạn đã chọn"
+                                           FontSize="11"
+                                           TextColor="#64748B"/>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1"
+                                       Text="›"
+                                       FontSize="20"
+                                       TextColor="{StaticResource Primary}"
+                                       VerticalTextAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#D6E1E9"
+                                BackgroundColor="#F7FAFC"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="12,10">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnQrTriggerTapped"/>
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto"
+                                  ColumnSpacing="10">
+                                <VerticalStackLayout Grid.Column="0"
+                                                     Spacing="1">
+                                    <Label x:Name="QrTriggerTitleLabel"
+                                           Text="Kích hoạt thuyết minh bằng QR"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#0F172A"/>
+                                    <Label x:Name="QrTriggerSubtitleLabel"
+                                           Text="Quét mã QR để mở nội dung thuyết minh phù hợp"
                                            FontSize="11"
                                            TextColor="#64748B"/>
                                 </VerticalStackLayout>
@@ -176,7 +212,8 @@
                         StrokeShape="RoundRectangle 20"
                         Padding="12">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="Tài khoản"
+                           <Label x:Name="AccountSectionLabel"
+                               Text="Tài khoản"
                                FontSize="13"
                                FontAttributes="Bold"
                                TextColor="#0F172A"/>
@@ -192,7 +229,8 @@
                             <Grid ColumnDefinitions="*,Auto"
                                   ColumnSpacing="10">
                                 <Label Grid.Column="0"
-                                       Text="Tài khoản và thanh toán"
+                                        x:Name="AccountPaymentLabel"
+                                        Text="Tài khoản và thanh toán"
                                        FontSize="14"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"
@@ -216,7 +254,8 @@
                             <Grid ColumnDefinitions="*,Auto"
                                   ColumnSpacing="10">
                                 <Label Grid.Column="0"
-                                       Text="Cài đặt"
+                                        x:Name="SettingsMenuLabel"
+                                        Text="Cài đặt"
                                        FontSize="14"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"
@@ -238,7 +277,8 @@
                         StrokeShape="RoundRectangle 20"
                         Padding="12">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="Dành cho người bán"
+                           <Label x:Name="SellerSectionLabel"
+                               Text="Dành cho người bán"
                                FontSize="13"
                                FontAttributes="Bold"
                                TextColor="#0F172A"/>
@@ -254,7 +294,8 @@
                             <Grid ColumnDefinitions="*,Auto"
                                   ColumnSpacing="10">
                                 <Label Grid.Column="0"
-                                       Text="Quản lý cửa hàng của tôi"
+                                        x:Name="StoreManagementLabel"
+                                        Text="Quản lý cửa hàng của tôi"
                                        FontSize="14"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"
@@ -279,7 +320,8 @@
                             <Grid ColumnDefinitions="*,Auto"
                                   ColumnSpacing="10">
                                 <Label Grid.Column="0"
-                                       Text="Gửi đăng ký cửa hàng"
+                                        x:Name="StoreRegistrationLabel"
+                                        Text="Gửi đăng ký cửa hàng"
                                        FontSize="14"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"
@@ -306,11 +348,13 @@
                           ColumnSpacing="10">
                         <VerticalStackLayout Grid.Column="0"
                                              Spacing="1">
-                            <Label Text="Trợ giúp và phản hồi"
+                            <Label x:Name="SupportTitleLabel"
+                                Text="Trợ giúp và phản hồi"
                                    FontSize="14"
                                    FontAttributes="Bold"
                                    TextColor="#0F172A"/>
-                            <Label Text="Báo lỗi hoặc góp ý để cải thiện ứng dụng"
+                            <Label x:Name="SupportSubtitleLabel"
+                                Text="Báo lỗi hoặc góp ý để cải thiện ứng dụng"
                                    FontSize="11"
                                    TextColor="#64748B"/>
                         </VerticalStackLayout>
@@ -367,7 +411,8 @@
                 StrokeShape="RoundRectangle 24">
             <VerticalStackLayout Spacing="12">
                 <Grid ColumnDefinitions="*,Auto">
-                    <Label Text="Chức năng nhanh"
+                    <Label x:Name="QuickActionsTitleLabel"
+                           Text="Chức năng nhanh"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="{StaticResource TextPrimary}"/>
@@ -391,11 +436,13 @@
                     </Border>
                 </Grid>
 
-                <Label Text="Truy cập các thao tác chính mà không cần kéo xuống cuối trang."
+                  <Label x:Name="QuickActionsSubtitleLabel"
+                      Text="Truy cập các thao tác chính mà không cần kéo xuống cuối trang."
                        FontSize="12"
                        TextColor="{StaticResource TextSecondary}"/>
 
-                <Button Text="Trang chính"
+                  <Button x:Name="SidebarHomeButton"
+                       Text="Trang chính"
                         Clicked="OnSidebarHomeTapped"
                         BackgroundColor="{StaticResource Secondary}"
                         TextColor="{StaticResource PrimaryDark}"
@@ -403,7 +450,8 @@
                         HeightRequest="46"
                         FontAttributes="Bold"/>
 
-                <Button Text="Hồ sơ người dùng"
+                <Button x:Name="SidebarProfileButton"
+                    Text="Hồ sơ người dùng"
                         Clicked="OnSidebarProfileTapped"
                         BackgroundColor="{StaticResource Secondary}"
                         TextColor="{StaticResource PrimaryDark}"
@@ -411,7 +459,8 @@
                         HeightRequest="46"
                         FontAttributes="Bold"/>
 
-                <Button Text="Cài đặt"
+                <Button x:Name="SidebarSettingsButton"
+                    Text="Cài đặt"
                         Clicked="OnSidebarSettingsTapped"
                         BackgroundColor="{StaticResource Secondary}"
                         TextColor="{StaticResource PrimaryDark}"
@@ -419,7 +468,8 @@
                         HeightRequest="46"
                         FontAttributes="Bold"/>
 
-                <Button Text="Trợ giúp và phản hồi"
+                <Button x:Name="SidebarSupportButton"
+                    Text="Trợ giúp và phản hồi"
                         Clicked="OnSidebarSupportTapped"
                         BackgroundColor="{StaticResource Secondary}"
                         TextColor="{StaticResource PrimaryDark}"
@@ -427,7 +477,8 @@
                         HeightRequest="46"
                         FontAttributes="Bold"/>
 
-                <Button Text="Đăng xuất"
+                <Button x:Name="SidebarLogoutButton"
+                    Text="Đăng xuất"
                         Clicked="OnSidebarLogoutTapped"
                         BackgroundColor="#FEE2E2"
                         TextColor="#B91C1C"

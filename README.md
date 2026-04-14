@@ -36,6 +36,7 @@ Target framework hien tai:
 ### Admin Web
 
 - Dang nhap quan tri bang cookie auth.
+- Dashboard tong quan co KPI, chart, hoat dong gan day va cac khu vuc san cho analytics/tour/logs/settings.
 - Quan ly Users:
   - Tao user
   - Chinh sua bang popup

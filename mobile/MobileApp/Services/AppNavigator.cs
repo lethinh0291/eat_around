@@ -31,6 +31,12 @@ public class AppNavigator
         return Task.CompletedTask;
     }
 
+    public Task ShowLoadingAsync()
+    {
+        SetRoot(_services.GetRequiredService<LoadingPage>());
+        return Task.CompletedTask;
+    }
+
     public async Task ShowMainFromMenuAsync()
     {
         var navigation = EnsureNavigationPage();
@@ -145,6 +151,21 @@ public class AppNavigator
         if (navigation is not null)
         {
             await navigation.PushAsync(_services.GetRequiredService<HelpFeedbackPage>());
+        }
+    }
+
+    public async Task ShowQrTriggerAsync()
+    {
+        var navigation = EnsureNavigationPage();
+        if (navigation is null)
+        {
+            await ShowMenuAsync();
+            navigation = EnsureNavigationPage();
+        }
+
+        if (navigation is not null)
+        {
+            await navigation.PushAsync(_services.GetRequiredService<QrTriggerPage>());
         }
     }
 

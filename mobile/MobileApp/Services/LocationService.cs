@@ -1,14 +1,26 @@
 using SharedLib.Models;
+using System.Globalization;
+using Microsoft.Maui.Storage;
 
 namespace MobileApp.Services;
 
 public class LocationService
 {
+    private readonly ApiService _apiService;
+    private readonly AudioPlaybackService _audioPlaybackService;
+    private readonly TranslationService _translationService;
     private readonly Dictionary<int, DateTime> _lastNarratedAtByPoi = new();
     private readonly Dictionary<string, DateTime> _lastNarratedAtByKey = new(StringComparer.OrdinalIgnoreCase);
     private readonly SemaphoreSlim _speakLock = new(1, 1);
 
     public TimeSpan NarrationCooldown { get; set; } = TimeSpan.FromMinutes(2);
+
+    public LocationService(ApiService apiService, AudioPlaybackService audioPlaybackService, TranslationService translationService)
+    {
+        _apiService = apiService;
+        _audioPlaybackService = audioPlaybackService;
+        _translationService = translationService;
+    }
 
     // Hàm tính khoảng cách giữa 2 tọa độ (Công thức Haversine)
     public double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
@@ -81,14 +93,97 @@ public class LocationService
         return nowUtc - lastPlayedAtUtc >= NarrationCooldown;
     }
 
-    public async Task<bool> NarratePoiAsync(POI poi, CancellationToken cancellationToken = default)
+    public async Task<bool> NarratePoiAsync(
+        POI poi,
+        Location? userLocation = null,
+        CancellationToken cancellationToken = default,
+        string? preferredLanguageOverride = null)
     {
-        return await NarrateTextAsync(
-            $"poi:{poi.Id}",
-            poi.Description,
-            poi.LanguageCode,
-            cancellationToken,
-            onNarratedAtUtc: narratedAt => _lastNarratedAtByPoi[poi.Id] = narratedAt);
+        var narrationKey = $"poi:{poi.Id}";
+        if (string.IsNullOrWhiteSpace(poi.Description) || !CanNarrate(narrationKey, DateTime.UtcNow))
+        {
+            return false;
+        }
+
+        await _speakLock.WaitAsync(cancellationToken);
+        try
+        {
+            var nowUtc = DateTime.UtcNow;
+            if (!CanNarrate(narrationKey, nowUtc))
+            {
+                return false;
+            }
+
+            var sourceText = poi.Description.Trim();
+            var sourceLanguage = NormalizeLanguageCode(poi.LanguageCode);
+            var preferredLanguage = ResolvePreferredLanguageCode(preferredLanguageOverride);
+            var selectedLanguage = sourceLanguage;
+            var selectedText = sourceText;
+            var selectedAudioUrl = NormalizeAudioUrl(poi.AudioUrl);
+            var hasInternet = Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
+            var narrationType = "tts";
+
+            if (!string.Equals(preferredLanguage, sourceLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                var approvedTranslation = await _apiService.GetApprovedPoiTranslationAsync(poi.Id, preferredLanguage, cancellationToken);
+
+                if (approvedTranslation is not null)
+                {
+                    if (!string.IsNullOrWhiteSpace(approvedTranslation.ContentText))
+                    {
+                        selectedText = approvedTranslation.ContentText.Trim();
+                    }
+
+                    selectedLanguage = NormalizeLanguageCode(approvedTranslation.LanguageCode);
+                    selectedAudioUrl = NormalizeAudioUrl(approvedTranslation.AudioUrl) ?? selectedAudioUrl;
+                }
+                else if (hasInternet)
+                {
+                    var dynamicTranslation = await _translationService.TranslateAsync(
+                        sourceText,
+                        preferredLanguage,
+                        sourceLanguage,
+                        cancellationToken);
+
+                    if (!string.IsNullOrWhiteSpace(dynamicTranslation))
+                    {
+                        selectedText = dynamicTranslation.Trim();
+                        selectedLanguage = preferredLanguage;
+                    }
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectedAudioUrl))
+            {
+                narrationType = "audio";
+                var audioWatch = System.Diagnostics.Stopwatch.StartNew();
+                var played = await _audioPlaybackService.TryPlayFromUrlAsync(selectedAudioUrl, cancellationToken);
+                if (played)
+                {
+                    audioWatch.Stop();
+                    MarkNarrated(poi.Id, narrationKey, nowUtc);
+                    await LogListenAsync(poi.Id, narrationType, selectedLanguage, audioWatch.Elapsed.TotalSeconds, userLocation, cancellationToken);
+                    return true;
+                }
+            }
+
+            narrationType = "tts";
+            var ttsWatch = System.Diagnostics.Stopwatch.StartNew();
+            var spoken = await SpeakTextInternalAsync(selectedText, selectedLanguage, cancellationToken);
+            if (!spoken)
+            {
+                return false;
+            }
+
+            ttsWatch.Stop();
+            MarkNarrated(poi.Id, narrationKey, nowUtc);
+            await LogListenAsync(poi.Id, narrationType, selectedLanguage, ttsWatch.Elapsed.TotalSeconds, userLocation, cancellationToken);
+            return true;
+        }
+        finally
+        {
+            _speakLock.Release();
+        }
     }
 
     public async Task<bool> NarrateTextAsync(
@@ -119,20 +214,12 @@ public class LocationService
                 return false;
             }
 
-            var options = new SpeechOptions();
-            if (!string.IsNullOrWhiteSpace(languageCode))
+            var spoken = await SpeakTextInternalAsync(text, languageCode, cancellationToken);
+            if (!spoken)
             {
-                var locales = await TextToSpeech.Default.GetLocalesAsync();
-                var locale = locales.FirstOrDefault(candidate =>
-                    candidate.Language.StartsWith(languageCode, StringComparison.OrdinalIgnoreCase));
-
-                if (locale is not null)
-                {
-                    options.Locale = locale;
-                }
+                return false;
             }
 
-            await TextToSpeech.Default.SpeakAsync(text, options, cancellationToken);
             _lastNarratedAtByKey[narrationKey] = nowUtc;
             onNarratedAtUtc?.Invoke(nowUtc);
             return true;
@@ -141,5 +228,133 @@ public class LocationService
         {
             _speakLock.Release();
         }
+    }
+
+    private static async Task<bool> SpeakTextInternalAsync(string? text, string languageCode, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        var options = new SpeechOptions();
+        var normalizedLanguage = NormalizeLanguageCode(languageCode);
+
+        if (!string.IsNullOrWhiteSpace(normalizedLanguage))
+        {
+            var locales = await TextToSpeech.Default.GetLocalesAsync();
+            var locale = locales.FirstOrDefault(candidate =>
+                candidate.Language.StartsWith(normalizedLanguage, StringComparison.OrdinalIgnoreCase));
+
+            if (locale is not null)
+            {
+                options.Locale = locale;
+            }
+        }
+
+        await TextToSpeech.Default.SpeakAsync(text, options, cancellationToken);
+        return true;
+    }
+
+    private static string GetPreferredLanguageCode()
+    {
+        const string settingsKey = "zes_settings_v1";
+        var json = Preferences.Default.Get(settingsKey, string.Empty);
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            try
+            {
+                var data = System.Text.Json.JsonSerializer.Deserialize<SettingData>(json);
+                var selected = data?.NarrationLanguageCode;
+                if (!string.IsNullOrWhiteSpace(selected) &&
+                    !string.Equals(selected, "auto", StringComparison.OrdinalIgnoreCase))
+                {
+                    return NormalizeLanguageCode(selected);
+                }
+            }
+            catch
+            {
+                // Fall back to the device language.
+            }
+        }
+
+        var code = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        return NormalizeLanguageCode(code);
+    }
+
+    private static string ResolvePreferredLanguageCode(string? preferredLanguageOverride)
+    {
+        if (!string.IsNullOrWhiteSpace(preferredLanguageOverride))
+        {
+            return NormalizeLanguageCode(preferredLanguageOverride);
+        }
+
+        return GetPreferredLanguageCode();
+    }
+
+    private static string NormalizeLanguageCode(string? languageCode)
+    {
+        if (string.IsNullOrWhiteSpace(languageCode))
+        {
+            return "vi";
+        }
+
+        var normalized = languageCode.Trim().ToLowerInvariant();
+        var delimiter = normalized.IndexOfAny(new[] { '-', '_' });
+        if (delimiter > 0)
+        {
+            normalized = normalized[..delimiter];
+        }
+
+        return normalized switch
+        {
+            "vn" => "vi",
+            _ => normalized
+        };
+    }
+
+    private static string? NormalizeAudioUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return null;
+        }
+
+        return url.Trim();
+    }
+
+    private void MarkNarrated(int poiId, string narrationKey, DateTime narratedAtUtc)
+    {
+        _lastNarratedAtByPoi[poiId] = narratedAtUtc;
+        _lastNarratedAtByKey[narrationKey] = narratedAtUtc;
+    }
+
+    private async Task LogListenAsync(
+        int poiId,
+        string contentType,
+        string languageCode,
+        double durationSeconds,
+        Location? userLocation,
+        CancellationToken cancellationToken)
+    {
+        if (userLocation is null)
+        {
+            return;
+        }
+
+        await _apiService.RecordListenLogAsync(
+            poiId,
+            languageCode,
+            contentType,
+            durationSeconds,
+            userLocation.Latitude,
+            userLocation.Longitude,
+            DateTime.UtcNow,
+            cancellationToken);
+    }
+
+    private sealed class SettingData
+    {
+        public string NarrationLanguageCode { get; set; } = "auto";
     }
 }

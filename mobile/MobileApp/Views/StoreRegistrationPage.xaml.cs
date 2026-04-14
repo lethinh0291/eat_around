@@ -1,4 +1,5 @@
 using MobileApp.Services;
+using MobileApp.Resources.Localization;
 using System.ComponentModel;
 using System.IO;
 using System.Collections.ObjectModel;
@@ -28,6 +29,7 @@ public partial class StoreRegistrationPage : ContentPage
         _authService = authService;
         _navigator = navigator;
         InitializeComponent();
+        ApplyLocalizedText();
         SelectedImagesCollectionView.ItemsSource = _selectedImages;
         AddressSuggestionsCollectionView.ItemsSource = _addressSuggestions;
 
@@ -51,13 +53,33 @@ public partial class StoreRegistrationPage : ContentPage
         DescriptionEditor.TextChanged += OnDraftFieldChanged;
     }
 
+    private void ApplyLocalizedText()
+    {
+        StoreRegistrationTitleLabel.Text = AppText.Get("StoreRegistration_Title");
+        StoreRegistrationSubtitleLabel.Text = AppText.Get("StoreRegistration_Subtitle");
+        StoreNameEntry.Placeholder = AppText.Get("StoreRegistration_StoreName");
+        OwnerNameEntry.Placeholder = AppText.Get("StoreRegistration_OwnerName");
+        PhoneEntry.Placeholder = AppText.Get("StoreRegistration_Phone");
+        AddressEntry.Placeholder = AppText.Get("StoreRegistration_Address");
+        AddressMapPreviewLabel.Text = AppText.Get("StoreRegistration_AddressPosition");
+        CategoryEntry.Placeholder = AppText.Get("StoreRegistration_Category");
+        DescriptionEditor.Placeholder = AppText.Get("StoreRegistration_Description");
+        PickImageButton.Text = AppText.Get("StoreRegistration_AddImage");
+        SelectedImageHintLabel.Text = AppText.Get("StoreRegistration_ImageHint");
+        SubmitRegistrationButton.Text = AppText.Get("StoreRegistration_Submit");
+        UpdateSelectedImagesUi();
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
         if (!string.Equals(_authService.CurrentUser?.Role, "seller", StringComparison.OrdinalIgnoreCase))
         {
-            await DisplayAlertAsync("Không có quyền", "Chỉ tài khoản Người bán mới có thể đăng ký cửa hàng.", "OK");
+            await DisplayAlertAsync(
+                AppText.Get("Common_NoPermissionTitle"),
+                AppText.Get("StoreRegistration_SellerOnly"),
+                AppText.Get("Common_Ok"));
             await Navigation.PopAsync();
             return;
         }
@@ -97,14 +119,14 @@ public partial class StoreRegistrationPage : ContentPage
             string.IsNullOrWhiteSpace(phone) ||
             string.IsNullOrWhiteSpace(address))
         {
-            MessageLabel.Text = "Vui lòng nhập đủ thông tin bắt buộc.";
+            MessageLabel.Text = AppText.Get("StoreRegistration_RequiredFields");
             return;
         }
 
         var resolvedGeo = _selectedAddressGeo ?? await ResolveAddressGeoAsync(address, CancellationToken.None);
         if (resolvedGeo is null)
         {
-            MessageLabel.Text = "Không xác định được vị trí địa chỉ. Vui lòng chọn gợi ý phù hợp.";
+            MessageLabel.Text = AppText.Get("StoreRegistration_AddressNotResolved");
             return;
         }
 
@@ -157,7 +179,7 @@ public partial class StoreRegistrationPage : ContentPage
             return;
         }
 
-        await DisplayAlertAsync("Gửi thành công", result.Message, "OK");
+        await DisplayAlertAsync(AppText.Get("StoreRegistration_SubmitSuccessTitle"), result.Message, AppText.Get("Common_Ok"));
         ClearDraft();
         ClearSelectedImages();
         await _navigator.ShowStoreManagementAsync();
@@ -171,7 +193,7 @@ public partial class StoreRegistrationPage : ContentPage
         {
             var photos = await FilePicker.Default.PickMultipleAsync(new PickOptions
             {
-                PickerTitle = "Chọn nhiều ảnh cho cửa hàng",
+                PickerTitle = AppText.Get("StoreRegistration_PickImages"),
                 FileTypes = FilePickerFileType.Images
             });
 
@@ -205,7 +227,7 @@ public partial class StoreRegistrationPage : ContentPage
         }
         catch (Exception ex)
         {
-            MessageLabel.Text = "Không thể chọn ảnh. Vui lòng thử lại.";
+            MessageLabel.Text = AppText.Get("StoreRegistration_PickImagesFailed");
             Console.WriteLine($"Lỗi chọn ảnh: {ex.Message}");
         }
     }
@@ -392,7 +414,7 @@ public partial class StoreRegistrationPage : ContentPage
     private void ShowAddressPreviewMap(double lat, double lng, string title)
     {
         AddressMapPreviewContainer.IsVisible = true;
-        AddressMapPreviewLabel.Text = $"Vị trí địa chỉ: {title}";
+        AddressMapPreviewLabel.Text = AppText.Format("StoreRegistration_AddressPositionFormat", title);
 
         var safeTitle = EscapeJavaScript(title);
         var latText = lat.ToString(CultureInfo.InvariantCulture);
@@ -525,7 +547,10 @@ public partial class StoreRegistrationPage : ContentPage
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await DisplayAlertAsync("Khôi phục bản nháp", "Đã tự khôi phục thông tin đăng ký cửa hàng chưa gửi xong.", "OK");
+                    await DisplayAlertAsync(
+                        AppText.Get("StoreRegistration_RestoreDraftTitle"),
+                        AppText.Get("StoreRegistration_RestoreDraftMessage"),
+                        AppText.Get("Common_Ok"));
                 });
             }
         }
@@ -572,8 +597,8 @@ public partial class StoreRegistrationPage : ContentPage
     private void UpdateSelectedImagesUi()
     {
         SelectedImageLabel.Text = _selectedImages.Count == 0
-            ? "Chưa chọn ảnh"
-            : $"Đã chọn: {_selectedImages.Count} ảnh";
+            ? AppText.Get("StoreRegistration_NoImageSelected")
+            : AppText.Format("StoreRegistration_SelectedImagesFormat", _selectedImages.Count);
 
         SelectedImagesCollectionView.IsVisible = _selectedImages.Count > 0;
     }
@@ -614,6 +639,9 @@ public partial class StoreRegistrationPage : ContentPage
         public string FileName { get; }
         public string? ContentType { get; }
         public ImageSource PreviewSource { get; }
+        public string PrimaryBadgeText => AppText.Get("StoreRegistration_PrimaryImage");
+        public string SetPrimaryText => AppText.Get("StoreRegistration_SetPrimary");
+        public string DeleteText => AppText.Get("Common_Delete");
 
         public bool IsPrimary
         {

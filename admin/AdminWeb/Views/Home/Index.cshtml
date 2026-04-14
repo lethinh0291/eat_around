@@ -1,50 +1,76 @@
-﻿@model AdminWeb.Models.AdminDashboardViewModel
+@model AdminWeb.Models.AdminDashboardViewModel
+@using System.Globalization
 @{
     ViewData["Title"] = "Dashboard";
+
+    var chartItems = new[]
+    {
+        new { Label = "POI", Value = Model.TotalPois, Tone = "accent" },
+        new { Label = "Users", Value = Model.TotalUsers, Tone = "neutral" },
+        new { Label = "Seller", Value = Model.SellerUsers, Tone = "warm" },
+        new { Label = "Pending", Value = Model.PendingStoreRegistrations, Tone = "soft" },
+        new { Label = "Media", Value = Model.MediaPois, Tone = "success" }
+    };
+
+    var chartMax = Math.Max(1, chartItems.Max(item => item.Value));
 }
 
-<section class="admin-hero mb-4">
-    <div class="row align-items-center g-4 position-relative">
-        <div class="col-lg-7">
-            <span class="eyebrow">Admin web cho mobile build</span>
-            <h1 class="hero-title">Quản trị POI và các tính năng nội dung của ZesTour từ web.</h1>
-            <p class="hero-copy">
-                Dashboard này phản ánh các phần đã có trên mobile: bản đồ, hành trình, cài đặt, trợ giúp, đăng ký cửa hàng và thuyết minh nhanh.
-                Từ đây bạn quản lý dữ liệu POI, theo dõi phạm vi phủ và chuẩn bị nội dung cho ứng dụng di động.
+@if (TempData["AdminMessage"] is string message && !string.IsNullOrWhiteSpace(message))
+{
+    <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">@message</div>
+}
+
+@if (TempData["AdminError"] is string error && !string.IsNullOrWhiteSpace(error))
+{
+    <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">@error</div>
+}
+
+<section class="dashboard-hero mb-4">
+    <div class="row g-4 align-items-center">
+        <div class="col-xl-7">
+            <div class="dashboard-kicker">Admin Control Center</div>
+            <h1 class="dashboard-title">Một màn hình để điều phối POI, nội dung, analytics, tour và cấu hình hệ thống.</h1>
+            <p class="dashboard-copy">
+                Dashboard này gom các luồng quản trị chính của ZesTour vào một nơi: POI, chủ quán, bản dịch, tour, báo cáo, log và settings.
+                Dữ liệu đang có trong backend được hiển thị trực tiếp; các phần chưa có API riêng được đánh dấu rõ để mở rộng sau.
             </p>
-            <div class="d-flex flex-wrap gap-2 mt-4">
-                <a class="btn btn-admin btn-admin-primary" asp-controller="Poi" asp-action="Index">Quản lý POI</a>
-                <a class="btn btn-admin btn-admin-soft" asp-controller="Poi" asp-action="Create">Tạo địa điểm mới</a>
+            <div class="dashboard-actions mt-4">
+                <a class="btn btn-admin btn-admin-primary" asp-controller="Poi" asp-action="Index">Mở POI</a>
+                <a class="btn btn-admin btn-admin-soft" asp-controller="AdminManagement" asp-action="Users">Quản lý Users</a>
+                <a class="btn btn-admin btn-admin-soft" asp-controller="AdminManagement" asp-action="Stores">Duyệt Stores</a>
+                <a class="btn btn-admin btn-admin-soft" asp-controller="Banners" asp-action="Index">Banner</a>
             </div>
         </div>
-        <div class="col-lg-5">
-            <div class="row g-3">
-                <div class="col-6">
-                    <div class="stat-card">
-                        <div class="stat-label">Tổng POI</div>
-                        <div class="stat-value">@Model.TotalPois</div>
-                        <div class="stat-note">Điểm đến đang hiển thị trên mobile</div>
+        <div class="col-xl-5">
+            <div class="dashboard-surface p-3 p-md-4">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="kpi-card kpi-card-accent">
+                            <div class="kpi-label">POI</div>
+                            <div class="kpi-value">@Model.TotalPois</div>
+                            <div class="kpi-note">Địa điểm đang được mobile sử dụng</div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-6">
-                    <div class="stat-card">
-                        <div class="stat-label">Ưu tiên cao</div>
-                        <div class="stat-value">@Model.HighPriorityPois</div>
-                        <div class="stat-note">POI có Priority từ 7 trở lên</div>
+                    <div class="col-6">
+                        <div class="kpi-card kpi-card-neutral">
+                            <div class="kpi-label">Users</div>
+                            <div class="kpi-value">@Model.TotalUsers</div>
+                            <div class="kpi-note">@Model.SellerUsers chủ quán, @Model.AdminUsers admin</div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-6">
-                    <div class="stat-card">
-                        <div class="stat-label">Bán kính TB</div>
-                        <div class="stat-value">@Model.AverageRadius.ToString("0.#")m</div>
-                        <div class="stat-note">Phạm vi gợi ý quanh địa điểm</div>
+                    <div class="col-6">
+                        <div class="kpi-card kpi-card-warm">
+                            <div class="kpi-label">Ngôn ngữ</div>
+                            <div class="kpi-value">@Model.DistinctLanguages</div>
+                            <div class="kpi-note">Mã ngôn ngữ đang có trong hệ thống</div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-6">
-                    <div class="stat-card">
-                        <div class="stat-label">Ngôn ngữ</div>
-                        <div class="stat-value">@Model.DistinctLanguages</div>
-                        <div class="stat-note">Mã ngôn ngữ đang được dùng</div>
+                    <div class="col-6">
+                        <div class="kpi-card kpi-card-soft">
+                            <div class="kpi-label">Chờ duyệt</div>
+                            <div class="kpi-value">@Model.PendingStoreRegistrations</div>
+                            <div class="kpi-note">Nguồn dữ liệu để tạo POI mới</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,59 +78,150 @@
     </div>
 </section>
 
-<div class="row g-3 mb-4">
-    @foreach (var module in Model.ModuleCards)
-    {
-        <div class="col-md-6 col-xl-3">
-            <div class="module-card">
-                <div class="d-flex align-items-start justify-content-between gap-3">
+<section class="mb-4">
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="dashboard-panel p-4 h-100">
+                <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
                     <div>
-                        <h2 class="section-title">@module.Title</h2>
-                        <p class="section-subtitle mt-2">@module.Description</p>
+                        <h2 class="section-heading">Trang tổng quan</h2>
+                        <p class="section-subheading">Các chỉ số nhanh và biểu đồ điều phối từ dữ liệu hiện có.</p>
                     </div>
-                    @if (!string.IsNullOrWhiteSpace(module.Badge))
+                    <span class="admin-badge admin-badge-muted">Responsive desktop / tablet</span>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    @foreach (var card in Model.MetricCards)
                     {
-                        <span class="admin-badge admin-badge-accent">@module.Badge</span>
+                        <div class="col-md-6 col-xxl-4">
+                            <div class="metric-card metric-card-@card.Tone">
+                                <div class="metric-icon">@card.Icon</div>
+                                <div class="metric-header">
+                                    <div>
+                                        <div class="metric-title">@card.Title</div>
+                                        <div class="metric-value">@card.Value</div>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(card.ActionUrl) && !string.IsNullOrWhiteSpace(card.ActionText))
+                                    {
+                                        <a class="metric-link" href="@card.ActionUrl">@card.ActionText</a>
+                                    }
+                                </div>
+                                <div class="metric-note">@card.Note</div>
+                            </div>
+                        </div>
                     }
+                </div>
+
+                <div class="dashboard-chart-shell">
+                    <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
+                        <div>
+                            <h3 class="section-subtitle-strong mb-1">Biểu đồ điều phối hiện tại</h3>
+                            <p class="section-subheading mb-0">Dùng để nhìn nhanh tương quan giữa POI, user, seller, đăng ký chờ duyệt và media.</p>
+                        </div>
+                        <span class="admin-badge admin-badge-accent">Chart-ready</span>
+                    </div>
+
+                    <div class="dashboard-bars">
+                        @foreach (var item in chartItems)
+                        {
+                            var barHeight = Math.Max(10, (int)Math.Round((item.Value * 100.0) / chartMax));
+                            <div class="dashboard-bar-item">
+                                <div class="dashboard-bar-track">
+                                    <div class="dashboard-bar dashboard-bar-@item.Tone" style="height:@barHeight%"></div>
+                                </div>
+                                <div class="dashboard-bar-label">@item.Label</div>
+                                <div class="dashboard-bar-value">@item.Value.ToString(CultureInfo.InvariantCulture)</div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-    }
-</div>
 
-<div class="row g-4">
-    <div class="col-xl-8">
-        <div class="surface-card p-4">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                <div>
-                    <h2 class="section-title">POI gần đây</h2>
-                    <p class="section-subtitle">Các địa điểm mới nhất được sắp xếp để kiểm tra nhanh.</p>
+        <div class="col-xl-4">
+            <div class="dashboard-panel p-4 h-100">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-3">
+                    <div>
+                        <h2 class="section-heading">Hoạt động gần đây</h2>
+                        <p class="section-subheading">Những tín hiệu nhanh để admin theo dõi.</p>
+                    </div>
+                    <span class="admin-badge admin-badge-muted">Live summary</span>
                 </div>
-                <a class="btn btn-admin btn-admin-soft btn-sm" asp-controller="Poi" asp-action="Index">Xem tất cả</a>
-            </div>
 
-            @if (Model.RecentPois.Count == 0)
-            {
-                <div class="empty-state">
-                    <div>Chưa có POI nào được tạo.</div>
-                    <div class="mt-2">
-                        <a class="btn btn-admin btn-admin-primary btn-sm" asp-controller="Poi" asp-action="Create">Thêm POI đầu tiên</a>
+                <div class="activity-timeline">
+                    @foreach (var activity in Model.Activities)
+                    {
+                        <div class="activity-item activity-item-@activity.Tone">
+                            <div class="activity-time">@activity.TimeLabel</div>
+                            <div class="activity-body">
+                                <div class="activity-title">@activity.Title</div>
+                                <div class="activity-desc">@activity.Description</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-4 dashboard-heatmap-shell">
+                    <div class="d-flex align-items-start justify-content-between gap-2 mb-3">
+                        <div>
+                            <h3 class="section-subtitle-strong mb-1">Heatmap</h3>
+                            <p class="section-subheading mb-0">Sẵn sàng nối lịch sử vị trí và mật độ nghe.</p>
+                        </div>
+                        <span class="admin-badge admin-badge-muted">Placeholder</span>
+                    </div>
+                    <div class="heatmap-grid">
+                        @for (var i = 0; i < 15; i++)
+                        {
+                            var intensity = (i % 5) + 1;
+                            <span class="heatmap-cell heatmap-cell-@intensity"></span>
+                        }
+                    </div>
+                    <div class="heatmap-caption mt-3">
+                        Khi backend có play log và location history, khung này sẽ hiển thị vùng nghe nhiều nhất.
                     </div>
                 </div>
-            }
-            else
-            {
-                <div class="table-responsive">
-                    <table class="table admin-table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Tên</th>
-                                <th>Tọa độ</th>
-                                <th>Thông tin</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var poi in Model.RecentPois)
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-4">
+    <div class="dashboard-section-header mb-3">
+        <div>
+            <h2 class="section-heading">Quản lý POI</h2>
+            <p class="section-subheading">Danh sách, thêm/sửa, ẩn/xoá, gán chủ quán và import/export.</p>
+        </div>
+        <a class="btn btn-admin btn-admin-soft" asp-controller="Poi" asp-action="Index">Mở danh sách</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <div class="dashboard-panel p-4 h-100">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <div>
+                        <h3 class="section-subtitle-strong mb-1">Top 5 POI nổi bật</h3>
+                        <p class="section-subheading mb-0">Hiện đang xếp theo priority. Khi có log nghe, bảng này sẽ đổi sang số lượt nghe thực.</p>
+                    </div>
+                    <a class="btn btn-admin btn-admin-primary btn-sm" asp-controller="Poi" asp-action="Create">Thêm POI</a>
+                </div>
+
+                @if (Model.FeaturedPois.Count == 0)
+                {
+                    <div class="empty-state empty-state-compact">Chưa có POI nào để hiển thị.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table admin-table align-middle dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>POI</th>
+                                    <th>Tọa độ</th>
+                                    <th>Thuộc tính</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var poi in Model.FeaturedPois)
                             {
                                 <tr>
                                     <td>
@@ -112,47 +229,113 @@
                                         <div class="poi-meta">@(string.IsNullOrWhiteSpace(poi.Description) ? "Không có mô tả" : poi.Description)</div>
                                     </td>
                                     <td>
-                                        <div class="poi-meta">@poi.Latitude.ToString("0.#####"), @poi.Longitude.ToString("0.#####")</div>
+                                        <div class="poi-meta">@poi.Latitude.ToString("0.#####", CultureInfo.InvariantCulture)</div>
+                                        <div class="poi-meta">@poi.Longitude.ToString("0.#####", CultureInfo.InvariantCulture)</div>
                                     </td>
                                     <td>
-                                        <span class="admin-badge admin-badge-accent me-2">Priority @poi.Priority</span>
-                                        <span class="admin-badge admin-badge-muted">@poi.LanguageCode</span>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <span class="admin-badge admin-badge-accent">Priority @poi.Priority</span>
+                                            <span class="admin-badge admin-badge-muted">@poi.Radius.ToString("0.#", CultureInfo.InvariantCulture)m</span>
+                                            <span class="admin-badge admin-badge-muted">@poi.LanguageCode</span>
+                                        </div>
                                     </td>
                                 </tr>
                             }
-                        </tbody>
-                    </table>
-                </div>
-            }
-        </div>
-    </div>
-
-    <div class="col-xl-4">
-        <div class="surface-card p-4 h-100">
-            <h2 class="section-title mb-2">Tổng quan nội dung</h2>
-            <p class="section-subtitle mb-4">Một số chỉ số nhanh dựa trên dữ liệu POI hiện có.</p>
-
-            <div class="d-grid gap-3">
-                <div class="helper-chip justify-content-between">
-                    <span>POI có media</span>
-                    <strong>@Model.MediaPois</strong>
-                </div>
-                <div class="helper-chip justify-content-between">
-                    <span>Ưu tiên trung bình</span>
-                    <strong>@Model.AveragePriority.ToString("0.#")</strong>
-                </div>
-                <div class="helper-chip justify-content-between">
-                    <span>POI đang quản lý</span>
-                    <strong>@Model.TotalPois</strong>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
+        </div>
 
-            <div class="mt-4 p-3 rounded-4" style="background: var(--admin-surface-soft); border: 1px solid var(--admin-border);">
-                <div class="fw-bold mb-2">Mục tiêu admin</div>
-                <div class="small text-secondary-emphasis">
-                    Giữ dữ liệu POI sạch, đầy đủ tọa độ, có mô tả và sẵn sàng cho phần bản đồ trên mobile.
+        <div class="col-xl-4">
+            <div class="dashboard-panel p-4 h-100">
+                <h3 class="section-subtitle-strong mb-1">Danh sách POI</h3>
+                <p class="section-subheading">Các thao tác quản trị đã có route.</p>
+
+                <div class="quick-link-stack mt-4">
+                    <a class="quick-link" asp-controller="Poi" asp-action="Index">
+                        <span>Danh sách POI</span>
+                        <span>Open</span>
+                    </a>
+                    <a class="quick-link" asp-controller="Poi" asp-action="Create">
+                        <span>Thêm / Sửa POI</span>
+                        <span>Form</span>
+                    </a>
+                    <a class="quick-link" asp-controller="Poi" asp-action="Map">
+                        <span>Chọn tọa độ trên bản đồ</span>
+                        <span>Map</span>
+                    </a>
+                    <a class="quick-link" asp-controller="AdminManagement" asp-action="Stores">
+                        <span>Gán chủ quán từ đăng ký</span>
+                        <span>Stores</span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<section class="mb-4">
+    <div class="dashboard-section-header mb-3">
+        <div>
+            <h2 class="section-heading">Các khối chức năng chính</h2>
+            <p class="section-subheading">Phần nào đã có API thì có nút đi thẳng, phần nào chưa có thì giữ trạng thái chờ tích hợp.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var module in Model.Sections)
+        {
+            <div class="col-md-6 col-xl-3">
+                <div class="feature-card feature-card-@module.Tone h-100">
+                    <div class="d-flex align-items-start justify-content-between gap-2 mb-3">
+                        <span class="admin-badge admin-badge-muted">@module.Badge</span>
+                        <span class="feature-card-count">@module.Items.Count</span>
+                    </div>
+                    <h3 class="feature-card-title">@module.Title</h3>
+                    <p class="feature-card-copy">@module.Summary</p>
+                    <ul class="feature-card-list">
+                        @foreach (var item in module.Items)
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                    <div class="mt-auto pt-3">
+                        @if (!string.IsNullOrWhiteSpace(module.ActionUrl) && !string.IsNullOrWhiteSpace(module.ActionText))
+                        {
+                            <a class="btn btn-admin btn-admin-soft btn-sm w-100" href="@module.ActionUrl">@module.ActionText</a>
+                        }
+                        else
+                        {
+                            <div class="feature-card-state">@module.ActionText</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="mb-4">
+    <div class="dashboard-section-header mb-3">
+        <div>
+            <h2 class="section-heading">Cấu hình hệ thống</h2>
+            <p class="section-subheading">Khối settings để admin nắm các giá trị mặc định cần đồng bộ với mobile app.</p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        @foreach (var setting in Model.Settings)
+        {
+            <div class="col-md-6 col-xl-3">
+                <div class="setting-card h-100">
+                    <div class="setting-label">@setting.Label</div>
+                    <div class="setting-value">@setting.Value</div>
+                    <div class="setting-note">@setting.Note</div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+*** End Patch

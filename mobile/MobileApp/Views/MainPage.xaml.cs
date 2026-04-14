@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Net.Http;
 using System.Net.Http.Json;
+using MobileApp.Resources.Localization;
 
 namespace ZesTour.Views;
 
@@ -58,6 +59,29 @@ public partial class MainPage : ContentPage
         _locationService = locationService;
         _navigator = navigator;
         InitializeComponent();
+        ApplyLocalizedText();
+    }
+
+    private void ApplyLocalizedText()
+    {
+        MenuLabel.Text = AppText.Get("Main_Menu");
+        ProfileLabel.Text = AppText.Get("Main_Profile");
+        MapTitleLabel.Text = AppText.Get("Main_MapTitle");
+        MapSubtitleLabel.Text = AppText.Get("Main_MapSubtitle");
+        QrTriggerMapButtonLabel.Text = AppText.Get("Main_QrTriggerButton");
+        AutoPlayLabel.Text = AppText.Get("Main_AutoPlay");
+        BatterySaverLabel.Text = AppText.Get("Main_BatterySaver");
+        SidebarTitleLabel.Text = AppText.Get("Main_SidebarTitle");
+        SidebarSubtitleLabel.Text = AppText.Get("Main_SidebarSubtitle");
+        SidebarMapButton.Text = AppText.Get("Main_SidebarMapPage");
+        SidebarHomeButton.Text = AppText.Get("Main_SidebarHome");
+        SidebarProfileButton.Text = AppText.Get("Main_SidebarProfile");
+        SidebarRecenterButton.Text = AppText.Get("Main_SidebarRecenter");
+    }
+
+    private static string FormatAddressText(string address)
+    {
+        return AppText.Format("Main_AddressPrefix", address);
     }
 
     protected override async void OnAppearing()
@@ -89,7 +113,10 @@ public partial class MainPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Data loading error: {ex}");
-            await DisplayAlertAsync("Lỗi", $"Lỗi tải dữ liệu: {ex.Message}", "OK");
+            await DisplayAlertAsync(
+                AppText.Get("Loading_ErrorTitle"),
+                AppText.Format("Main_LoadError", ex.Message),
+                AppText.Get("Common_Ok"));
         }
     }
 
@@ -125,10 +152,10 @@ public partial class MainPage : ContentPage
 
         if (_currentPoi is null)
         {
-            PoiBadgeLabel.Text = "ĐỊA ĐIỂM";
-            LocationTitleLabel.Text = "Địa điểm trên bản đồ";
-            NowPlayingLabel.Text = "Chạm vào bản đồ để chọn địa điểm";
-            AddressLabel.Text = "Số nhà, đường: Chưa có thông tin";
+            PoiBadgeLabel.Text = AppText.Get("Main_BadgePlace");
+            LocationTitleLabel.Text = AppText.Get("Main_LocationOnMap");
+            NowPlayingLabel.Text = AppText.Get("Main_TapToSelect");
+            AddressLabel.Text = FormatAddressText(AppText.Get("Main_NoAddress"));
             InitializeMap(null);
             StartRealtimeTracking();
             _ = UpdateLocationAsync(locationTask, cancellationToken);
@@ -252,13 +279,13 @@ public partial class MainPage : ContentPage
                 }
 
                 var description = string.IsNullOrWhiteSpace(registration.Description)
-                    ? $"Bạn đang ở gần cửa hàng {registration.StoreName}."
+                    ? AppText.Format("Main_StoreNearbyDescriptionTemplate", registration.StoreName ?? AppText.Get("Main_StoreFallbackName"))
                     : registration.Description.Trim();
                 var radiusMeters = registration.RadiusMeters is > 0 ? registration.RadiusMeters.Value : DefaultStoreNarrationRadiusMeters;
 
                 points.Add(new StoreNarrationPoint(
                     registration.Id,
-                    registration.StoreName?.Trim() ?? "Cửa hàng",
+                    registration.StoreName?.Trim() ?? AppText.Get("Main_StoreFallbackName"),
                     description,
                     registration.Latitude.Value,
                     registration.Longitude.Value,
@@ -280,12 +307,12 @@ public partial class MainPage : ContentPage
 
     private void BindPoi(POI poi)
     {
-        PoiBadgeLabel.Text = "ĐỊA ĐIỂM";
-        LocationTitleLabel.Text = "Địa điểm đang xem";
+        PoiBadgeLabel.Text = AppText.Get("Main_BadgePlace");
+        LocationTitleLabel.Text = AppText.Get("Main_CurrentViewing");
         NowPlayingLabel.Text = poi.Name;
         AddressLabel.Text = string.IsNullOrWhiteSpace(poi.Description)
-            ? "Số nhà, đường: Chưa có thông tin"
-            : $"Số nhà, đường: {poi.Description}";
+            ? FormatAddressText(AppText.Get("Main_NoAddress"))
+            : FormatAddressText(poi.Description);
     }
 
     private static bool IsInsideVinhKhanhBounds(POI poi)
@@ -314,8 +341,8 @@ public partial class MainPage : ContentPage
             var userLng = hasUserLocation ? _userLocation!.Longitude.ToString(CultureInfo.InvariantCulture) : "null";
             var selectedPoiLat = poi?.Latitude.ToString(CultureInfo.InvariantCulture) ?? "null";
             var selectedPoiLng = poi?.Longitude.ToString(CultureInfo.InvariantCulture) ?? "null";
-            var selectedPoiName = EscapeJavaScript(poi?.Name ?? "Điểm đang chọn");
-            var selectedPoiDesc = EscapeJavaScript(poi?.Description ?? "Không có mô tả");
+            var selectedPoiName = EscapeJavaScript(poi?.Name ?? AppText.Get("Main_DefaultPointName"));
+            var selectedPoiDesc = EscapeJavaScript(poi?.Description ?? AppText.Get("Main_NoDescription"));
             var shouldRestoreSelection = _hasExplicitMapSelection ? "true" : "false";
             var poisScriptArray = BuildAllPoisBlock(_allPois);
 
@@ -680,7 +707,7 @@ public partial class MainPage : ContentPage
     private static string BuildAllPoisBlock(IEnumerable<POI> pois)
     {
         var entries = pois.Select(poi =>
-            $"{{lat:{poi.Latitude.ToString(CultureInfo.InvariantCulture)},lng:{poi.Longitude.ToString(CultureInfo.InvariantCulture)},name:'{EscapeJavaScript(poi.Name)}',desc:'{EscapeJavaScript(poi.Description ?? "Không có mô tả")}'}}");
+            $"{{lat:{poi.Latitude.ToString(CultureInfo.InvariantCulture)},lng:{poi.Longitude.ToString(CultureInfo.InvariantCulture)},name:'{EscapeJavaScript(poi.Name)}',desc:'{EscapeJavaScript(poi.Description ?? AppText.Get("Main_NoDescription"))}'}}");
 
         return $"[{string.Join(",", entries)}]";
     }
@@ -799,8 +826,8 @@ public partial class MainPage : ContentPage
                         {
                             MainThread.BeginInvokeOnMainThread(() =>
                             {
-                                PoiBadgeLabel.Text = "CỬA HÀNG";
-                                LocationTitleLabel.Text = "Cửa hàng gần bạn";
+                                PoiBadgeLabel.Text = AppText.Get("Main_BadgeStore");
+                                LocationTitleLabel.Text = AppText.Get("Main_StoreNearby");
                                 NowPlayingLabel.Text = candidateStore.Name;
                                 AddressLabel.Text = candidateStore.Description;
                             });
@@ -815,14 +842,14 @@ public partial class MainPage : ContentPage
 
                 if (candidatePoi is not null)
                 {
-                    var narrated = await _locationService.NarratePoiAsync(candidatePoi, cancellationToken);
+                    var narrated = await _locationService.NarratePoiAsync(candidatePoi, latestLocation, cancellationToken);
                     if (narrated)
                     {
                         _currentPoi = candidatePoi;
                         MainThread.BeginInvokeOnMainThread(() =>
                         {
                             BindPoi(candidatePoi);
-                            PoiBadgeLabel.Text = "TỰ ĐỘNG";
+                            PoiBadgeLabel.Text = AppText.Get("Main_BadgeAuto");
                         });
 
                     }
@@ -957,11 +984,11 @@ public partial class MainPage : ContentPage
 
         var name = query.TryGetValue("name", out var selectedName)
             ? selectedName
-            : "Điểm đã chọn";
+            : AppText.Get("Main_DefaultPointName");
 
         var description = query.TryGetValue("desc", out var selectedDesc)
             ? selectedDesc
-            : "Chưa có thông tin";
+            : AppText.Get("Main_NoAddress");
 
         var address = query.TryGetValue("addr", out var selectedAddr)
             ? selectedAddr
@@ -993,10 +1020,10 @@ public partial class MainPage : ContentPage
             }
         }
 
-        PoiBadgeLabel.Text = "ĐỊA ĐIỂM";
-        LocationTitleLabel.Text = "Địa điểm đã chọn";
+        PoiBadgeLabel.Text = AppText.Get("Main_BadgePlace");
+        LocationTitleLabel.Text = AppText.Get("Main_SelectedLocation");
         NowPlayingLabel.Text = name;
-        AddressLabel.Text = $"Số nhà, đường: {address}";
+        AddressLabel.Text = FormatAddressText(address);
     }
 
     private static Dictionary<string, string> ParseQuery(string query)
@@ -1023,8 +1050,8 @@ public partial class MainPage : ContentPage
     {
         var selectedTrip = new TripHistoryItem
         {
-            Name = string.IsNullOrWhiteSpace(name) ? "Điểm đã chọn" : name,
-            Description = string.IsNullOrWhiteSpace(description) ? "Không có mô tả" : description,
+            Name = string.IsNullOrWhiteSpace(name) ? AppText.Get("Main_DefaultPointName") : name,
+            Description = string.IsNullOrWhiteSpace(description) ? AppText.Get("Main_NoDescription") : description,
             CreatedAtUtc = DateTime.UtcNow
         };
 
@@ -1067,17 +1094,28 @@ public partial class MainPage : ContentPage
 
     private async void OnNotificationTapped(object? sender, TappedEventArgs e)
     {
-        await DisplayAlertAsync("Thông báo", "Bạn chưa có thông báo mới.", "OK");
+        await DisplayAlertAsync(
+            AppText.Get("Main_NotificationTitle"),
+            AppText.Get("Main_NotificationMessage"),
+            AppText.Get("Common_Ok"));
     }
 
     private async void OnInfoTapped(object? sender, TappedEventArgs e)
     {
-        await DisplayAlertAsync("Thông tin", "Khu vực này đang có 12 điểm ăn uống nổi bật.", "OK");
+        await DisplayAlertAsync(
+            AppText.Get("Main_InfoTitle"),
+            AppText.Get("Main_InfoMessage"),
+            AppText.Get("Common_Ok"));
     }
 
     private async void OnRecenterTapped(object? sender, TappedEventArgs e)
     {
         await RecenterCurrentUserAsync();
+    }
+
+    private async void OnQrTriggerTapped(object? sender, TappedEventArgs e)
+    {
+        await _navigator.ShowQrTriggerAsync();
     }
 
     private async Task RecenterCurrentUserAsync()
@@ -1093,7 +1131,10 @@ public partial class MainPage : ContentPage
 
         if (_userLocation is null)
         {
-            await DisplayAlertAsync("Vị trí", "Không lấy được vị trí hiện tại của bạn.", "OK");
+            await DisplayAlertAsync(
+                AppText.Get("Main_LocationTitle"),
+                AppText.Get("Main_LocationUnavailable"),
+                AppText.Get("Common_Ok"));
             return;
         }
 
@@ -1109,13 +1150,13 @@ public partial class MainPage : ContentPage
     private void OnAutoPlayToggled(object? sender, ToggledEventArgs e)
     {
         _autoPlayEnabled = e.Value;
-        PoiBadgeLabel.Text = e.Value ? "TỰ ĐỘNG" : "THỦ CÔNG";
+        PoiBadgeLabel.Text = e.Value ? AppText.Get("Main_BadgeAuto") : AppText.Get("Main_BadgeManual");
     }
 
     private void OnBatteryOptimizedToggled(object? sender, ToggledEventArgs e)
     {
         _batteryOptimized = e.Value;
-        var text = _batteryOptimized ? "Chế độ pin: Tối ưu" : "Chế độ pin: Bình thường";
+        var text = _batteryOptimized ? AppText.Get("Main_BatteryModeOptimized") : AppText.Get("Main_BatteryModeNormal");
         PoiBadgeLabel.Text = text.ToUpperInvariant();
     }
 

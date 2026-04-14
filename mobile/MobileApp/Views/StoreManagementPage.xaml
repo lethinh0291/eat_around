@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Name="ManagementPage"
              x:Class="ZesTour.Views.StoreManagementPage"
              NavigationPage.HasNavigationBar="False"
              BackgroundColor="{StaticResource AppBackground}">
@@ -34,11 +35,13 @@
                     <VerticalStackLayout Grid.Column="1"
                                          Spacing="2"
                                          VerticalOptions="Center">
-                        <Label Text="Quản lý cửa hàng"
+                           <Label x:Name="ManagementTitleLabel"
+                               Text="Quản lý cửa hàng"
                                FontSize="22"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
-                        <Label Text="Sửa nhanh thông tin, ảnh, địa chỉ và tọa độ cho quán của bạn"
+                           <Label x:Name="ManagementSubtitleLabel"
+                               Text="Sửa nhanh thông tin, ảnh, địa chỉ và tọa độ cho quán của bạn"
                                FontSize="12"
                                TextColor="{StaticResource TextSecondary}"/>
                     </VerticalStackLayout>
@@ -50,20 +53,24 @@
                         Padding="14">
                     <VerticalStackLayout Spacing="10">
                         <VerticalStackLayout Spacing="6">
-                            <Label Text="Chỉnh sửa đăng ký"
+                        <Label x:Name="EditRegistrationLabel"
+                            Text="Chỉnh sửa đăng ký"
                                    FontSize="13"
                                    TextColor="#FFF7F1"
                                    FontAttributes="Bold"/>
-                            <Label Text="Chọn một quán bên dưới rồi cập nhật từ form này."
+                        <Label x:Name="EditRegistrationTitleLabel"
+                            Text="Chọn một quán bên dưới rồi cập nhật từ form này."
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    TextColor="White"/>
-                            <Label Text="Có gợi ý địa chỉ, xem trước map và lưu ảnh chính."
+                        <Label x:Name="EditRegistrationHintLabel"
+                            Text="Có gợi ý địa chỉ, xem trước map và lưu ảnh chính."
                                    FontSize="11"
                                    TextColor="#FFF7F1"/>
                         </VerticalStackLayout>
 
-                        <Button Text="Tải lại"
+                       <Button x:Name="RefreshButton"
+                            Text="Tải lại"
                                 Clicked="OnRefreshClicked"
                                 HeightRequest="42"
                                 CornerRadius="12"
@@ -86,11 +93,13 @@
                         <Grid ColumnDefinitions="*,Auto"
                               ColumnSpacing="10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Danh sách đăng ký"
+                                <Label x:Name="RegistrationsTitleLabel"
+                                    Text="Danh sách đăng ký"
                                        FontSize="17"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"/>
-                                <Label Text="Chạm vào một quán để chỉnh sửa ngay bên dưới."
+                                <Label x:Name="RegistrationsSubtitleLabel"
+                                    Text="Chạm vào một quán để chỉnh sửa ngay bên dưới."
                                        FontSize="12"
                                        TextColor="#64748B"/>
                             </VerticalStackLayout>
@@ -101,7 +110,8 @@
                                     StrokeShape="RoundRectangle 999"
                                     Padding="10,6"
                                     VerticalOptions="Center">
-                                <Label Text="Chọn 1"
+                                          <Label x:Name="SelectOneBadgeLabel"
+                                                    Text="Chọn 1"
                                        VerticalTextAlignment="Center"
                                        FontSize="11"
                                        FontAttributes="Bold"
@@ -151,7 +161,7 @@
                                                     StrokeShape="RoundRectangle 999"
                                                     Padding="10,6"
                                                     VerticalOptions="Start">
-                                                <Label Text="Quán của tôi"
+                                                <Label Text="{Binding Source={x:Reference ManagementPage}, Path=MyStoreBadgeText}"
                                                        FontSize="10"
                                                        FontAttributes="Bold"
                                                        TextColor="{StaticResource PrimaryDark}"/>
@@ -172,11 +182,13 @@
                         <Grid ColumnDefinitions="*,Auto"
                               ColumnSpacing="10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Thông tin cửa hàng"
+                                <Label x:Name="StoreInfoTitleLabel"
+                                    Text="Thông tin cửa hàng"
                                        FontSize="17"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"/>
-                                <Label Text="Tách rõ thông tin, địa chỉ, ảnh và xem trước bản đồ."
+                                <Label x:Name="StoreInfoSubtitleLabel"
+                                    Text="Tách rõ thông tin, địa chỉ, ảnh và xem trước bản đồ."
                                        FontSize="12"
                                        TextColor="#64748B"/>
                             </VerticalStackLayout>
@@ -187,7 +199,8 @@
                                     StrokeShape="RoundRectangle 999"
                                     Padding="10,6"
                                     VerticalOptions="Start">
-                                <Label Text="Auto point"
+                                <Label x:Name="AutoPointBadgeLabel"
+                                    Text="Auto point"
                                        FontSize="10"
                                        FontAttributes="Bold"
                                        TextColor="{StaticResource PrimaryDark}"/>
@@ -239,6 +252,7 @@
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="8">
                                 <Label Text="Địa chỉ"
+                                        x:Name="AddressLabel"
                                        FontSize="11"
                                        FontAttributes="Bold"
                                        TextColor="#475569"/>
@@ -289,7 +303,8 @@
                                                FontSize="12"
                                                FontAttributes="Bold"
                                                TextColor="#0F172A"/>
-                                        <Label Text="Bản đồ xem trước sẽ bám theo địa chỉ đã chọn."
+                                             <Label x:Name="AddressPreviewHintLabel"
+                                                 Text="Bản đồ xem trước sẽ bám theo địa chỉ đã chọn."
                                                FontSize="11"
                                                TextColor="#64748B"/>
                                     </VerticalStackLayout>
@@ -299,7 +314,8 @@
                                             StrokeShape="RoundRectangle 999"
                                             Padding="8,5"
                                             VerticalOptions="Start">
-                                        <Label Text="Preview"
+                                        <Label x:Name="PreviewBadgeLabel"
+                                               Text="Preview"
                                                FontSize="10"
                                                FontAttributes="Bold"
                                                TextColor="#334155"/>
@@ -332,6 +348,7 @@
                         <Grid ColumnDefinitions="*,Auto"
                               ColumnSpacing="10">
                             <Button Grid.Column="0"
+                                    x:Name="AddImageButton"
                                     Text="Chọn ảnh từ máy"
                                     Clicked="OnAddImageUrlClicked"
                                     HeightRequest="42"
@@ -340,6 +357,7 @@
                                     TextColor="White"
                                     FontAttributes="Bold"/>
                             <Label Grid.Column="1"
+                                x:Name="AddImageHintLabel"
                                    Text="Không nhập link tay, chỉ chọn ảnh trực tiếp."
                                    FontSize="10"
                                    TextColor="#94A3B8"
@@ -353,11 +371,13 @@
                             <VerticalStackLayout Spacing="6">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <VerticalStackLayout Spacing="2">
-                                        <Label Text="Xem trước album"
+                                         <Label x:Name="AlbumPreviewTitleLabel"
+                                             Text="Xem trước album"
                                                FontSize="12"
                                                FontAttributes="Bold"
                                                TextColor="#0F172A"/>
-                                        <Label Text="Các ảnh hợp lệ sẽ hiện ở đây để chọn nhanh ảnh chính."
+                                         <Label x:Name="AlbumPreviewHintLabel"
+                                             Text="Các ảnh hợp lệ sẽ hiện ở đây để chọn nhanh ảnh chính."
                                                FontSize="11"
                                                TextColor="#64748B"/>
                                     </VerticalStackLayout>
@@ -367,7 +387,8 @@
                                             StrokeShape="RoundRectangle 999"
                                             Padding="8,5"
                                             VerticalOptions="Start">
-                                        <Label Text="Ảnh đẹp hơn"
+                                         <Label x:Name="AlbumBadgeLabel"
+                                             Text="Ảnh đẹp hơn"
                                                FontSize="10"
                                                FontAttributes="Bold"
                                                TextColor="{StaticResource PrimaryDark}"/>
@@ -398,7 +419,7 @@
                                                             StrokeShape="RoundRectangle 999"
                                                             HorizontalOptions="Start"
                                                             IsVisible="{Binding IsPrimary}">
-                                                        <Label Text="Ảnh chính"
+                                                        <Label Text="{Binding PrimaryBadgeText}"
                                                                FontSize="10"
                                                                FontAttributes="Bold"
                                                                TextColor="{StaticResource PrimaryDark}"
@@ -445,6 +466,7 @@
                               ColumnSpacing="10"
                               Margin="0,4,0,0">
                             <Button Grid.Column="0"
+                                    x:Name="UpdateButton"
                                     Text="Cập nhật"
                                     Clicked="OnUpdateClicked"
                                     HeightRequest="48"
@@ -453,6 +475,7 @@
                                     TextColor="White"
                                     FontAttributes="Bold"/>
                             <Button Grid.Column="1"
+                                    x:Name="DeleteButton"
                                     Text="Xóa"
                                     Clicked="OnDeleteClicked"
                                     HeightRequest="48"

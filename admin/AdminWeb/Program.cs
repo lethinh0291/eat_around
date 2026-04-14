@@ -38,6 +38,12 @@ builder.Services.AddHttpClient<AdminManagementApiClient>(client =>
     client.BaseAddress = new Uri(baseUrl.EndsWith('/') ? baseUrl : baseUrl + "/");
 });
 
+builder.Services.AddHttpClient<OperationalApiClient>(client =>
+{
+    var baseUrl = builder.Configuration["BackendApi:BaseUrl"] ?? "http://localhost:5069/";
+    client.BaseAddress = new Uri(baseUrl.EndsWith('/') ? baseUrl : baseUrl + "/");
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

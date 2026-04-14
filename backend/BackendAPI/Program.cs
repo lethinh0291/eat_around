@@ -1,9 +1,10 @@
 using BackendAPI.Data;
+using BackendAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Models;
 using System.Globalization;
 using System.Net.Http.Json;
-
+using ProgramHelpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
+// Register QR Generator Service
+builder.Services.AddScoped<IQRGeneratorService, QRGeneratorService>();
 // Sau đó dưới app.UseRouting() thêm:
 
 //test api
@@ -29,6 +32,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
     await EnsureUserColumnsAsync(db);
     await EnsureStoreRegistrationColumnsAsync(db);
+    await EnsureOperationalTablesAsync(db);
     await BackfillStoreRegistrationLocationsAsync(db);
 
     if (!db.POIs.Any())
@@ -208,8 +212,97 @@ app.MapControllers();
 
 app.Run();
 
-file sealed class NominatimGeoResult
+static async Task EnsureOperationalTablesAsync(AppDbContext db)
 {
-    public string Lat { get; set; } = string.Empty;
-    public string Lon { get; set; } = string.Empty;
+    await db.Database.ExecuteSqlRawAsync("""
+IF OBJECT_ID(N'[ListenLogs]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [ListenLogs] (
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [DeviceId] NVARCHAR(120) NOT NULL,
+        [PoiId] INT NOT NULL,
+        [LanguageCode] NVARCHAR(10) NOT NULL,
+        [ContentType] NVARCHAR(20) NOT NULL,
+        [DurationSeconds] FLOAT NOT NULL,
+        [Latitude] FLOAT NOT NULL,
+        [Longitude] FLOAT NOT NULL,
+        [PlayedAtUtc] DATETIME2 NOT NULL
+    );
+END;
+
+IF OBJECT_ID(N'[SystemLogEntries]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [SystemLogEntries] (
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [Category] NVARCHAR(40) NOT NULL,
+        [Level] NVARCHAR(20) NOT NULL,
+        [Source] NVARCHAR(200) NOT NULL,
+        [Message] NVARCHAR(600) NOT NULL,
+        [Details] NVARCHAR(1200) NULL,
+        [CreatedAtUtc] DATETIME2 NOT NULL
+    );
+END;
+
+IF OBJECT_ID(N'[Tours]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [Tours] (
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [Name] NVARCHAR(150) NOT NULL,
+        [Description] NVARCHAR(1000) NULL,
+        [CoverImageUrl] NVARCHAR(1000) NULL,
+        [IsActive] BIT NOT NULL,
+        [CreatedAtUtc] DATETIME2 NOT NULL,
+        [UpdatedAtUtc] DATETIME2 NOT NULL
+    );
+END;
+
+IF OBJECT_ID(N'[TourStops]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [TourStops] (
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [TourId] INT NOT NULL,
+        [PoiId] INT NOT NULL,
+        [SortOrder] INT NOT NULL,
+        [Note] NVARCHAR(500) NULL,
+        CONSTRAINT [FK_TourStops_Tours_TourId] FOREIGN KEY ([TourId]) REFERENCES [Tours]([Id]) ON DELETE CASCADE
+    );
+END;
+
+IF OBJECT_ID(N'[PoiTranslations]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [PoiTranslations] (
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [PoiId] INT NOT NULL,
+        [LanguageCode] NVARCHAR(10) NOT NULL,
+        [Title] NVARCHAR(200) NULL,
+        [ContentText] NVARCHAR(3000) NOT NULL,
+        [AudioUrl] NVARCHAR(1000) NULL,
+        [Status] NVARCHAR(20) NOT NULL,
+        [SubmittedBy] NVARCHAR(120) NULL,
+        [ReviewedBy] NVARCHAR(120) NULL,
+        [SubmittedAtUtc] DATETIME2 NOT NULL,
+        [ReviewedAtUtc] DATETIME2 NULL
+    );
+END;
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_ListenLogs_PlayedAtUtc_PoiId_LanguageCode' AND object_id = OBJECT_ID(N'[ListenLogs]'))
+BEGIN
+    CREATE INDEX [IX_ListenLogs_PlayedAtUtc_PoiId_LanguageCode] ON [ListenLogs]([PlayedAtUtc], [PoiId], [LanguageCode]);
+END;
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_SystemLogEntries_CreatedAtUtc_Category_Level' AND object_id = OBJECT_ID(N'[SystemLogEntries]'))
+BEGIN
+    CREATE INDEX [IX_SystemLogEntries_CreatedAtUtc_Category_Level] ON [SystemLogEntries]([CreatedAtUtc], [Category], [Level]);
+END;
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_TourStops_TourId_SortOrder' AND object_id = OBJECT_ID(N'[TourStops]'))
+BEGIN
+    CREATE UNIQUE INDEX [IX_TourStops_TourId_SortOrder] ON [TourStops]([TourId], [SortOrder]);
+END;
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_PoiTranslations_PoiId_LanguageCode' AND object_id = OBJECT_ID(N'[PoiTranslations]'))
+BEGIN
+    CREATE INDEX [IX_PoiTranslations_PoiId_LanguageCode] ON [PoiTranslations]([PoiId], [LanguageCode]);
+END;
+""");
 }

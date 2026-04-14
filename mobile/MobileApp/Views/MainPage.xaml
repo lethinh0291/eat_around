@@ -17,6 +17,7 @@
                              StrokeShape="RoundRectangle 16"
                              VerticalOptions="Center">
                             <Label Text="Menu"
+                                   x:Name="MenuLabel"
                                    FontSize="11"
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource TextPrimary}"
@@ -32,10 +33,12 @@
                                           VerticalOptions="Center"
                                           Spacing="2">
                             <Label Text="Bản đồ khám phá"
+                                   x:Name="MapTitleLabel"
                                    FontSize="19"
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource TextPrimary}"/>
                             <Label Text="Chạm vào điểm trên bản đồ để nghe mô tả"
+                                   x:Name="MapSubtitleLabel"
                                    FontSize="12"
                                    TextColor="{StaticResource TextSecondary}"/>
                      </VerticalStackLayout>
@@ -49,6 +52,7 @@
                              StrokeShape="RoundRectangle 16"
                              VerticalOptions="Center">
                             <Label Text="Hồ sơ"
+                                   x:Name="ProfileLabel"
                                    FontSize="11"
                                    FontAttributes="Bold"
                                    TextColor="{StaticResource TextPrimary}"
@@ -92,6 +96,25 @@
                                                                VerticalTextAlignment="Center">
                                                                <Label.GestureRecognizers>
                                                                       <TapGestureRecognizer Tapped="OnRecenterTapped"/>
+                                                               </Label.GestureRecognizers>
+                                                        </Label>
+                                                 </Border>
+
+                                                 <Border BackgroundColor="#FFFFFF"
+                                                         StrokeThickness="1"
+                                                         Stroke="#E8D6CA"
+                                                         WidthRequest="44"
+                                                         HeightRequest="44"
+                                                         StrokeShape="RoundRectangle 14">
+                                                        <Label x:Name="QrTriggerMapButtonLabel"
+                                                               Text="QR"
+                                                               FontSize="12"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{StaticResource TextPrimary}"
+                                                               HorizontalTextAlignment="Center"
+                                                               VerticalTextAlignment="Center">
+                                                               <Label.GestureRecognizers>
+                                                                      <TapGestureRecognizer Tapped="OnQrTriggerTapped"/>
                                                                </Label.GestureRecognizers>
                                                         </Label>
                                                  </Border>
@@ -146,6 +169,7 @@
                                                                <Grid ColumnDefinitions="*,Auto"
                                                                      ColumnSpacing="8">
                                                                       <Label Text="Tự động phát"
+                                                                             x:Name="AutoPlayLabel"
                                                                              FontSize="12"
                                                                              TextColor="{StaticResource TextPrimary}"
                                                                              VerticalTextAlignment="Center"/>
@@ -164,6 +188,7 @@
                                                                <Grid ColumnDefinitions="*,Auto"
                                                                      ColumnSpacing="8">
                                                                       <Label Text="Tiết kiệm pin"
+                                                                             x:Name="BatterySaverLabel"
                                                                              FontSize="12"
                                                                              TextColor="{StaticResource TextPrimary}"
                                                                              VerticalTextAlignment="Center"/>
@@ -206,6 +231,7 @@
                             <Grid ColumnDefinitions="*,Auto"
                                   VerticalOptions="Center">
                                    <Label Text="Bảng điều hướng"
+                                          x:Name="SidebarTitleLabel"
                                           FontSize="18"
                                           FontAttributes="Bold"
                                           TextColor="{StaticResource TextPrimary}"/>
@@ -230,10 +256,12 @@
                             </Grid>
 
                             <Label Text="Truy cập nhanh các chức năng chính để thao tác ít bước hơn."
+                                      x:Name="SidebarSubtitleLabel"
                                    FontSize="12"
                                    TextColor="{StaticResource TextSecondary}"/>
 
                             <Button Text="Trang bản đồ"
+                                       x:Name="SidebarMapButton"
                                     Clicked="OnSidebarHomeClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"
@@ -241,6 +269,7 @@
                                     HeightRequest="46"/>
 
                             <Button Text="Về trang chính"
+                                       x:Name="SidebarHomeButton"
                                     Clicked="OnSidebarMenuClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"
@@ -248,6 +277,7 @@
                                     HeightRequest="46"/>
 
                             <Button Text="Hồ sơ người dùng"
+                                       x:Name="SidebarProfileButton"
                                     Clicked="OnSidebarProfileClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"
@@ -255,6 +285,7 @@
                                     HeightRequest="46"/>
 
                             <Button Text="Định vị lại"
+                                       x:Name="SidebarRecenterButton"
                                     Clicked="OnSidebarRecenterClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"

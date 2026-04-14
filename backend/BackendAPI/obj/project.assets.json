@@ -843,6 +843,15 @@
           }
         }
       },
+      "QRCoder/1.4.3": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/QRCoder.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/QRCoder.dll": {}
+        }
+      },
       "Swashbuckle.AspNetCore/10.1.7": {
         "type": "package",
         "dependencies": {
@@ -3137,6 +3146,27 @@
         "packageIcon.png"
       ]
     },
+    "QRCoder/1.4.3": {
+      "sha512": "fWuFqjm8GTlEb2GqBl3Hi8HZZeZQwBSHxvRPtPjyNbT82H0ff0JwavKRBmMaXCno1Av6McPC8aJzri0Mj2w9Jw==",
+      "type": "package",
+      "path": "qrcoder/1.4.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net35/QRCoder.dll",
+        "lib/net40/QRCoder.dll",
+        "lib/net5.0-windows7.0/QRCoder.dll",
+        "lib/net5.0/QRCoder.dll",
+        "lib/net6.0-windows7.0/QRCoder.dll",
+        "lib/net6.0/QRCoder.dll",
+        "lib/netstandard1.3/QRCoder.dll",
+        "lib/netstandard2.0/QRCoder.dll",
+        "nuget-icon.png",
+        "nuget-readme.md",
+        "qrcoder.1.4.3.nupkg.sha512",
+        "qrcoder.nuspec"
+      ]
+    },
     "Swashbuckle.AspNetCore/10.1.7": {
       "sha512": "vgef8DPT411JU5JjHiDbr0WOxsIVuAvegPGtqmm4Na4JRl/264dfBJcGkiPHsAr5P+Vda+qN1rZKRtBl1rF9aA==",
       "type": "package",
@@ -3578,28 +3608,29 @@
       "Microsoft.AspNetCore.OpenApi >= 10.0.5",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.5",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.5",
+      "QRCoder >= 1.4.3",
       "SharedLib >= 1.0.0",
       "Swashbuckle.AspNetCore >= 10.1.7"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ASUS\\.nuget\\packages\\": {},
+    "C:\\Users\\thiee\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CODE\\C\\backend\\BackendAPI\\BackendAPI.csproj",
+      "projectUniqueName": "C:\\Users\\thiee\\ProjectC##\\eat_around\\backend\\BackendAPI\\BackendAPI.csproj",
       "projectName": "BackendAPI",
-      "projectPath": "D:\\CODE\\C\\backend\\BackendAPI\\BackendAPI.csproj",
-      "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "D:\\CODE\\C\\backend\\BackendAPI\\obj\\",
+      "projectPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\backend\\BackendAPI\\BackendAPI.csproj",
+      "packagesPath": "C:\\Users\\thiee\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\backend\\BackendAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\thiee\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3615,8 +3646,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj": {
-              "projectPath": "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj"
+            "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj": {
+              "projectPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj"
             }
           }
         }
@@ -3650,6 +3681,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[10.0.5, )"
+          },
+          "QRCoder": {
+            "target": "Package",
+            "version": "[1.4.3, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

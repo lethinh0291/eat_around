@@ -1,6 +1,8 @@
 @model IReadOnlyList<AdminWeb.Models.AdminUsersViewModel.UserRow>
 @{
     ViewData["Title"] = "Quản lý User";
+    var allPois = ViewBag.AllPois as List<SharedLib.Models.POI> ?? new List<SharedLib.Models.POI>();
+    var ownerPoiMap = ViewBag.OwnerPoiMap as Dictionary<int, List<int>> ?? new Dictionary<int, List<int>>();
 }
 
 <div class="admin-card mb-4">
@@ -24,6 +26,11 @@
 
 <div class="admin-card">
     <h2 class="h5 mb-3">Thêm user mới</h2>
+    <div class="row g-2 mb-3">
+        <div class="col-md-4 ms-auto">
+            <input id="usersTableSearch" class="form-control" placeholder="Tìm nhanh theo tên, email, role..." />
+        </div>
+    </div>
     <form asp-action="CreateUser" method="post" class="row g-2 mb-4">
         @Html.AntiForgeryToken()
         <div class="col-md-3">
@@ -51,7 +58,7 @@
     </form>
 
     <div class="table-responsive">
-        <table class="table align-middle">
+        <table id="usersTable" class="table align-middle">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -110,6 +117,16 @@
                                     data-user-role="@user.Role">
                                     Chỉnh sửa
                                 </button>
+                                @if (string.Equals(user.Role, "seller", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#assignPoi-@user.Id">
+                                        Gán POI
+                                    </button>
+                                }
                                 <form asp-action="DeleteUser" method="post" onsubmit="return confirm('Xóa user này?');">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="userId" value="@user.Id" />
@@ -118,6 +135,38 @@
                             </div>
                         </td>
                     </tr>
+                    @if (string.Equals(user.Role, "seller", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var selectedPoiIds = ownerPoiMap.TryGetValue(user.Id, out var ids) ? ids : new List<int>();
+                        <tr class="collapse" id="assignPoi-@user.Id">
+                            <td colspan="7">
+                                <form asp-action="AssignPoisToSeller" method="post" class="row g-2 align-items-end">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <div class="col-lg-8">
+                                        <label class="form-label">Chọn POI cho @user.Name</label>
+                                        <select class="form-select" name="poiIds" multiple size="6">
+                                            @foreach (var poi in allPois)
+                                            {
+                                                if (selectedPoiIds.Contains(poi.Id))
+                                                {
+                                                    <option value="@poi.Id" selected>@poi.Name (P@poi.Priority)</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@poi.Id">@poi.Name (P@poi.Priority)</option>
+                                                }
+                                            }
+                                        </select>
+                                        <div class="form-text">Giữ Ctrl hoặc Shift để chọn nhiều POI.</div>
+                                    </div>
+                                    <div class="col-lg-4 d-grid">
+                                        <button type="submit" class="btn btn-primary">Lưu gán POI</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
                 }
             }
             </tbody>
@@ -199,6 +248,23 @@
                 const role = (trigger.getAttribute('data-user-role') || 'customer').toLowerCase();
                 document.getElementById('editUserRole').value = role;
             });
+
+            const searchInput = document.getElementById('usersTableSearch');
+            const table = document.getElementById('usersTable');
+            if (searchInput && table) {
+                searchInput.addEventListener('input', function () {
+                    const keyword = (searchInput.value || '').trim().toLowerCase();
+                    const rows = Array.from(table.querySelectorAll('tbody tr'));
+                    for (const row of rows) {
+                        if (row.classList.contains('collapse')) {
+                            continue;
+                        }
+
+                        const text = (row.textContent || '').toLowerCase();
+                        row.style.display = !keyword || text.includes(keyword) ? '' : 'none';
+                    }
+                });
+            }
         })();
     </script>
 }

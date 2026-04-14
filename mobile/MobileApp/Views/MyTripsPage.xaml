@@ -28,11 +28,13 @@
                     <VerticalStackLayout Grid.Column="1"
                                          Spacing="2"
                                          VerticalOptions="Center">
-                        <Label Text="Hành trình của tôi"
+                           <Label x:Name="TripsTitleLabel"
+                               Text="Hành trình của tôi"
                                FontSize="20"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
-                        <Label Text="Địa điểm bạn đã chọn để đến"
+                           <Label x:Name="TripsSubtitleLabel"
+                               Text="Địa điểm bạn đã chọn để đến"
                                FontSize="11"
                                TextColor="{StaticResource TextSecondary}"/>
                     </VerticalStackLayout>
@@ -42,7 +44,8 @@
                         BackgroundColor="{StaticResource PrimaryDark}"
                         StrokeShape="RoundRectangle 18"
                         Padding="12,10">
-                    <Label Text="Lịch sử mới nhất sẽ xuất hiện ở đây để bạn mở lại nhanh hơn."
+                      <Label x:Name="TripsHintLabel"
+                          Text="Lịch sử mới nhất sẽ xuất hiện ở đây để bạn mở lại nhanh hơn."
                            FontSize="11"
                            TextColor="#FFF1E8"/>
                 </Border>

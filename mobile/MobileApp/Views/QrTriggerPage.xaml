@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             x:Class="ZesTour.Views.QrTriggerPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource AppBackground}">
+    <Grid RowDefinitions="Auto,*,Auto"
+          Padding="16,24,16,16"
+          RowSpacing="12">
+        <Grid ColumnDefinitions="Auto,*"
+              ColumnSpacing="10">
+            <Border WidthRequest="42"
+                    HeightRequest="42"
+                    StrokeThickness="0"
+                    BackgroundColor="#FFFFFF"
+                    StrokeShape="RoundRectangle 14">
+                <Label Text="←"
+                       FontSize="18"
+                       TextColor="{StaticResource TextPrimary}"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Border>
+
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 VerticalOptions="Center">
+                <Label x:Name="TitleLabel"
+                       Text="Quét mã QR"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}" />
+                <Label x:Name="SubtitleLabel"
+                       Text="Hướng camera vào mã QR để phát thuyết minh"
+                       FontSize="11"
+                       TextColor="{StaticResource TextSecondary}" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <Border Grid.Row="1"
+                StrokeThickness="1"
+                Stroke="#E8D6CA"
+                BackgroundColor="#FFFFFF"
+                StrokeShape="RoundRectangle 22"
+                Padding="10">
+            <Grid>
+                <zxing:CameraBarcodeReaderView x:Name="QrCameraView"
+                                               IsDetecting="True"
+                                               BarcodesDetected="OnBarcodesDetected" />
+
+                <VerticalStackLayout VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     InputTransparent="True"
+                                     Spacing="12">
+                    <Border BackgroundColor="#33000000"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="10,6">
+                        <Label x:Name="OverlayHintLabel"
+                               Text="Đưa QR vào vùng khung"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               FontSize="12" />
+                    </Border>
+
+                    <Border WidthRequest="220"
+                            HeightRequest="220"
+                            BackgroundColor="Transparent"
+                            Stroke="#F97316"
+                            StrokeThickness="3"
+                            StrokeShape="RoundRectangle 20" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <VerticalStackLayout Grid.Row="2"
+                             Spacing="8">
+            <Label x:Name="StatusLabel"
+                   Text="Sẵn sàng quét"
+                   FontSize="12"
+                   TextColor="{StaticResource TextSecondary}" />
+
+            <Button x:Name="RetryButton"
+                    Text="Quét lại"
+                    Clicked="OnRetryClicked"
+                    HeightRequest="44"
+                    CornerRadius="14"
+                    BackgroundColor="{StaticResource Secondary}"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

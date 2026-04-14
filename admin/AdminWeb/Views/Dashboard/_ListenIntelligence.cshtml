@@ -1,0 +1,87 @@
+@model AdminWeb.Models.DashboardOverviewViewModel
+
+<div class="dashboard-panel p-4 mt-3">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+            <h2 class="section-title mb-1">Listen Intelligence</h2>
+            <p class="section-subtitle mb-0">Tóm tắt hành vi nghe từ mobile app trong toàn hệ thống.</p>
+        </div>
+        <div class="helper-chip">@Model.ListenLogsLast7Days lượt trong 7 ngày gần đây</div>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-accent">
+                <div class="metric-title">Tổng lượt nghe</div>
+                <div class="metric-value">@Model.TotalListenLogs</div>
+                <div class="metric-note">Từ mobile app</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-soft">
+                <div class="metric-title">Lượt audio</div>
+                <div class="metric-value">@Model.AudioListenLogs</div>
+                <div class="metric-note">Phát file sẵn có</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-neutral">
+                <div class="metric-title">Lượt TTS</div>
+                <div class="metric-value">@Model.TtsListenLogs</div>
+                <div class="metric-note">Text-to-Speech</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card metric-card-warm">
+                <div class="metric-title">Thời lượng TB</div>
+                <div class="metric-value">@Model.AverageListenDurationSeconds.ToString("0.0")s</div>
+                <div class="metric-note">Mỗi lần phát</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <div class="col-xl-6">
+            <div class="dashboard-panel p-3 h-100">
+                <h3 class="section-title">Top POI được nghe</h3>
+                @if (!Model.TopListenPois.Any())
+                {
+                    <p class="text-muted mb-0">Chưa có dữ liệu.</p>
+                }
+                else
+                {
+                    <div class="d-grid gap-2">
+                        @foreach (var item in Model.TopListenPois)
+                        {
+                            <div class="helper-chip justify-content-between">
+                                <span>@item.PoiName</span>
+                                <strong>@item.Listens</strong>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="dashboard-panel p-3 h-100">
+                <h3 class="section-title">Ngôn ngữ nghe</h3>
+                @if (!Model.TopListenLanguages.Any())
+                {
+                    <p class="text-muted mb-0">Chưa có dữ liệu.</p>
+                }
+                else
+                {
+                    <div class="d-grid gap-2">
+                        @foreach (var item in Model.TopListenLanguages)
+                        {
+                            <div class="helper-chip justify-content-between">
+                                <span>@item.LanguageCode</span>
+                                <strong>@item.Percent.ToString("0.##")%</strong>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

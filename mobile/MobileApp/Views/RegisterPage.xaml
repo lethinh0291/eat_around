@@ -23,11 +23,13 @@
                         StrokeShape="RoundRectangle 24"
                         Padding="16">
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Tạo tài khoản mới"
+                       <Label x:Name="RegisterTitleLabel"
+                           Text="Tạo tài khoản mới"
                                FontSize="24"
                                FontAttributes="Bold"
                                TextColor="White"/>
-                        <Label Text="Đăng ký nhanh để lưu hành trình, khám phá và mở cửa hàng"
+                       <Label x:Name="RegisterSubtitleLabel"
+                           Text="Đăng ký nhanh để lưu hành trình, khám phá và mở cửa hàng"
                                FontSize="12"
                                TextColor="#FFF7F1"/>
                     </VerticalStackLayout>
@@ -45,7 +47,8 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Họ và tên"
+                                <Label x:Name="NameTitleLabel"
+                                    Text="Họ và tên"
                                        FontSize="11"
                                        TextColor="#475569"/>
                                 <Entry x:Name="NameEntry"
@@ -62,7 +65,8 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Tên đăng nhập"
+                                <Label x:Name="UsernameTitleLabel"
+                                    Text="Tên đăng nhập"
                                        FontSize="11"
                                        TextColor="#475569"/>
                                 <Entry x:Name="UsernameEntry"
@@ -79,7 +83,8 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Email"
+                                <Label x:Name="EmailTitleLabel"
+                                    Text="Email"
                                        FontSize="11"
                                        TextColor="#475569"/>
                                 <Entry x:Name="EmailEntry"
@@ -97,7 +102,8 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Mật khẩu"
+                                <Label x:Name="PasswordTitleLabel"
+                                    Text="Mật khẩu"
                                        FontSize="11"
                                        TextColor="#475569"/>
                                 <Entry x:Name="PasswordEntry"
@@ -115,7 +121,8 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Xác nhận mật khẩu"
+                                <Label x:Name="ConfirmPasswordTitleLabel"
+                                    Text="Xác nhận mật khẩu"
                                        FontSize="11"
                                        TextColor="#475569"/>
                                 <Entry x:Name="ConfirmPasswordEntry"
@@ -135,11 +142,13 @@
                             <Grid ColumnDefinitions="*,Auto"
                                   ColumnSpacing="10">
                                 <VerticalStackLayout Spacing="2">
-                                    <Label Text="Tạo tài khoản người bán"
+                                     <Label x:Name="SellerAccountTitleLabel"
+                                         Text="Tạo tài khoản người bán"
                                            FontSize="13"
                                            FontAttributes="Bold"
                                            TextColor="#0F172A"/>
-                                    <Label Text="Bật nếu bạn muốn đăng ký và quản lý cửa hàng"
+                                     <Label x:Name="SellerAccountHintLabel"
+                                         Text="Bật nếu bạn muốn đăng ký và quản lý cửa hàng"
                                            FontSize="11"
                                            TextColor="#64748B"/>
                                 </VerticalStackLayout>
@@ -157,7 +166,8 @@
                                FontSize="12"
                                TextColor="#475569"/>
 
-                        <Button Text="Tạo tài khoản"
+                        <Button x:Name="RegisterButton"
+                            Text="Tạo tài khoản"
                                 Clicked="OnRegisterClicked"
                                 BackgroundColor="{StaticResource Primary}"
                                 TextColor="White"
@@ -170,7 +180,8 @@
                                FontSize="12"
                                TextColor="#DC2626"/>
 
-                        <Button Text="Quay lại đăng nhập"
+                        <Button x:Name="BackToLoginButton"
+                            Text="Quay lại đăng nhập"
                                 Clicked="OnBackToLoginClicked"
                                 BackgroundColor="{StaticResource Secondary}"
                                 TextColor="{StaticResource PrimaryDark}"

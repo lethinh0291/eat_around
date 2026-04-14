@@ -39,7 +39,76 @@ public class AdminManagementController : Controller
             })
             .ToList();
 
+        var ownerPoiMap = users
+            .ToDictionary(
+                user => user.Id,
+                user => restaurants
+                    .Where(poi => string.Equals(ExtractOwnerNameFromPoiDescription(poi.Description), user.Name?.Trim(), StringComparison.OrdinalIgnoreCase))
+                    .Select(poi => poi.Id)
+                    .ToList());
+
+        ViewBag.AllPois = restaurants
+            .OrderByDescending(item => item.Priority)
+            .ThenBy(item => item.Name)
+            .ToList();
+        ViewBag.OwnerPoiMap = ownerPoiMap;
+
         return View(rows);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AssignPoisToSeller(int userId, List<int>? poiIds)
+    {
+        var users = await _adminManagementApiClient.GetUsersAsync();
+        var user = users.FirstOrDefault(item => item.Id == userId);
+        if (user is null)
+        {
+            TempData["AdminError"] = "Không tìm thấy user để gán POI.";
+            return RedirectToAction(nameof(Users));
+        }
+
+        if (!string.Equals(user.Role, "seller", StringComparison.OrdinalIgnoreCase))
+        {
+            TempData["AdminError"] = "Chỉ có thể gán POI cho user role seller.";
+            return RedirectToAction(nameof(Users));
+        }
+
+        var targetPoiIds = (poiIds ?? [])
+            .Where(item => item > 0)
+            .Distinct()
+            .ToList();
+
+        if (targetPoiIds.Count == 0)
+        {
+            TempData["AdminError"] = "Vui lòng chọn ít nhất một POI để gán.";
+            return RedirectToAction(nameof(Users));
+        }
+
+        var allPois = await _poiApiClient.GetAllAsync();
+        var selectedPois = allPois.Where(item => targetPoiIds.Contains(item.Id)).ToList();
+        if (selectedPois.Count == 0)
+        {
+            TempData["AdminError"] = "Không tìm thấy POI đã chọn.";
+            return RedirectToAction(nameof(Users));
+        }
+
+        var updatedCount = 0;
+        foreach (var poi in selectedPois)
+        {
+            poi.Description = ReplaceOwnerInDescription(poi.Description, user.Name, "N/A");
+            var updated = await _poiApiClient.UpdateAsync(poi);
+            if (updated)
+            {
+                updatedCount++;
+            }
+        }
+
+        TempData[updatedCount > 0 ? "AdminMessage" : "AdminError"] = updatedCount > 0
+            ? $"Đã gán {updatedCount} POI cho {user.Name}."
+            : "Không thể cập nhật POI để gán seller.";
+
+        return RedirectToAction(nameof(Users));
     }
 
     [HttpPost]
@@ -95,6 +164,13 @@ public class AdminManagementController : Controller
         var result = await _adminManagementApiClient.DeleteUserAsync(userId);
         TempData[result.Success ? "AdminMessage" : "AdminError"] = result.Message;
         return RedirectToAction(nameof(Users));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> PendingStoreRegistrationsCount()
+    {
+        var stores = await _adminManagementApiClient.GetStoreRegistrationsAsync();
+        return Json(new { count = stores.Count });
     }
 
     public async Task<IActionResult> Stores()
@@ -307,5 +383,24 @@ public class AdminManagementController : Controller
 
         var match = Regex.Match(description, @"Liên hệ:\s*(.*?)\s*-", RegexOptions.IgnoreCase);
         return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
+    }
+
+    private static string ReplaceOwnerInDescription(string? description, string? ownerName, string? phone)
+    {
+        var safeOwner = string.IsNullOrWhiteSpace(ownerName) ? "N/A" : ownerName.Trim();
+        var safePhone = string.IsNullOrWhiteSpace(phone) ? "N/A" : phone.Trim();
+        var contactSegment = $"Liên hệ: {safeOwner} - {safePhone}";
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return contactSegment;
+        }
+
+        if (Regex.IsMatch(description, @"Liên hệ:\s*(.*?)\s*-", RegexOptions.IgnoreCase))
+        {
+            return Regex.Replace(description, @"Liên hệ:\s*(.*?)\s*-\s*([^|]+)", contactSegment, RegexOptions.IgnoreCase);
+        }
+
+        return $"{description.Trim()} | {contactSegment}";
     }
 }

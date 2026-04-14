@@ -1,4 +1,4 @@
-@model List<POI>
+@model AdminWeb.Models.PoiManagementViewModel
 @{
     ViewData["Title"] = "Quản lý POI";
 }
@@ -11,11 +11,14 @@
             <span>POI</span>
         </div>
         <h1 class="page-title">Quản lý địa điểm</h1>
-        <p class="page-subtitle">Thêm, sửa và xoá các POI được mobile app hiển thị trên bản đồ.</p>
+        <p class="page-subtitle">Tìm kiếm, lọc trạng thái QR và thao tác nhanh theo từng POI.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
         <a class="btn btn-admin btn-admin-soft" asp-action="Map">Xem Map</a>
-        <a class="btn btn-admin btn-admin-primary" asp-action="Create">+ Thêm POI</a>
+        @if (Model.IsAdmin)
+        {
+            <a class="btn btn-admin btn-admin-primary" asp-action="Create">+ Thêm POI</a>
+        }
     </div>
 </div>
 
@@ -24,14 +27,59 @@
     <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">@message</div>
 }
 
+@if (Model.IsSeller)
+{
+    <div class="alert alert-info border-0 shadow-sm rounded-4 mb-4">
+        Bạn đang ở chế độ Chủ quán. Chỉ các POI được gán cho <strong>@Model.CurrentOwnerDisplayName</strong> mới hiển thị.
+    </div>
+}
+
 <div class="surface-card p-4">
-    @if (Model.Count == 0)
+    <form method="get" asp-action="Index" class="row g-3 mb-4">
+        <div class="col-lg-6">
+            <label for="search" class="form-label">Tìm theo tên</label>
+            <input id="search" name="search" class="form-control" value="@Model.Search" placeholder="VD: Bún bò, Lẩu, Phở..." />
+        </div>
+        <div class="col-lg-4">
+            <label for="status" class="form-label">Lọc trạng thái</label>
+            <select id="status" name="status" class="form-select">
+                @if (Model.Status == "all")
+                {
+                    <option value="all" selected>Tất cả</option>
+                }
+                else
+                {
+                    <option value="all">Tất cả</option>
+                }
+
+                @if (Model.Status == "has-qr")
+                {
+                    <option value="has-qr" selected>Đã tạo QR</option>
+                }
+                else
+                {
+                    <option value="has-qr">Đã tạo QR</option>
+                }
+
+                @if (Model.Status == "no-qr")
+                {
+                    <option value="no-qr" selected>Chưa có QR</option>
+                }
+                else
+                {
+                    <option value="no-qr">Chưa có QR</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-2 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-admin btn-admin-primary w-100">Lọc</button>
+        </div>
+    </form>
+
+    @if (Model.Items.Count == 0)
     {
         <div class="empty-state">
-            <div>Chưa có POI nào.</div>
-            <div class="mt-3">
-                <a class="btn btn-admin btn-admin-primary" asp-action="Create">Tạo POI đầu tiên</a>
-            </div>
+            <div>Không có POI phù hợp bộ lọc hiện tại.</div>
         </div>
     }
     else
@@ -41,19 +89,41 @@
                 <thead>
                     <tr>
                         <th>Tên địa điểm</th>
+                        <th>Chủ quán</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
                         <th>Tọa độ</th>
                         <th>Thuộc tính</th>
                         <th>Media</th>
-                        <th class="text-end">Thao tác</th>
+                        <th class="text-end">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var poi in Model)
+                    @foreach (var item in Model.Items)
                     {
+                        var poi = item.Poi;
                         <tr>
                             <td>
                                 <div class="poi-name">@poi.Name</div>
                                 <div class="poi-meta">@(string.IsNullOrWhiteSpace(poi.Description) ? "Không có mô tả" : poi.Description)</div>
+                            </td>
+                            <td>
+                                <span class="admin-badge admin-badge-muted">@item.OwnerName</span>
+                            </td>
+                            <td>
+                                <div class="poi-meta">
+                                    @(item.CreatedAtUtc.HasValue ? item.CreatedAtUtc.Value.ToString("yyyy-MM-dd HH:mm") + " UTC" : "-")
+                                </div>
+                            </td>
+                            <td>
+                                @if (item.StatusCode == "has-qr")
+                                {
+                                    <span class="admin-badge admin-badge-success">@item.StatusLabel</span>
+                                }
+                                else
+                                {
+                                    <span class="admin-badge admin-badge-muted">@item.StatusLabel</span>
+                                }
                             </td>
                             <td>
                                 <div class="poi-meta">@poi.Latitude.ToString("0.#####")</div>
@@ -72,10 +142,25 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-end gap-2 flex-wrap">
-                                    <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="Edit" asp-route-id="@poi.Id">Sửa</a>
-                                    <form asp-action="Delete" asp-route-id="@poi.Id" method="post" onsubmit="return confirm('Xoá POI này?');">
-                                        <button type="submit" class="btn btn-admin btn-outline-danger btn-sm">Xoá</button>
+                                    <form asp-action="GenerateQr" asp-route-id="@poi.Id" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-admin btn-admin-primary btn-sm">Tạo QR</button>
                                     </form>
+                                    @if (item.LatestQrId.HasValue)
+                                    {
+                                        <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="DownloadQr" asp-route-id="@poi.Id" asp-route-qrId="@item.LatestQrId">Tải QR</a>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-admin btn-admin-soft btn-sm" disabled>Tải QR</button>
+                                    }
+                                    <a class="btn btn-admin btn-admin-soft btn-sm" asp-action="Edit" asp-route-id="@poi.Id">Sửa</a>
+                                    @if (Model.IsAdmin)
+                                    {
+                                        <form asp-action="Delete" asp-route-id="@poi.Id" method="post" onsubmit="return confirm('Xoá POI này?');">
+                                            <button type="submit" class="btn btn-admin btn-outline-danger btn-sm">Xoá</button>
+                                        </form>
+                                    }
                                 </div>
                             </td>
                         </tr>

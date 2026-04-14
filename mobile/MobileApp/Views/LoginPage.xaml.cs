@@ -1,4 +1,5 @@
 using MobileApp.Services;
+using MobileApp.Resources.Localization;
 
 namespace ZesTour.Views;
 
@@ -12,6 +13,21 @@ public partial class LoginPage : ContentPage
         _authService = authService;
         _navigator = navigator;
         InitializeComponent();
+        ApplyLocalizedText();
+    }
+
+    private void ApplyLocalizedText()
+    {
+        WelcomeLabel.Text = AppText.Get("Login_WelcomeBack");
+        ContinueDescriptionLabel.Text = AppText.Get("Login_ContinueDescription");
+        AccountInfoLabel.Text = AppText.Get("Login_AccountInfo");
+        IdentifierLabel.Text = AppText.Get("Login_IdentifierLabel");
+        IdentifierEntry.Placeholder = AppText.Get("Login_IdentifierPlaceholder");
+        PasswordLabel.Text = AppText.Get("Login_PasswordLabel");
+        PasswordEntry.Placeholder = AppText.Get("Login_PasswordPlaceholder");
+        RememberLabel.Text = AppText.Get("Login_Remember");
+        LoginButton.Text = AppText.Get("Login_Button");
+        CreateAccountButton.Text = AppText.Get("Login_CreateAccount");
     }
 
     protected override async void OnAppearing()

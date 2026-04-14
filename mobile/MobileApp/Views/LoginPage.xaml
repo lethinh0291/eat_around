@@ -43,11 +43,13 @@
                             <Label Text="ZesTour"
                                    FontSize="12"
                                    TextColor="#FFF7F1"/>
-                            <Label Text="Chào mừng quay lại"
+                            <Label x:Name="WelcomeLabel"
+                                Text="Chào mừng quay lại"
                                    FontSize="23"
                                    FontAttributes="Bold"
                                    TextColor="White"/>
-                            <Label Text="Đăng nhập để tiếp tục bản đồ, hành trình và cửa hàng của bạn"
+                            <Label x:Name="ContinueDescriptionLabel"
+                                Text="Đăng nhập để tiếp tục bản đồ, hành trình và cửa hàng của bạn"
                                    FontSize="12"
                                    TextColor="#FFF7F1"/>
                         </VerticalStackLayout>
@@ -60,7 +62,8 @@
                         StrokeShape="RoundRectangle 22"
                         Padding="16">
                     <VerticalStackLayout Spacing="12">
-                        <Label Text="Thông tin tài khoản"
+                           <Label x:Name="AccountInfoLabel"
+                               Text="Thông tin tài khoản"
                                FontSize="16"
                                FontAttributes="Bold"
                                TextColor="#0F172A"/>
@@ -71,7 +74,8 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Email hoặc tên đăng nhập"
+                                <Label x:Name="IdentifierLabel"
+                                    Text="Email hoặc tên đăng nhập"
                                        FontSize="11"
                                        TextColor="#475569"/>
                                 <Entry x:Name="IdentifierEntry"
@@ -90,7 +94,8 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="3">
-                                <Label Text="Mật khẩu"
+                                <Label x:Name="PasswordLabel"
+                                    Text="Mật khẩu"
                                        FontSize="11"
                                        TextColor="#475569"/>
                                 <Entry x:Name="PasswordEntry"
@@ -108,13 +113,15 @@
                                       IsChecked="True"
                                       Color="{StaticResource Primary}"/>
                             <Label Grid.Column="1"
+                                   x:Name="RememberLabel"
                                    Text="Ghi nhớ đăng nhập trên thiết bị này"
                                    FontSize="12"
                                    TextColor="#475569"
                                    VerticalTextAlignment="Center"/>
                         </Grid>
 
-                        <Button Text="Đăng nhập"
+                            <Button x:Name="LoginButton"
+                                Text="Đăng nhập"
                                 Clicked="OnLoginClicked"
                                 BackgroundColor="{StaticResource Primary}"
                                 TextColor="White"
@@ -127,7 +134,8 @@
                                FontSize="12"
                                TextColor="#DC2626"/>
 
-                        <Button Text="Tạo tài khoản mới"
+                        <Button x:Name="CreateAccountButton"
+                            Text="Tạo tài khoản mới"
                                 Clicked="OnRegisterClicked"
                                 BackgroundColor="{StaticResource Secondary}"
                                 TextColor="{StaticResource PrimaryDark}"

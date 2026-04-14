@@ -2,6 +2,8 @@
 using MobileApp.Services; // Nhớ thêm dòng này để nó nhận diện thư mục Services
 using ZesTour.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Plugin.Maui.Audio;
+using ZXing.Net.Maui.Controls;
 
 namespace MobileApp;
 
@@ -12,6 +14,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseBarcodeReader()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -23,6 +26,10 @@ public static class MauiProgram
 		// Dùng Singleton cho các Service chạy suốt vòng đời App
 		builder.Services.AddSingleton<DatabaseService>();
 		builder.Services.AddSingleton<ApiService>();
+		builder.Services.AddSingleton(AudioManager.Current);
+		builder.Services.AddSingleton<AudioPlaybackService>();
+		builder.Services.AddSingleton<TranslationService>();
+		builder.Services.AddSingleton<AppLanguageService>();
 		builder.Services.AddSingleton<LocationService>();
 		builder.Services.AddSingleton<AuthService>();
 		builder.Services.AddSingleton<AppNavigator>();
@@ -39,6 +46,7 @@ public static class MauiProgram
 		builder.Services.AddTransient<HelpFeedbackPage>();
 		builder.Services.AddTransient<ProfilePage>();
 		builder.Services.AddTransient<LoadingPage>();
+		builder.Services.AddTransient<QrTriggerPage>();
 
 		// --- CẤU HÌNH DEBUG ---
 #if DEBUG

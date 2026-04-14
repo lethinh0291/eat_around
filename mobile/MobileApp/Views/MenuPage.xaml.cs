@@ -1,4 +1,5 @@
 using MobileApp.Services;
+using MobileApp.Resources.Localization;
 
 namespace ZesTour.Views;
 
@@ -17,7 +18,36 @@ public partial class MenuPage : ContentPage
         _authService = authService;
         _apiService = new ApiService();
         InitializeComponent();
+        ApplyLocalizedText();
         BindingContext = new { User = _authService.CurrentUser };
+    }
+
+    private void ApplyLocalizedText()
+    {
+        HelloLabel.Text = AppText.Get("Menu_Hello");
+        SearchEntry.Placeholder = AppText.Get("Menu_SearchPlaceholder");
+        ExploreSectionLabel.Text = AppText.Get("Menu_ExploreSection");
+        DiscoverTitleLabel.Text = AppText.Get("Menu_DiscoverTitle");
+        DiscoverSubtitleLabel.Text = AppText.Get("Menu_DiscoverSubtitle");
+        QrTriggerTitleLabel.Text = AppText.Get("Menu_QrTriggerTitle");
+        QrTriggerSubtitleLabel.Text = AppText.Get("Menu_QrTriggerSubtitle");
+        MyTripsTitleLabel.Text = AppText.Get("Menu_MyTripsTitle");
+        MyTripsSubtitleLabel.Text = AppText.Get("Menu_MyTripsSubtitle");
+        AccountSectionLabel.Text = AppText.Get("Menu_AccountSection");
+        AccountPaymentLabel.Text = AppText.Get("Menu_AccountPayment");
+        SettingsMenuLabel.Text = AppText.Get("Settings_Title");
+        SellerSectionLabel.Text = AppText.Get("Menu_SellerSection");
+        StoreManagementLabel.Text = AppText.Get("Menu_StoreManagement");
+        StoreRegistrationLabel.Text = AppText.Get("Menu_StoreRegistration");
+        SupportTitleLabel.Text = AppText.Get("Menu_SupportTitle");
+        SupportSubtitleLabel.Text = AppText.Get("Menu_SupportSubtitle");
+        QuickActionsTitleLabel.Text = AppText.Get("Menu_QuickActionsTitle");
+        QuickActionsSubtitleLabel.Text = AppText.Get("Menu_QuickActionsSubtitle");
+        SidebarHomeButton.Text = AppText.Get("Menu_Home");
+        SidebarProfileButton.Text = AppText.Get("Menu_Profile");
+        SidebarSettingsButton.Text = AppText.Get("Settings_Title");
+        SidebarSupportButton.Text = AppText.Get("Menu_HelpFeedback");
+        SidebarLogoutButton.Text = AppText.Get("Menu_Logout");
     }
 
     protected override async void OnAppearing()
@@ -52,7 +82,10 @@ public partial class MenuPage : ContentPage
 
     private async Task ShowComingSoonAsync(string featureName)
     {
-        await DisplayAlertAsync("Tính năng", $"{featureName} sẽ được hoàn thiện trong bản cập nhật tiếp theo.", "Đóng");
+        await DisplayAlertAsync(
+            AppText.Get("Menu_FeatureTitle"),
+            AppText.Format("Menu_ComingSoonFormat", featureName),
+            AppText.Get("Menu_Close"));
     }
 
     private async void OnSearchCompleted(object? sender, EventArgs e)
@@ -83,7 +116,10 @@ public partial class MenuPage : ContentPage
         {
             if (!IsSeller())
             {
-                await DisplayAlertAsync("Vai trò chưa phù hợp", "Tính năng đăng ký cửa hàng chỉ hiển thị cho tài khoản Người bán.", "OK");
+                await DisplayAlertAsync(
+                    AppText.Get("Menu_RoleMismatchTitle"),
+                    AppText.Get("Menu_RoleMismatchSellerFeature"),
+                    AppText.Get("Common_Ok"));
                 return;
             }
 
@@ -119,7 +155,7 @@ public partial class MenuPage : ContentPage
             return;
         }
 
-        await ShowComingSoonAsync($"Không tìm thấy mục khớp với: {keyword}");
+        await ShowComingSoonAsync(AppText.Format("Menu_NotFoundFormat", keyword));
     }
 
     private async void OnOpenMapTapped(object? sender, TappedEventArgs e)
@@ -230,7 +266,7 @@ public partial class MenuPage : ContentPage
 
     private async void OnAccountTapped(object? sender, TappedEventArgs e)
     {
-        await ShowComingSoonAsync("Tài khoản và thanh toán");
+        await ShowComingSoonAsync(AppText.Get("Menu_AccountPayment"));
     }
 
     private async void OnSettingsTapped(object? sender, TappedEventArgs e)
@@ -245,14 +281,22 @@ public partial class MenuPage : ContentPage
 
     private async void OnQuickNarrationTapped(object? sender, TappedEventArgs e)
     {
-        await _navigator.ShowHelpFeedbackAsync();
+        await _navigator.ShowQrTriggerAsync();
+    }
+
+    private async void OnQrTriggerTapped(object? sender, TappedEventArgs e)
+    {
+        await _navigator.ShowQrTriggerAsync();
     }
 
     private async void OnStoreRegistrationTapped(object? sender, TappedEventArgs e)
     {
         if (!IsSeller())
         {
-            await DisplayAlertAsync("Vai trò chưa phù hợp", "Bạn cần đăng nhập bằng tài khoản Người bán để dùng tính năng này.", "OK");
+            await DisplayAlertAsync(
+                AppText.Get("Menu_RoleMismatchTitle"),
+                AppText.Get("Menu_RoleMismatchSellerRequired"),
+                AppText.Get("Common_Ok"));
             return;
         }
 
@@ -263,7 +307,10 @@ public partial class MenuPage : ContentPage
     {
         if (!IsSeller())
         {
-            await DisplayAlertAsync("Vai trò chưa phù hợp", "Bạn cần đăng nhập bằng tài khoản Người bán để dùng tính năng này.", "OK");
+            await DisplayAlertAsync(
+                AppText.Get("Menu_RoleMismatchTitle"),
+                AppText.Get("Menu_RoleMismatchSellerRequired"),
+                AppText.Get("Common_Ok"));
             return;
         }
 
@@ -281,7 +328,7 @@ public partial class MenuPage : ContentPage
 
         if (role == "seller")
         {
-            RoleBadgeLabel.Text = "Người bán";
+            RoleBadgeLabel.Text = AppText.Get("Menu_RoleSeller");
             RoleBadgeBorder.BackgroundColor = Color.FromArgb("#FFF1E8");
             RoleBadgeLabel.TextColor = Color.FromArgb("#8E2F18");
             return;
@@ -289,13 +336,13 @@ public partial class MenuPage : ContentPage
 
         if (role == "admin")
         {
-            RoleBadgeLabel.Text = "Quản trị viên";
+            RoleBadgeLabel.Text = AppText.Get("Menu_RoleAdmin");
             RoleBadgeBorder.BackgroundColor = Color.FromArgb("#FEE2E2");
             RoleBadgeLabel.TextColor = Color.FromArgb("#991B1B");
             return;
         }
 
-        RoleBadgeLabel.Text = "Khách hàng";
+        RoleBadgeLabel.Text = AppText.Get("Menu_RoleCustomer");
         RoleBadgeBorder.BackgroundColor = Color.FromArgb("#FFE8DD");
         RoleBadgeLabel.TextColor = Color.FromArgb("#A53A1D");
     }

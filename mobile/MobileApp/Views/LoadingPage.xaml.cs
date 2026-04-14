@@ -1,4 +1,5 @@
 using MobileApp.Services;
+using MobileApp.Resources.Localization;
 
 namespace ZesTour.Views;
 
@@ -40,7 +41,10 @@ public partial class LoadingPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Navigation error: {ex}");
-            await DisplayAlertAsync("Lỗi", $"Lỗi khởi động: {ex.Message}", "OK");
+            await DisplayAlertAsync(
+                AppText.Get("Loading_ErrorTitle"),
+                AppText.Format("Loading_StartupError", ex.Message),
+                AppText.Get("Common_Ok"));
         }
     }
 }

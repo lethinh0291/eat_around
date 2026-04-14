@@ -1,4 +1,5 @@
 using MobileApp.Services;
+using MobileApp.Resources.Localization;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -16,6 +17,7 @@ public partial class StoreManagementPage : ContentPage
     private readonly AuthService _authService;
     private readonly ObservableCollection<ImagePreviewItem> _previewItems = new();
     private readonly ObservableCollection<AddressSuggestionItem> _addressSuggestions = new();
+    public string MyStoreBadgeText => AppText.Get("StoreManagement_MyStoreBadge");
 
     private List<ApiService.ManagementStoreRegistration> _items = new();
     private ApiService.ManagementStoreRegistration? _selected;
@@ -30,6 +32,7 @@ public partial class StoreManagementPage : ContentPage
         _authService = authService;
 
         InitializeComponent();
+        ApplyLocalizedText();
 
         StoreImagePreviewCollection.ItemsSource = _previewItems;
         AddressSuggestionsCollectionView.ItemsSource = _addressSuggestions;
@@ -41,13 +44,48 @@ public partial class StoreManagementPage : ContentPage
         }
     }
 
+    private void ApplyLocalizedText()
+    {
+        ManagementTitleLabel.Text = AppText.Get("StoreManagement_Title");
+        ManagementSubtitleLabel.Text = AppText.Get("StoreManagement_Subtitle");
+        EditRegistrationLabel.Text = AppText.Get("StoreManagement_EditRegistration");
+        EditRegistrationTitleLabel.Text = AppText.Get("StoreManagement_EditRegistrationTitle");
+        EditRegistrationHintLabel.Text = AppText.Get("StoreManagement_EditRegistrationHint");
+        RefreshButton.Text = AppText.Get("StoreManagement_Refresh");
+        RegistrationsTitleLabel.Text = AppText.Get("StoreManagement_RegistrationListTitle");
+        RegistrationsSubtitleLabel.Text = AppText.Get("StoreManagement_RegistrationListSubtitle");
+        SelectOneBadgeLabel.Text = AppText.Get("StoreManagement_SelectOne");
+        StoreInfoTitleLabel.Text = AppText.Get("StoreManagement_StoreInfoTitle");
+        StoreInfoSubtitleLabel.Text = AppText.Get("StoreManagement_StoreInfoSubtitle");
+        AutoPointBadgeLabel.Text = AppText.Get("StoreManagement_AutoPoint");
+        StoreNameEntry.Placeholder = AppText.Get("StoreManagement_StoreName");
+        PhoneEntry.Placeholder = AppText.Get("StoreManagement_Phone");
+        CategoryEntry.Placeholder = AppText.Get("StoreManagement_Category");
+        AddressLabel.Text = AppText.Get("StoreManagement_Address");
+        AddressEntry.Placeholder = AppText.Get("StoreManagement_AddressPlaceholder");
+        AddressMapPreviewLabel.Text = AppText.Get("StoreManagement_AddressPreview");
+        AddressPreviewHintLabel.Text = AppText.Get("StoreManagement_AddressPreviewHint");
+        PreviewBadgeLabel.Text = AppText.Get("StoreManagement_Preview");
+        DescriptionEditor.Placeholder = AppText.Get("StoreManagement_Description");
+        AddImageButton.Text = AppText.Get("StoreManagement_AddImage");
+        AddImageHintLabel.Text = AppText.Get("StoreManagement_AddImageHint");
+        AlbumPreviewTitleLabel.Text = AppText.Get("StoreManagement_AlbumPreview");
+        AlbumPreviewHintLabel.Text = AppText.Get("StoreManagement_AlbumPreviewHint");
+        AlbumBadgeLabel.Text = AppText.Get("StoreManagement_AlbumBadge");
+        UpdateButton.Text = AppText.Get("StoreManagement_Update");
+        DeleteButton.Text = AppText.Get("StoreManagement_Delete");
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
         if (!string.Equals(_authService.CurrentUser?.Role, "seller", StringComparison.OrdinalIgnoreCase))
         {
-            await DisplayAlertAsync("Không có quyền", "Chỉ tài khoản Người bán mới có thể quản lý cửa hàng.", "OK");
+            await DisplayAlertAsync(
+                AppText.Get("Common_NoPermissionTitle"),
+                AppText.Get("StoreManagement_SellerOnly"),
+                AppText.Get("Common_Ok"));
             await Navigation.PopAsync();
             return;
         }
@@ -68,7 +106,7 @@ public partial class StoreManagementPage : ContentPage
         var owners = GetOwnerLookupValues();
         if (owners.Count == 0)
         {
-            StatusLabel.Text = "Không xác định được chủ cửa hàng hiện tại.";
+            StatusLabel.Text = AppText.Get("StoreManagement_CannotResolveOwner");
             RegistrationsCollection.ItemsSource = null;
             ClearEditor();
             return;
@@ -94,7 +132,7 @@ public partial class StoreManagementPage : ContentPage
 
         if (_items.Count == 0)
         {
-            StatusLabel.Text = "Bạn chưa có đăng ký cửa hàng nào.";
+            StatusLabel.Text = AppText.Get("StoreManagement_NoRegistrations");
             ClearEditor();
             return;
         }
@@ -261,7 +299,7 @@ public partial class StoreManagementPage : ContentPage
     private void ShowAddressPreviewMap(double lat, double lng, string title)
     {
         AddressMapPreviewContainer.IsVisible = true;
-        AddressMapPreviewLabel.Text = $"Vị trí địa chỉ: {title}";
+        AddressMapPreviewLabel.Text = AppText.Format("StoreManagement_AddressPositionFormat", title);
 
         var safeTitle = EscapeJavaScript(title);
         var latText = lat.ToString(CultureInfo.InvariantCulture);
@@ -396,7 +434,7 @@ public partial class StoreManagementPage : ContentPage
         {
             var photos = await FilePicker.Default.PickMultipleAsync(new PickOptions
             {
-                PickerTitle = "Chọn ảnh cho cửa hàng",
+                PickerTitle = AppText.Get("StoreManagement_PickImages"),
                 FileTypes = FilePickerFileType.Images
             });
 
@@ -446,13 +484,13 @@ public partial class StoreManagementPage : ContentPage
             if (addedCount > 0)
             {
                 StatusLabel.TextColor = Color.FromArgb("#8E2F18");
-                StatusLabel.Text = $"Đã thêm {addedCount} ảnh từ máy.";
+                StatusLabel.Text = AppText.Format("StoreManagement_AddedImagesFormat", addedCount);
             }
         }
         catch (Exception ex)
         {
             StatusLabel.TextColor = Color.FromArgb("#B91C1C");
-            StatusLabel.Text = "Không thể chọn ảnh từ máy.";
+            StatusLabel.Text = AppText.Get("StoreManagement_PickImagesFailed");
             Console.WriteLine($"Lỗi chọn ảnh trong quản lý cửa hàng: {ex.Message}");
         }
     }
@@ -539,14 +577,14 @@ public partial class StoreManagementPage : ContentPage
 
         if (_selected is null)
         {
-            StatusLabel.Text = "Vui lòng chọn một đăng ký để cập nhật.";
+            StatusLabel.Text = AppText.Get("StoreManagement_SelectToUpdate");
             return;
         }
 
         var ownerName = _selected.OwnerName?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(ownerName))
         {
-            StatusLabel.Text = "Không xác định được chủ cửa hàng hiện tại.";
+            StatusLabel.Text = AppText.Get("StoreManagement_CannotResolveOwner");
             return;
         }
 
@@ -555,14 +593,14 @@ public partial class StoreManagementPage : ContentPage
         var address = AddressEntry.Text?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(storeName) || string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(address))
         {
-            StatusLabel.Text = "Tên cửa hàng, số điện thoại và địa chỉ là bắt buộc.";
+            StatusLabel.Text = AppText.Get("StoreManagement_RequiredFields");
             return;
         }
 
         var resolvedGeo = _selectedAddressGeo ?? await ResolveAddressGeoAsync(address, CancellationToken.None);
         if (resolvedGeo is null)
         {
-            StatusLabel.Text = "Không xác định được vị trí địa chỉ. Vui lòng chọn gợi ý phù hợp.";
+            StatusLabel.Text = AppText.Get("StoreManagement_AddressNotResolved");
             return;
         }
 
@@ -594,11 +632,15 @@ public partial class StoreManagementPage : ContentPage
 
         if (_selected is null)
         {
-            StatusLabel.Text = "Vui lòng chọn một đăng ký để xóa.";
+            StatusLabel.Text = AppText.Get("StoreManagement_SelectToDelete");
             return;
         }
 
-        var confirm = await DisplayAlertAsync("Xác nhận", "Bạn có chắc muốn xóa đăng ký này?", "Xóa", "Hủy");
+        var confirm = await DisplayAlertAsync(
+            AppText.Get("StoreManagement_DeleteConfirmTitle"),
+            AppText.Get("StoreManagement_DeleteConfirmMessage"),
+            AppText.Get("StoreManagement_Delete"),
+            AppText.Get("StoreManagement_Cancel"));
         if (!confirm)
         {
             return;
@@ -690,6 +732,7 @@ public partial class StoreManagementPage : ContentPage
         }
 
         public ImageSource Source { get; }
+        public string PrimaryBadgeText => AppText.Get("StoreManagement_PrimaryImage");
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }
