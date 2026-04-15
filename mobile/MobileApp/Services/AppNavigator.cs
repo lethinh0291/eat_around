@@ -15,20 +15,17 @@ public class AppNavigator
 
     public Task ShowLoginAsync()
     {
-        SetRoot(new NavigationPage(_services.GetRequiredService<LoginPage>()));
-        return Task.CompletedTask;
+        return SetRootWithNavigationAsync<LoginPage>();
     }
 
     public Task ShowMainAsync()
     {
-        SetRoot(new NavigationPage(_services.GetRequiredService<MainPage>()));
-        return Task.CompletedTask;
+        return SetRootWithNavigationAsync<MainPage>();
     }
 
     public Task ShowMenuAsync()
     {
-        SetRoot(new NavigationPage(_services.GetRequiredService<MenuPage>()));
-        return Task.CompletedTask;
+        return SetRootWithNavigationAsync<MenuPage>();
     }
 
     public Task ShowLoadingAsync()
@@ -39,133 +36,67 @@ public class AppNavigator
 
     public async Task ShowMainFromMenuAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowMainAsync();
-            return;
-        }
-
-        await navigation.PushAsync(_services.GetRequiredService<MainPage>());
+        await PushOnNavigationAsync<MainPage>(ShowMainAsync);
     }
 
     public async Task ShowRegisterAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowLoginAsync();
-            navigation = EnsureNavigationPage();
-        }
-
-        if (navigation is not null)
-        {
-            await navigation.PushAsync(_services.GetRequiredService<RegisterPage>());
-        }
+        await PushOnNavigationAsync<RegisterPage>(ShowLoginAsync);
     }
 
     public async Task ShowProfileAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowMenuAsync();
-            navigation = EnsureNavigationPage();
-        }
-
-        if (navigation is not null)
-        {
-            await navigation.PushAsync(_services.GetRequiredService<ProfilePage>());
-        }
+        await PushOnNavigationAsync<ProfilePage>(ShowMenuAsync);
     }
 
     public async Task ShowStoreRegistrationAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowMenuAsync();
-            navigation = EnsureNavigationPage();
-        }
-
-        if (navigation is not null)
-        {
-            await navigation.PushAsync(_services.GetRequiredService<StoreRegistrationPage>());
-        }
+        await PushOnNavigationAsync<StoreRegistrationPage>(ShowMenuAsync);
     }
 
     public async Task ShowStoreManagementAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowMenuAsync();
-            navigation = EnsureNavigationPage();
-        }
-
-        if (navigation is not null)
-        {
-            await navigation.PushAsync(_services.GetRequiredService<StoreManagementPage>());
-        }
+        await PushOnNavigationAsync<StoreManagementPage>(ShowMenuAsync);
     }
 
     public async Task ShowMyTripsAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowMenuAsync();
-            navigation = EnsureNavigationPage();
-        }
-
-        if (navigation is not null)
-        {
-            await navigation.PushAsync(_services.GetRequiredService<MyTripsPage>());
-        }
+        await PushOnNavigationAsync<MyTripsPage>(ShowMenuAsync);
     }
 
     public async Task ShowSettingsAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowMenuAsync();
-            navigation = EnsureNavigationPage();
-        }
-
-        if (navigation is not null)
-        {
-            await navigation.PushAsync(_services.GetRequiredService<SettingsPage>());
-        }
+        await PushOnNavigationAsync<SettingsPage>(ShowMenuAsync);
     }
 
     public async Task ShowHelpFeedbackAsync()
     {
-        var navigation = EnsureNavigationPage();
-        if (navigation is null)
-        {
-            await ShowMenuAsync();
-            navigation = EnsureNavigationPage();
-        }
-
-        if (navigation is not null)
-        {
-            await navigation.PushAsync(_services.GetRequiredService<HelpFeedbackPage>());
-        }
+        await PushOnNavigationAsync<HelpFeedbackPage>(ShowMenuAsync);
     }
 
     public async Task ShowQrTriggerAsync()
     {
+        await PushOnNavigationAsync<QrTriggerPage>(ShowMenuAsync);
+    }
+
+    private Task SetRootWithNavigationAsync<TPage>() where TPage : Page
+    {
+        SetRoot(new NavigationPage(_services.GetRequiredService<TPage>()));
+        return Task.CompletedTask;
+    }
+
+    private async Task PushOnNavigationAsync<TPage>(Func<Task> ensureRootAsync) where TPage : Page
+    {
         var navigation = EnsureNavigationPage();
         if (navigation is null)
         {
-            await ShowMenuAsync();
+            await ensureRootAsync();
             navigation = EnsureNavigationPage();
         }
 
         if (navigation is not null)
         {
-            await navigation.PushAsync(_services.GetRequiredService<QrTriggerPage>());
+            await navigation.PushAsync(_services.GetRequiredService<TPage>());
         }
     }
 

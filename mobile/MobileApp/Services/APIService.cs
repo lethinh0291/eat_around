@@ -163,6 +163,39 @@ public class ApiService
         }
     }
 
+    public async Task<bool> TrackQrScanAsync(
+        int poiId,
+        string? languageCode,
+        double? latitude = null,
+        double? longitude = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (poiId <= 0)
+        {
+            return false;
+        }
+
+        var payload = new TrackQrScanRequest
+        {
+            DeviceId = GetOrCreateDeviceId(),
+            PoiId = poiId,
+            LanguageCode = string.IsNullOrWhiteSpace(languageCode) ? "vi" : languageCode.Trim().ToLowerInvariant(),
+            Latitude = latitude,
+            Longitude = longitude
+        };
+
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("poi/track-scan", payload, cancellationToken);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi ghi nhận QR scan POI {poiId}: {ex.Message}");
+            return false;
+        }
+    }
+
     public async Task<List<AdBanner>> GetActiveAdBannersAsync()
     {
         try
@@ -620,6 +653,15 @@ public class ApiService
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public DateTime? PlayedAtUtc { get; set; }
+    }
+
+    public sealed class TrackQrScanRequest
+    {
+        public string DeviceId { get; set; } = string.Empty;
+        public int PoiId { get; set; }
+        public string? LanguageCode { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
     }
 
     private static string GetOrCreateDeviceId()

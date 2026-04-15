@@ -72,15 +72,39 @@ public partial class QrTriggerPage : ContentPage
 
         _isProcessing = true;
         QrCameraView.IsDetecting = false;
+        var shouldResumeDetecting = true;
 
-        await MainThread.InvokeOnMainThreadAsync(async () =>
+        try
         {
-            StatusLabel.Text = AppText.Get("QrTrigger_Processing");
-            await HandleQrValueAsync(qrRaw.Trim());
-        });
+            shouldResumeDetecting = await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                StatusLabel.Text = AppText.Get("QrTrigger_Processing");
+                return await HandleQrValueAsync(qrRaw.Trim());
+            });
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"QR processing failed: {ex.Message}");
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                StatusLabel.Text = AppText.Get("QrTrigger_PlaybackFailed");
+                await DisplayAlertAsync(
+                    AppText.Get("QrTrigger_PlaybackFailedTitle"),
+                    AppText.Get("QrTrigger_PlaybackFailed"),
+                    AppText.Get("Common_Ok"));
+            });
+        }
+        finally
+        {
+            _isProcessing = false;
+            if (shouldResumeDetecting)
+            {
+                QrCameraView.IsDetecting = true;
+            }
+        }
     }
 
-    private async Task HandleQrValueAsync(string rawValue)
+    private async Task<bool> HandleQrValueAsync(string rawValue)
     {
         if (!TryExtractPayload(rawValue, out var payload))
         {
@@ -89,9 +113,12 @@ public partial class QrTriggerPage : ContentPage
                 AppText.Get("QrTrigger_UnsupportedTitle"),
                 AppText.Get("QrTrigger_Unsupported"),
                 AppText.Get("Common_Ok"));
-            _isProcessing = false;
-            QrCameraView.IsDetecting = true;
-            return;
+            return true;
+        }
+
+        if (Connectivity.Current.NetworkAccess == NetworkAccess.Internet)
+        {
+            await _apiService.TrackQrScanAsync(payload.PoiId, payload.LanguageCode, cancellationToken: CancellationToken.None);
         }
 
         var poi = await ResolvePoiAsync(payload.PoiId);
@@ -107,10 +134,7 @@ public partial class QrTriggerPage : ContentPage
                 AppText.Get("QrTrigger_NotFoundTitle"),
                 message,
                 AppText.Get("Common_Ok"));
-
-            _isProcessing = false;
-            QrCameraView.IsDetecting = true;
-            return;
+            return true;
         }
 
         var narrationLanguage = string.IsNullOrWhiteSpace(payload.LanguageCode)
@@ -125,10 +149,7 @@ public partial class QrTriggerPage : ContentPage
                 AppText.Get("QrTrigger_PlaybackFailedTitle"),
                 AppText.Get("QrTrigger_PlaybackFailed"),
                 AppText.Get("Common_Ok"));
-
-            _isProcessing = false;
-            QrCameraView.IsDetecting = true;
-            return;
+            return true;
         }
 
         SaveTripSelection(poi.Name, poi.Description);
@@ -140,6 +161,7 @@ public partial class QrTriggerPage : ContentPage
             AppText.Get("Common_Ok"));
 
         await Navigation.PopAsync();
+        return false;
     }
 
     private async Task<POI?> ResolvePoiAsync(int poiId)

@@ -4452,3 +4452,13 @@ C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\
 C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\src\mono\androidx\camera\view\impl\ZoomGestureDetector_OnZoomGestureListenerImplementor.java
 C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\src\mono\androidx\camera\view\PreviewView_OnFrameUpdateListenerImplementor.java
 C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\src\mono\androidx\camera\view\RotationProvider_ListenerImplementor.java
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\typemaps.arm64-v8a.ll
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\environment.arm64-v8a.ll
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\marshal_methods.arm64-v8a.ll
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\compressed_assemblies.arm64-v8a.ll
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\typemaps.arm64-v8a.o
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\environment.arm64-v8a.o
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\compressed_assemblies.arm64-v8a.o
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\marshal_methods.arm64-v8a.o
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\android\jni_remap.arm64-v8a.o
+C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\obj\Debug\net10.0-android\app_shared_libraries\arm64-v8a\libxamarin-app.so

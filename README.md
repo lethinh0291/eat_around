@@ -1,226 +1,223 @@
-# ZesTour Solution
+# ZesTour (eat_around)
 
-## 1) Tong quan
+Hệ thống quản lý và trải nghiệm quán ăn gồm 3 thành phần chính: Backend API, Admin Web và Mobile App.
+Dự án cho phép seller gửi đăng ký quán ăn, admin duyệt và quản lý POI, customer xem và tương tác với dữ liệu quán ăn.
+Mục tiêu là đồng bộ dữ liệu tập trung giữa web quản trị và mobile thông qua Backend API.
 
-ZesTour la he thong quan ly va trai nghiem quan an gom 4 phan:
+## 1. Cài đặt
 
-- Admin Web: quan tri user va quan an, duyet dang ky quan, chinh sua du lieu map.
-- Backend API: cung cap API cho admin web va mobile app, luu du lieu SQL Server.
-- Mobile App (.NET MAUI): app cho customer/seller, dang nhap, dang ky quan, quan ly quan cua seller.
-- SharedLib: model dung chung giua cac project.
+### 1.1 Yêu cầu môi trường
 
-Muc tieu chinh:
+- .NET SDK 10
+- SQL Server (LocalDB/Express/Full)
+- Visual Studio 2022 hoặc VS Code + C# Dev Kit
+- Android Emulator (nếu chạy mobile Android)
 
-- Quan ly diem/quan an tap trung.
-- Duyet quan dang ky tu seller len ban do.
-- Dong bo du lieu giua web admin va mobile.
+Kiểm tra nhanh:
 
-## 2) Kien truc du an
+```powershell
+dotnet --version
+sqllocaldb info mssqllocaldb
+```
 
-C.sln
+Nếu cần khởi tạo LocalDB:
+
+```powershell
+sqllocaldb create mssqllocaldb
+sqllocaldb start mssqllocaldb
+```
+
+### 1.2 Cấu trúc solution
 
 - admin/AdminWeb
 - backend/BackendAPI
 - mobile/MobileApp
 - shared/SharedLib
 
-Target framework hien tai:
+### 1.3 Cấu hình quan trọng
 
-- AdminWeb: net10.0
-- BackendAPI: net10.0
-- SharedLib: net10.0
-- MobileApp: net10.0-android, net10.0-ios, net10.0-maccatalyst, net10.0-windows
-
-## 3) Tinh nang chinh
-
-### Admin Web
-
-- Dang nhap quan tri bang cookie auth.
-- Dashboard tong quan co KPI, chart, hoat dong gan day va cac khu vuc san cho analytics/tour/logs/settings.
-- Quan ly Users:
-  - Tao user
-  - Chinh sua bang popup
-  - Xoa user
-- Quan ly Quan an:
-  - Bang quan da len map
-  - Chinh sua quan bang popup (ten, mo ta, toa do, radius, priority, image/audio URL)
-  - Xoa quan
-  - Hien thi anh review
-- Duyet danh sach quan dang ky:
-  - Xem thong tin va anh
-  - Chon toa do tren map
-  - Duyet de tao POI
-  - Chinh sua dang ky bang popup
-  - Xoa dang ky
-
-### Mobile App
-
-- Dang ky / dang nhap theo role (customer, seller, admin).
-- Seller gui dang ky quan an.
-- Seller quan ly quan da gui (xem/sua/xoa theo owner).
-- Upload anh quan qua Cloudinary truoc khi gui dang ky.
-
-### Backend API
-
-- Auth: register, login, quan ly users (CRUD + role).
-- Store registrations: tao, lay danh sach, owner-scope update/delete, admin duyet/xoa.
-- POI CRUD.
-- EF Core migration tu chay khi khoi dong backend.
-- Seed du lieu mau POI va user khi DB trong.
-
-## 4) Cong nghe su dung
-
-- ASP.NET Core MVC
-- ASP.NET Core Web API
-- Entity Framework Core + SQL Server
-- .NET MAUI
-- Swagger/OpenAPI
-- Leaflet (map picker o admin)
-- Cloudinary (upload anh quan tu mobile)
-
-## 5) Yeu cau moi truong
-
-- .NET SDK 10
-- SQL Server (LocalDB/Express/full)
-- Android Emulator hoac thiet bi that (neu chay mobile Android)
-- Visual Studio 2022 hoac VS Code + C# Dev Kit
-
-## 6) Cau hinh quan trong
-
-### Backend DB connection
+1. Backend connection string:
 
 File: backend/BackendAPI/appsettings.json
 
-Connection string mac dinh:
-Server=localhost;Database=FoodStreetDB;Trusted_Connection=True;TrustServerCertificate=True
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=FoodStreetDB;Trusted_Connection=True;TrustServerCertificate=True"
+}
+```
 
-### Admin tro ve backend
-
-File: admin/AdminWeb/appsettings.json
-
-BaseUrl mac dinh:
-http://localhost:5069/
-
-### Tai khoan admin web mac dinh
+2. Admin BaseUrl trỏ về backend:
 
 File: admin/AdminWeb/appsettings.json
 
-- Username: admin
-- Password: admin123
+```json
+"BackendApi": {
+  "BaseUrl": "http://localhost:5069/"
+}
+```
 
-Luu y: backend cung seed user mac dinh:
+3. Mobile API base URL:
+
+File: mobile/MobileApp/Services/APIService.cs
+
+- Android emulator: http://10.0.2.2:5069/api/
+- Thiết bị thật: đổi thành IP LAN của máy chạy backend (ví dụ: http://192.168.1.100:5069/api/)
+
+### 1.4 Chạy dự án
+
+Bước 1: Chạy Backend API
+
+```powershell
+cd backend/BackendAPI
+dotnet restore
+dotnet build
+dotnet run
+```
+
+Kiểm tra:
+
+- Backend: http://localhost:5069
+- Swagger: http://localhost:5069/swagger
+
+Bước 2: Chạy Admin Web (terminal mới)
+
+```powershell
+cd admin/AdminWeb
+dotnet restore
+dotnet build
+dotnet run
+```
+
+Kiểm tra:
+
+- Admin Web: http://localhost:5292
+
+Bước 3: Chạy Mobile App (tùy chọn)
+
+```powershell
+cd mobile/MobileApp
+dotnet build -f net10.0-android -c Debug
+```
+
+Lưu ý: Mở emulator trước khi build/chạy mobile.
+
+## 2. Cách sử dụng
+
+### 2.1 Tài khoản mặc định
+
+Tài khoản seed sẵn:
 
 - admin / admin123
 - seller / seller123
 - customer / customer123
 
-### Mobile base URL
+### 2.2 Luồng sử dụng cơ bản
 
-File: mobile/MobileApp/Services/APIService.cs
+1. Mở Swagger để test API:
+   - http://localhost:5069/swagger
+2. Đăng nhập Admin Web:
+   - http://localhost:5292
+   - Tài khoản: admin / admin123
+3. Seller trên mobile:
+   - Đăng nhập seller
+   - Tạo đăng ký quán ăn
+4. Admin duyệt đăng ký:
+   - Vào Admin Web
+   - Xem Store Registrations
+   - Duyệt để tạo POI
 
-Mac dinh dung emulator Android:
-http://10.0.2.2:5069/api/
-
-## 7) Cach chay nhanh (khuyen nghi)
-
-### Buoc 1: chay Backend API
-
-PowerShell:
-
-- cd backend/BackendAPI
-- dotnet run
-
-Backend mac dinh:
-
-- http://localhost:5069
-- Swagger: http://localhost:5069/swagger
-
-### Buoc 2: chay Admin Web
-
-PowerShell moi:
-
-- cd admin/AdminWeb
-- dotnet run
-
-Admin mac dinh:
-
-- http://localhost:5292
-
-### Buoc 3: chay Mobile (Android)
-
-- Mo emulator truoc
-- Build/run project mobile/MobileApp voi target net10.0-android
-
-## 8) Migration database
-
-Trong backend/BackendAPI:
-
-- dotnet ef migrations add TenMigration
-- dotnet ef database update
-
-Luu y:
-
-- Ung dung backend dang goi db.Database.Migrate() khi startup, nen DB se tu cap nhat migration hien co.
-
-## 9) API chinh (tom tat)
+### 2.3 Một số endpoint chính
 
 Auth:
 
 - POST /api/auth/register
 - POST /api/auth/login
 - GET /api/auth/users
-- POST /api/auth/users
-- PUT /api/auth/users/{id}
-- PUT /api/auth/users/{id}/role
-- DELETE /api/auth/users/{id}
 
-Store registrations:
+Store Registrations:
 
 - POST /api/store-registrations
 - GET /api/store-registrations
-- GET /api/store-registrations/owner?ownerName=...
 - PUT /api/store-registrations/{id}
 - DELETE /api/store-registrations/{id}
 
 POI:
 
 - GET /api/poi
-- GET /api/poi/{id}
 - POST /api/poi
 - PUT /api/poi/{id}
 - DELETE /api/poi/{id}
 
-## 10) Troubleshooting thuong gap
+### 2.4 Khắc phục lỗi nhanh
 
-### 1. Port da bi chiem (5069 hoac 5292)
+1. Lỗi port đã bị chiếm:
 
-- Dau hieu: dotnet run bao Address already in use.
-- Cach xu ly: dung process cu dang giu port roi chay lai.
+```powershell
+netstat -ano | findstr :5069
+taskkill /PID <PID> /F
+```
 
-### 2. Build loi file bi lock (MSB3021/MSB3027)
+2. Admin không có dữ liệu:
+- Kiểm tra backend đã chạy đúng port và đúng project backend/BackendAPI.
 
-- Nguyen nhan: app dang chay giu file trong bin/Debug.
-- Cach xu ly:
-  - Stop app dang chay truoc khi build
-  - Hoac build ra thu muc output tam rieng
+3. Mobile không gọi được local API:
+- Kiểm tra base URL dùng 10.0.2.2 (emulator).
+- Kiểm tra backend đang chạy.
 
-### 3. Admin khong thay user/store du DB co du lieu
+## 3. Công nghệ sử dụng
 
-- Nguyen nhan pho bien: backend instance dang chay la ban cu hoac sai thu muc.
-- Cach xu ly: chay lai backend dung project folder backend/BackendAPI.
+- ASP.NET Core MVC (Admin Web)
+- ASP.NET Core Web API (Backend)
+- Entity Framework Core + SQL Server
+- .NET MAUI (Mobile)
+- Swagger / OpenAPI
+- Leaflet (map picker trong admin)
+- Cloudinary (upload ảnh từ mobile)
 
-### 4. Mobile goi backend local khong duoc
+Target frameworks:
 
-- Dung Android emulator thi base URL phai la 10.0.2.2.
-- AndroidManifest da bat usesCleartextTraffic=true cho HTTP local.
+- AdminWeb: net10.0
+- BackendAPI: net10.0
+- SharedLib: net10.0
+- MobileApp: net10.0-android, net10.0-ios, net10.0-maccatalyst, net10.0-windows
 
-### 5. Favicon tab chua doi ngay
+## 4. Đóng góp
 
-- Browser thuong cache favicon.
-- Hard refresh (Ctrl+F5) hoac mo tab moi.
+Cảm ơn bạn đã quan tâm đóng góp cho dự án.
 
-## 11) Ghi chu phat trien
+Quy trình đề xuất:
 
-- Hien dieu huong admin da gom trong tam vao Users va Quan an.
-- Quan ly quan da bao gom thao tac map nen khong can dung tab POI rieng trong menu chinh.
-- Co the tach cau hinh moi truong bang appsettings.Development.json va secret manager khi can.
+1. Fork repository
+2. Tạo branch mới:
+
+```powershell
+git checkout -b feature/ten-tinh-nang
+```
+
+3. Commit rõ ràng:
+
+```powershell
+git add .
+git commit -m "feat: mo ta thay doi"
+```
+
+4. Push branch:
+
+```powershell
+git push origin feature/ten-tinh-nang
+```
+
+5. Tạo Pull Request với mô tả:
+- Mục tiêu thay đổi
+- Phạm vi ảnh hưởng
+- Cách test lại
+
+Khuyến nghị:
+
+- Giữ code style nhất quán
+- Không commit secrets
+- Test lại các luồng chính trước khi tạo PR
+
+---
+
+Nếu bạn gặp vấn đề khi setup/chạy dự án, vui lòng mở issue kèm log lỗi và bước tái hiện.

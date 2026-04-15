@@ -796,66 +796,30 @@ public partial class MainPage : ContentPage
         {
             try
             {
-                if (!_autoPlayEnabled || (_allPois.Count == 0 && (!_storeNarrationEnabled || _storeNarrationPoints.Count == 0)))
+                if (ShouldSkipTracking())
                 {
-                    await Task.Delay(GetTrackingInterval(), cancellationToken);
+                    await DelayTrackingAsync(cancellationToken);
                     continue;
                 }
 
                 var latestLocation = await TryGetUserLocationAsync(cancellationToken);
                 if (latestLocation is null)
                 {
-                    await Task.Delay(GetTrackingInterval(), cancellationToken);
+                    await DelayTrackingAsync(cancellationToken);
                     continue;
                 }
 
                 _userLocation = latestLocation;
 
-                if (_storeNarrationEnabled)
+                if (await TryNarrateNearbyStoreAsync(latestLocation, cancellationToken))
                 {
-                    var candidateStore = FindNearestStoreInRange(latestLocation);
-                    if (candidateStore is not null)
-                    {
-                        var narratedStore = await _locationService.NarrateTextAsync(
-                            $"store:{candidateStore.Id}",
-                            candidateStore.Description,
-                            "vi",
-                            cancellationToken);
-
-                        if (narratedStore)
-                        {
-                            MainThread.BeginInvokeOnMainThread(() =>
-                            {
-                                PoiBadgeLabel.Text = AppText.Get("Main_BadgeStore");
-                                LocationTitleLabel.Text = AppText.Get("Main_StoreNearby");
-                                NowPlayingLabel.Text = candidateStore.Name;
-                                AddressLabel.Text = candidateStore.Description;
-                            });
-                        }
-
-                        await Task.Delay(GetTrackingInterval(), cancellationToken);
-                        continue;
-                    }
+                    await DelayTrackingAsync(cancellationToken);
+                    continue;
                 }
 
-                var candidatePoi = _locationService.FindBestPoiInRange(latestLocation, _allPois);
+                await TryNarrateNearbyPoiAsync(latestLocation, cancellationToken);
 
-                if (candidatePoi is not null)
-                {
-                    var narrated = await _locationService.NarratePoiAsync(candidatePoi, latestLocation, cancellationToken);
-                    if (narrated)
-                    {
-                        _currentPoi = candidatePoi;
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            BindPoi(candidatePoi);
-                            PoiBadgeLabel.Text = AppText.Get("Main_BadgeAuto");
-                        });
-
-                    }
-                }
-
-                await Task.Delay(GetTrackingInterval(), cancellationToken);
+                await DelayTrackingAsync(cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -863,9 +827,74 @@ public partial class MainPage : ContentPage
             }
             catch
             {
-                await Task.Delay(GetTrackingInterval(), cancellationToken);
+                await DelayTrackingAsync(cancellationToken);
             }
         }
+    }
+
+    private bool ShouldSkipTracking()
+    {
+        return !_autoPlayEnabled || (_allPois.Count == 0 && (!_storeNarrationEnabled || _storeNarrationPoints.Count == 0));
+    }
+
+    private async Task DelayTrackingAsync(CancellationToken cancellationToken)
+    {
+        await Task.Delay(GetTrackingInterval(), cancellationToken);
+    }
+
+    private async Task<bool> TryNarrateNearbyStoreAsync(Location latestLocation, CancellationToken cancellationToken)
+    {
+        if (!_storeNarrationEnabled)
+        {
+            return false;
+        }
+
+        var candidateStore = FindNearestStoreInRange(latestLocation);
+        if (candidateStore is null)
+        {
+            return false;
+        }
+
+        var narratedStore = await _locationService.NarrateTextAsync(
+            $"store:{candidateStore.Id}",
+            candidateStore.Description,
+            "vi",
+            cancellationToken);
+
+        if (narratedStore)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                PoiBadgeLabel.Text = AppText.Get("Main_BadgeStore");
+                LocationTitleLabel.Text = AppText.Get("Main_StoreNearby");
+                NowPlayingLabel.Text = candidateStore.Name;
+                AddressLabel.Text = candidateStore.Description;
+            });
+        }
+
+        return true;
+    }
+
+    private async Task TryNarrateNearbyPoiAsync(Location latestLocation, CancellationToken cancellationToken)
+    {
+        var candidatePoi = _locationService.FindBestPoiInRange(latestLocation, _allPois);
+        if (candidatePoi is null)
+        {
+            return;
+        }
+
+        var narrated = await _locationService.NarratePoiAsync(candidatePoi, latestLocation, cancellationToken);
+        if (!narrated)
+        {
+            return;
+        }
+
+        _currentPoi = candidatePoi;
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            BindPoi(candidatePoi);
+            PoiBadgeLabel.Text = AppText.Get("Main_BadgeAuto");
+        });
     }
 
     private TimeSpan GetTrackingInterval()
@@ -880,51 +909,63 @@ public partial class MainPage : ContentPage
 
     private async Task ToggleSidebarAsync()
     {
-        if (_isSidebarOpen)
-        {
-            await CloseSidebarAsync();
-            return;
-        }
-
-        await OpenSidebarAsync();
+        await SetSidebarStateAsync(!_isSidebarOpen);
     }
 
     private async Task OpenSidebarAsync()
     {
-        if (_sidebarAnimating || _isSidebarOpen)
-        {
-            return;
-        }
-
-        _sidebarAnimating = true;
-        SidebarBackdrop.IsVisible = true;
-        SidebarBackdrop.InputTransparent = false;
-
-        var backdropTask = SidebarBackdrop.FadeToAsync(1, 180, Easing.CubicOut);
-        var panelTask = SidebarPanel.TranslateToAsync(0, 0, 220, Easing.CubicOut);
-        await Task.WhenAll(backdropTask, panelTask);
-
-        _isSidebarOpen = true;
-        _sidebarAnimating = false;
+        await SetSidebarStateAsync(true);
     }
 
     private async Task CloseSidebarAsync()
     {
-        if (_sidebarAnimating || !_isSidebarOpen)
+        await SetSidebarStateAsync(false);
+    }
+
+    private async Task SetSidebarStateAsync(bool open)
+    {
+        if (_sidebarAnimating || (_isSidebarOpen == open))
         {
             return;
         }
 
         _sidebarAnimating = true;
+        try
+        {
+            if (open)
+            {
+                SidebarBackdrop.IsVisible = true;
+                SidebarBackdrop.InputTransparent = false;
 
-        var backdropTask = SidebarBackdrop.FadeToAsync(0, 180, Easing.CubicIn);
-        var panelTask = SidebarPanel.TranslateToAsync(-340, 0, 220, Easing.CubicIn);
-        await Task.WhenAll(backdropTask, panelTask);
+                var openBackdropTask = SidebarBackdrop.FadeToAsync(1, 180, Easing.CubicOut);
+                var openPanelTask = SidebarPanel.TranslateToAsync(0, 0, 220, Easing.CubicOut);
+                await Task.WhenAll(openBackdropTask, openPanelTask);
 
-        SidebarBackdrop.InputTransparent = true;
-        SidebarBackdrop.IsVisible = false;
-        _isSidebarOpen = false;
-        _sidebarAnimating = false;
+                _isSidebarOpen = true;
+                return;
+            }
+
+            var closeBackdropTask = SidebarBackdrop.FadeToAsync(0, 180, Easing.CubicIn);
+            var closePanelTask = SidebarPanel.TranslateToAsync(-340, 0, 220, Easing.CubicIn);
+            await Task.WhenAll(closeBackdropTask, closePanelTask);
+
+            SidebarBackdrop.InputTransparent = true;
+            SidebarBackdrop.IsVisible = false;
+            _isSidebarOpen = false;
+        }
+        finally
+        {
+            _sidebarAnimating = false;
+        }
+    }
+
+    private async Task ExecuteAfterClosingSidebarAsync(Func<Task>? nextAction = null)
+    {
+        await CloseSidebarAsync();
+        if (nextAction is not null)
+        {
+            await nextAction();
+        }
     }
 
     private async void OnSidebarBackdropTapped(object? sender, TappedEventArgs e)
@@ -939,25 +980,22 @@ public partial class MainPage : ContentPage
 
     private async void OnSidebarHomeClicked(object? sender, EventArgs e)
     {
-        await CloseSidebarAsync();
+        await ExecuteAfterClosingSidebarAsync();
     }
 
     private async void OnSidebarMenuClicked(object? sender, EventArgs e)
     {
-        await CloseSidebarAsync();
-        await _navigator.ShowMenuAsync();
+        await ExecuteAfterClosingSidebarAsync(_navigator.ShowMenuAsync);
     }
 
     private async void OnSidebarProfileClicked(object? sender, EventArgs e)
     {
-        await CloseSidebarAsync();
-        await _navigator.ShowProfileAsync();
+        await ExecuteAfterClosingSidebarAsync(_navigator.ShowProfileAsync);
     }
 
     private async void OnSidebarRecenterClicked(object? sender, EventArgs e)
     {
-        await CloseSidebarAsync();
-        await RecenterCurrentUserAsync();
+        await ExecuteAfterClosingSidebarAsync(RecenterCurrentUserAsync);
     }
 
     private async void OnProfileTapped(object? sender, TappedEventArgs e)
@@ -979,7 +1017,12 @@ public partial class MainPage : ContentPage
 
         e.Cancel = true;
 
-        var uri = new Uri(e.Url);
+        var selection = ParseMapSelection(new Uri(e.Url));
+        ApplyMapSelection(selection);
+    }
+
+    private MapSelection ParseMapSelection(Uri uri)
+    {
         var query = ParseQuery(uri.Query);
 
         var name = query.TryGetValue("name", out var selectedName)
@@ -997,33 +1040,46 @@ public partial class MainPage : ContentPage
         var lat = query.TryGetValue("lat", out var selectedLat) ? selectedLat : string.Empty;
         var lng = query.TryGetValue("lng", out var selectedLng) ? selectedLng : string.Empty;
 
-        if (double.TryParse(lat, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedLat) &&
-            double.TryParse(lng, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedLng))
+        var hasLat = double.TryParse(lat, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedLat);
+        var hasLng = double.TryParse(lng, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedLng);
+        var hasCoordinates = hasLat && hasLng;
+
+        return new MapSelection(
+            name,
+            description,
+            address,
+            hasCoordinates ? parsedLat : null,
+            hasCoordinates ? parsedLng : null);
+    }
+
+    private void ApplyMapSelection(MapSelection selection)
+    {
+        if (selection.Latitude.HasValue && selection.Longitude.HasValue)
         {
             _hasExplicitMapSelection = true;
 
             var isSameSelection = _selectedLat.HasValue &&
                                   _selectedLng.HasValue &&
-                                  Math.Abs(_selectedLat.Value - parsedLat) < 0.000001 &&
-                                  Math.Abs(_selectedLng.Value - parsedLng) < 0.000001 &&
-                                  string.Equals(_selectedName, name, StringComparison.Ordinal) &&
-                                  string.Equals(_selectedDescription, address, StringComparison.Ordinal);
+                                  Math.Abs(_selectedLat.Value - selection.Latitude.Value) < 0.000001 &&
+                                  Math.Abs(_selectedLng.Value - selection.Longitude.Value) < 0.000001 &&
+                                  string.Equals(_selectedName, selection.Name, StringComparison.Ordinal) &&
+                                  string.Equals(_selectedDescription, selection.Address, StringComparison.Ordinal);
 
-            _selectedLat = parsedLat;
-            _selectedLng = parsedLng;
-            _selectedName = name;
-            _selectedDescription = address;
+            _selectedLat = selection.Latitude.Value;
+            _selectedLng = selection.Longitude.Value;
+            _selectedName = selection.Name;
+            _selectedDescription = selection.Address;
 
             if (!isSameSelection)
             {
-                SaveTripSelection(name, address);
+                SaveTripSelection(selection.Name, selection.Address);
             }
         }
 
         PoiBadgeLabel.Text = AppText.Get("Main_BadgePlace");
         LocationTitleLabel.Text = AppText.Get("Main_SelectedLocation");
-        NowPlayingLabel.Text = name;
-        AddressLabel.Text = FormatAddressText(address);
+        NowPlayingLabel.Text = selection.Name;
+        AddressLabel.Text = FormatAddressText(selection.Address);
     }
 
     private static Dictionary<string, string> ParseQuery(string query)
@@ -1090,6 +1146,24 @@ public partial class MainPage : ContentPage
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTime CreatedAtUtc { get; set; }
+    }
+
+    private sealed class MapSelection
+    {
+        public MapSelection(string name, string description, string address, double? latitude, double? longitude)
+        {
+            Name = name;
+            Description = description;
+            Address = address;
+            Latitude = latitude;
+            Longitude = longitude;
+        }
+
+        public string Name { get; }
+        public string Description { get; }
+        public string Address { get; }
+        public double? Latitude { get; }
+        public double? Longitude { get; }
     }
 
     private async void OnNotificationTapped(object? sender, TappedEventArgs e)

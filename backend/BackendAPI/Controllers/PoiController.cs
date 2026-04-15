@@ -237,4 +237,58 @@ public class PoiController : ControllerBase
             ScanCount = qrTrigger.ScanCount
         });
     }
+
+    //10. Track QR scan by payload (poiId + languageCode)
+    /// <summary>
+    /// Ghi nhận lần quét QR code bằng PoiId + LanguageCode (không cần qrId)
+    /// </summary>
+    [HttpPost("track-scan")]
+    public async Task<IActionResult> TrackQRScanByPayload([FromBody] TrackQRScanRequest request)
+    {
+        if (request.PoiId <= 0)
+        {
+            return BadRequest(new { Message = "PoiId không hợp lệ." });
+        }
+
+        var normalizedLanguage = string.IsNullOrWhiteSpace(request.LanguageCode)
+            ? "vi"
+            : request.LanguageCode.Trim().ToLowerInvariant();
+
+        var qrTrigger = await _context.QRTriggers
+            .FirstOrDefaultAsync(item =>
+                item.PoiId == request.PoiId &&
+                item.Status == "Active" &&
+                item.LanguageCode.ToLower() == normalizedLanguage);
+
+        if (qrTrigger is null)
+        {
+            return NotFound(new
+            {
+                Message = $"Không tìm thấy QR trigger hoạt động cho POI ID {request.PoiId} với ngôn ngữ {normalizedLanguage}."
+            });
+        }
+
+        qrTrigger.ScanCount++;
+        qrTrigger.UpdatedAtUtc = DateTime.UtcNow;
+        _context.QRTriggers.Update(qrTrigger);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Message = "Quét QR được ghi nhận thành công",
+            QrId = qrTrigger.Id,
+            PoiId = qrTrigger.PoiId,
+            LanguageCode = qrTrigger.LanguageCode,
+            ScanCount = qrTrigger.ScanCount
+        });
+    }
+
+    public sealed class TrackQRScanRequest
+    {
+        public string? DeviceId { get; set; }
+        public int PoiId { get; set; }
+        public string? LanguageCode { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+    }
 }
