@@ -263,15 +263,15 @@ public partial class MainPage : ContentPage
 
     private async Task LoadStoreNarrationPointsAsync(CancellationToken cancellationToken)
     {
+        var points = BuildStoreNarrationPointsFromPois(_allPois);
+
         try
         {
             if (!_storeNarrationEnabled)
             {
-                _storeNarrationPoints = [];
+                _storeNarrationPoints = points;
                 return;
             }
-
-            var points = BuildStoreNarrationPointsFromPois(_allPois);
 
             var registrations = await _apiService.GetStoreRegistrationsAsync();
             cancellationToken.ThrowIfCancellationRequested();
@@ -348,7 +348,8 @@ public partial class MainPage : ContentPage
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Load store narration points failed: {ex.Message}");
-            _storeNarrationPoints = new List<StoreNarrationPoint>();
+            // Keep POI-based ranges so zone detection still works even if a remote call fails.
+            _storeNarrationPoints = points;
         }
     }
 
