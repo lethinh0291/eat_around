@@ -28,12 +28,12 @@
                     <VerticalStackLayout Grid.Column="1"
                                          Spacing="2"
                                          VerticalOptions="Center">
-                           <Label x:Name="TitleLabel"
+                        <Label x:Name="TitleLabel"
                                Text="Cài đặt"
                                FontSize="20"
                                FontAttributes="Bold"
                                TextColor="{StaticResource TextPrimary}"/>
-                           <Label x:Name="SubtitleLabel"
+                        <Label x:Name="SubtitleLabel"
                                Text="Tùy chỉnh trải nghiệm sử dụng"
                                FontSize="11"
                                TextColor="{StaticResource TextSecondary}"/>
@@ -44,8 +44,8 @@
                         BackgroundColor="{StaticResource PrimaryDark}"
                         StrokeShape="RoundRectangle 18"
                         Padding="12,10">
-                      <Label x:Name="StorageHintLabel"
-                          Text="Các lựa chọn dưới đây được lưu cục bộ trên thiết bị của bạn."
+                    <Label x:Name="StorageHintLabel"
+                           Text="Các lựa chọn dưới đây được lưu cục bộ trên thiết bị của bạn."
                            FontSize="11"
                            TextColor="#FFF1E8"/>
                 </Border>
@@ -56,7 +56,7 @@
                         StrokeShape="RoundRectangle 18"
                         Padding="12">
                     <VerticalStackLayout Spacing="10">
-                           <Label x:Name="SystemOptionsLabel"
+                        <Label x:Name="SystemOptionsLabel"
                                Text="Tuỳ chọn hệ thống"
                                FontSize="15"
                                FontAttributes="Bold"
@@ -69,7 +69,7 @@
                                 Padding="10,8">
                             <Grid ColumnDefinitions="*,Auto">
                                 <Label x:Name="AutoPlayLabel"
-                                    Text="Bật tự động phát"
+                                       Text="Bật tự động phát"
                                        TextColor="{StaticResource TextPrimary}"
                                        VerticalTextAlignment="Center"/>
                                 <Switch Grid.Column="1"
@@ -84,7 +84,7 @@
                                 Padding="10,8">
                             <Grid ColumnDefinitions="*,Auto">
                                 <Label x:Name="BatteryLabel"
-                                    Text="Tối ưu pin"
+                                       Text="Tối ưu pin"
                                        TextColor="{StaticResource TextPrimary}"
                                        VerticalTextAlignment="Center"/>
                                 <Switch Grid.Column="1"
@@ -99,7 +99,7 @@
                                 Padding="10,8">
                             <Grid ColumnDefinitions="*,Auto">
                                 <Label x:Name="NotificationLabel"
-                                    Text="Nhận thông báo"
+                                       Text="Nhận thông báo"
                                        TextColor="{StaticResource TextPrimary}"
                                        VerticalTextAlignment="Center"/>
                                 <Switch Grid.Column="1"
@@ -120,6 +120,51 @@
                                 <Switch Grid.Column="1"
                                         x:Name="StoreNarrationSwitch"/>
                             </Grid>
+                        </Border>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#FFF9F6"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,8">
+                            <VerticalStackLayout Spacing="6">
+                                <Label x:Name="GpsSensitivityLabel"
+                                       Text="Độ nhạy GPS"
+                                       TextColor="{StaticResource TextPrimary}"/>
+                                <Picker x:Name="GpsSensitivityPicker"
+                                        Title="Chọn chế độ"
+                                        TextColor="{StaticResource TextPrimary}"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#FFF9F6"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,8">
+                            <VerticalStackLayout Spacing="6">
+                                <Label x:Name="PoiRadiusLabel"
+                                       Text="Bán kính kích hoạt POI"
+                                       TextColor="{StaticResource TextPrimary}"/>
+                                <Picker x:Name="PoiRadiusPicker"
+                                        Title="Chọn chế độ"
+                                        TextColor="{StaticResource TextPrimary}"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border StrokeThickness="1"
+                                Stroke="#E8D6CA"
+                                BackgroundColor="#FFF9F6"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="10,8">
+                            <VerticalStackLayout Spacing="6">
+                                <Label x:Name="TtsVoiceLabel"
+                                       Text="Giọng TTS"
+                                       TextColor="{StaticResource TextPrimary}"/>
+                                <Picker x:Name="TtsVoicePicker"
+                                        Title="Chọn chế độ"
+                                        TextColor="{StaticResource TextPrimary}"/>
+                            </VerticalStackLayout>
                         </Border>
 
                         <Border StrokeThickness="1"

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.RegularExpressions;
 using MobileApp.Resources.Localization;
 
 namespace ZesTour.Views;
@@ -33,11 +34,14 @@ public partial class MainPage : ContentPage
     private bool _autoPlayEnabled = true;
     private bool _batteryOptimized;
     private bool _storeNarrationEnabled = true;
+    private string _gpsSensitivityCode = "balanced";
+    private double _poiRadiusScale = 1.0;
     private bool _isSidebarOpen;
     private bool _sidebarAnimating;
     private bool _dataLoaded;
     private CancellationTokenSource? _loadingCts;
     private DateTime _lastRecenterAt = DateTime.MinValue;
+    private DateTime _lastUserMapRefreshAt = DateTime.MinValue;
     private CancellationTokenSource? _trackingCts;
     private Task? _trackingTask;
     private List<POI> _allPois = new();
@@ -49,8 +53,11 @@ public partial class MainPage : ContentPage
     private string _selectedName = string.Empty;
     private string _selectedDescription = string.Empty;
     private bool _hasExplicitMapSelection;
+    private Location? _lastRenderedUserLocation;
     private static readonly TimeSpan NormalTrackingInterval = TimeSpan.FromSeconds(10);
     private static readonly TimeSpan BatteryTrackingInterval = TimeSpan.FromSeconds(18);
+    private static readonly TimeSpan UserMapRefreshMinInterval = TimeSpan.FromSeconds(4);
+    private const double UserMapRefreshDistanceMeters = 12;
 
     public MainPage(DatabaseService databaseService, ApiService apiService, LocationService locationService, AppNavigator navigator)
     {
@@ -239,7 +246,8 @@ public partial class MainPage : ContentPage
                 store.Latitude,
                 store.Longitude);
 
-            if (distance > store.RadiusMeters || distance >= minDistance)
+            var effectiveRadius = store.RadiusMeters * _poiRadiusScale;
+            if (distance > effectiveRadius || distance >= minDistance)
             {
                 continue;
             }
@@ -261,10 +269,11 @@ public partial class MainPage : ContentPage
                 return;
             }
 
+            var points = BuildStoreNarrationPointsFromPois(_allPois);
+
             var registrations = await _apiService.GetStoreRegistrationsAsync();
             cancellationToken.ThrowIfCancellationRequested();
 
-            var points = new List<StoreNarrationPoint>();
             foreach (var registration in registrations)
             {
                 if (!registration.Latitude.HasValue || !registration.Longitude.HasValue)
@@ -290,6 +299,42 @@ public partial class MainPage : ContentPage
                     registration.Latitude.Value,
                     registration.Longitude.Value,
                     radiusMeters));
+            }
+
+            // Approved stores are often converted to POIs and no longer appear in store registrations.
+            // Merge POIs with "Mô tả:" content so auto narration still works when user arrives at the store.
+            var livePois = await _apiService.GetPoisAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            foreach (var poi in livePois)
+            {
+                if (!IsInsideVinhKhanhBounds(poi))
+                {
+                    continue;
+                }
+
+                var narration = ExtractStoreNarrationText(poi.Description);
+                if (string.IsNullOrWhiteSpace(narration))
+                {
+                    continue;
+                }
+
+                var isAlreadyTracked = points.Any(existing =>
+                    string.Equals(existing.Name, poi.Name, StringComparison.OrdinalIgnoreCase) &&
+                    _locationService.CalculateDistance(existing.Latitude, existing.Longitude, poi.Latitude, poi.Longitude) <= 8);
+
+                if (isAlreadyTracked)
+                {
+                    continue;
+                }
+
+                points.Add(new StoreNarrationPoint(
+                    -Math.Abs(poi.Id),
+                    string.IsNullOrWhiteSpace(poi.Name) ? AppText.Get("Main_StoreFallbackName") : poi.Name.Trim(),
+                    narration,
+                    poi.Latitude,
+                    poi.Longitude,
+                    poi.Radius > 0 ? poi.Radius : DefaultStoreNarrationRadiusMeters));
             }
 
             _storeNarrationPoints = points;
@@ -427,7 +472,7 @@ public partial class MainPage : ContentPage
         const map = L.map('map', {{
             zoomControl: false,
             minZoom: 15,
-            maxZoom: 19,
+            maxZoom: 18,
             maxBounds: [[{VinhKhanhMinLat.ToString(CultureInfo.InvariantCulture)}, {VinhKhanhMinLng.ToString(CultureInfo.InvariantCulture)}], [{VinhKhanhMaxLat.ToString(CultureInfo.InvariantCulture)}, {VinhKhanhMaxLng.ToString(CultureInfo.InvariantCulture)}]],
             maxBoundsViscosity: 1.0
         }}).setView([centerLat, centerLng], {LeafletZoom.ToString(CultureInfo.InvariantCulture)});
@@ -435,9 +480,31 @@ public partial class MainPage : ContentPage
         // Force zoom buttons to top-left as requested.
         L.control.zoom({{ position: 'topleft' }}).addTo(map);
 
-        L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-            attribution: '&copy; OpenStreetMap contributors'
+        const primaryTileLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+            attribution: '&copy; OpenStreetMap contributors',
+            maxNativeZoom: 19,
+            maxZoom: 18,
+            crossOrigin: true
         }}).addTo(map);
+
+        const fallbackTileLayer = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            subdomains: 'abcd',
+            maxNativeZoom: 20,
+            maxZoom: 18,
+            crossOrigin: true
+        }});
+
+        let tileErrorCount = 0;
+        let fallbackActivated = false;
+        primaryTileLayer.on('tileerror', function() {{
+            tileErrorCount += 1;
+            if (!fallbackActivated && tileErrorCount >= 4) {{
+                fallbackActivated = true;
+                map.removeLayer(primaryTileLayer);
+                fallbackTileLayer.addTo(map);
+            }}
+        }});
 
         const bounds = {{
             minLat: {VinhKhanhMinLat.ToString(CultureInfo.InvariantCulture)},
@@ -721,16 +788,17 @@ public partial class MainPage : ContentPage
             .Replace("\n", " ");
     }
 
-    private static async Task<Location?> TryGetUserLocationAsync(CancellationToken cancellationToken)
+    private async Task<Location?> TryGetUserLocationAsync(CancellationToken cancellationToken, bool preferFreshLocation = false)
     {
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            const double acceptableAccuracyMeters = 75;
-            var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(6));
+            var (accuracy, acceptableAccuracyMeters, timeout) = ResolveLocationRequestProfile();
+            var request = new GeolocationRequest(accuracy, timeout);
 
             var lastKnown = await Geolocation.Default.GetLastKnownLocationAsync();
-            if (IsAcceptableLocation(lastKnown, acceptableAccuracyMeters) &&
+            if (!preferFreshLocation &&
+                IsAcceptableLocation(lastKnown, acceptableAccuracyMeters) &&
                 (lastKnown is null || DateTimeOffset.UtcNow - lastKnown.Timestamp <= TimeSpan.FromMinutes(5)))
             {
                 return lastKnown;
@@ -741,6 +809,11 @@ public partial class MainPage : ContentPage
             if (IsAcceptableLocation(current, acceptableAccuracyMeters))
             {
                 return current;
+            }
+
+            if (preferFreshLocation && IsAcceptableLocation(lastKnown, acceptableAccuracyMeters))
+            {
+                return lastKnown;
             }
 
             return current ?? lastKnown;
@@ -764,6 +837,16 @@ public partial class MainPage : ContentPage
         }
 
         return location.Accuracy.Value <= maxAccuracyMeters;
+    }
+
+    private (GeolocationAccuracy Accuracy, double AcceptableAccuracyMeters, TimeSpan Timeout) ResolveLocationRequestProfile()
+    {
+        return _gpsSensitivityCode switch
+        {
+            "high" => (GeolocationAccuracy.Best, 35, TimeSpan.FromSeconds(8)),
+            "battery" => (GeolocationAccuracy.Low, 120, TimeSpan.FromSeconds(5)),
+            _ => (GeolocationAccuracy.Medium, 75, TimeSpan.FromSeconds(6))
+        };
     }
 
     private void StartRealtimeTracking()
@@ -802,7 +885,7 @@ public partial class MainPage : ContentPage
                     continue;
                 }
 
-                var latestLocation = await TryGetUserLocationAsync(cancellationToken);
+                var latestLocation = await TryGetUserLocationAsync(cancellationToken, preferFreshLocation: true);
                 if (latestLocation is null)
                 {
                     await DelayTrackingAsync(cancellationToken);
@@ -810,6 +893,8 @@ public partial class MainPage : ContentPage
                 }
 
                 _userLocation = latestLocation;
+
+                await TryRefreshUserPositionOnMapAsync(latestLocation);
 
                 if (await TryNarrateNearbyStoreAsync(latestLocation, cancellationToken))
                 {
@@ -830,6 +915,43 @@ public partial class MainPage : ContentPage
                 await DelayTrackingAsync(cancellationToken);
             }
         }
+    }
+
+    private async Task TryRefreshUserPositionOnMapAsync(Location latestLocation)
+    {
+        if (!_dataLoaded)
+        {
+            return;
+        }
+
+        var now = DateTime.UtcNow;
+        if (now - _lastUserMapRefreshAt < UserMapRefreshMinInterval)
+        {
+            return;
+        }
+
+        if (_lastRenderedUserLocation is not null)
+        {
+            var movedMeters = _locationService.CalculateDistance(
+                _lastRenderedUserLocation.Latitude,
+                _lastRenderedUserLocation.Longitude,
+                latestLocation.Latitude,
+                latestLocation.Longitude);
+
+            if (movedMeters < UserMapRefreshDistanceMeters)
+            {
+                return;
+            }
+        }
+
+        _lastUserMapRefreshAt = now;
+        _lastRenderedUserLocation = latestLocation;
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            // Redraw map so the user marker follows realtime movement without forced recenter.
+            LoadLeafletMap(_currentPoi, centerOnUser: false);
+        });
     }
 
     private bool ShouldSkipTracking()
@@ -855,9 +977,15 @@ public partial class MainPage : ContentPage
             return false;
         }
 
+        var narrationText = ExtractStoreNarrationText(candidateStore.Description);
+        if (string.IsNullOrWhiteSpace(narrationText))
+        {
+            narrationText = AppText.Format("Main_StoreNearbyDescriptionTemplate", candidateStore.Name);
+        }
+
         var narratedStore = await _locationService.NarrateTextAsync(
             $"store:{candidateStore.Id}",
-            candidateStore.Description,
+            narrationText,
             "vi",
             cancellationToken);
 
@@ -872,12 +1000,77 @@ public partial class MainPage : ContentPage
             });
         }
 
-        return true;
+        return narratedStore;
+    }
+
+    private static string ExtractStoreNarrationText(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Mô tả:\s*([^|]+)", RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            return match.Groups[1].Value.Trim();
+        }
+
+        return description.Trim();
+    }
+
+    private List<StoreNarrationPoint> BuildStoreNarrationPointsFromPois(IEnumerable<POI> pois)
+    {
+        var points = new List<StoreNarrationPoint>();
+
+        foreach (var poi in pois)
+        {
+            if (!IsInsideVinhKhanhBounds(poi))
+            {
+                continue;
+            }
+
+            var narration = ExtractStoreNarrationText(poi.Description);
+            if (string.IsNullOrWhiteSpace(narration))
+            {
+                narration = AppText.Format("Main_StoreNearbyDescriptionTemplate", poi.Name);
+            }
+
+            points.Add(new StoreNarrationPoint(
+                poi.Id,
+                string.IsNullOrWhiteSpace(poi.Name) ? AppText.Get("Main_StoreFallbackName") : poi.Name.Trim(),
+                narration,
+                poi.Latitude,
+                poi.Longitude,
+                poi.Radius > 0 ? poi.Radius : DefaultStoreNarrationRadiusMeters));
+        }
+
+        return points;
     }
 
     private async Task TryNarrateNearbyPoiAsync(Location latestLocation, CancellationToken cancellationToken)
     {
-        var narratedPoi = await _locationService.TryNarrateAutoPoiAsync(latestLocation, _allPois, cancellationToken);
+        var poisForNarration = _allPois;
+        if (Math.Abs(_poiRadiusScale - 1.0) > 0.001)
+        {
+            poisForNarration = _allPois
+                .Select(poi => new POI
+                {
+                    Id = poi.Id,
+                    Name = poi.Name,
+                    Description = poi.Description,
+                    Latitude = poi.Latitude,
+                    Longitude = poi.Longitude,
+                    Radius = Math.Max(1, poi.Radius * _poiRadiusScale),
+                    Priority = poi.Priority,
+                    ImageUrl = poi.ImageUrl,
+                    AudioUrl = poi.AudioUrl,
+                    LanguageCode = poi.LanguageCode
+                })
+                .ToList();
+        }
+
+        var narratedPoi = await _locationService.TryNarrateAutoPoiAsync(latestLocation, poisForNarration, cancellationToken);
         if (narratedPoi is null)
         {
             return;
@@ -1195,7 +1388,7 @@ public partial class MainPage : ContentPage
         }
 
         _lastRecenterAt = DateTime.UtcNow;
-        _userLocation = await TryGetUserLocationAsync(CancellationToken.None);
+        _userLocation = await TryGetUserLocationAsync(CancellationToken.None, preferFreshLocation: true);
 
         if (_userLocation is null)
         {
@@ -1211,6 +1404,8 @@ public partial class MainPage : ContentPage
 
     private async Task RecenterMapAsync(Location location)
     {
+        _lastRenderedUserLocation = location;
+        _lastUserMapRefreshAt = DateTime.UtcNow;
         LoadLeafletMap(_currentPoi, centerOnUser: true);
         await Task.CompletedTask;
     }
@@ -1247,11 +1442,45 @@ public partial class MainPage : ContentPage
             _autoPlayEnabled = data.AutoPlay;
             _batteryOptimized = data.BatteryOptimized;
             _storeNarrationEnabled = data.StoreNarrationEnabled;
+            _gpsSensitivityCode = NormalizeGpsSensitivityCode(data.GpsSensitivityCode);
+            _poiRadiusScale = NormalizePoiRadiusScale(data.PoiRadiusScale);
         }
         catch
         {
             // Ignore invalid settings.
         }
+
+        _locationService.PoiRadiusScale = _poiRadiusScale;
+    }
+
+    private static string NormalizeGpsSensitivityCode(string? code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return "balanced";
+        }
+
+        return code.Trim().ToLowerInvariant() switch
+        {
+            "high" => "high",
+            "battery" => "battery",
+            _ => "balanced"
+        };
+    }
+
+    private static double NormalizePoiRadiusScale(double scale)
+    {
+        if (scale < 0.8)
+        {
+            return 0.8;
+        }
+
+        if (scale > 1.3)
+        {
+            return 1.3;
+        }
+
+        return Math.Round(scale, 1);
     }
 
     private sealed class SettingData
@@ -1260,6 +1489,11 @@ public partial class MainPage : ContentPage
         public bool BatteryOptimized { get; set; }
         public bool NotificationEnabled { get; set; }
         public bool StoreNarrationEnabled { get; set; } = true;
+        public string GpsSensitivityCode { get; set; } = "balanced";
+        public double PoiRadiusScale { get; set; } = 1.0;
+        public string TtsVoiceCode { get; set; } = "auto";
+        public string NarrationLanguageCode { get; set; } = "auto";
+        public string InterfaceLanguageCode { get; set; } = "auto";
     }
 
     private sealed class StoreNarrationPoint

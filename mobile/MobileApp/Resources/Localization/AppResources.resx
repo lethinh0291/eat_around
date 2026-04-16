@@ -63,6 +63,36 @@
   <data name="Settings_StoreNarration" xml:space="preserve">
     <value>Đọc mô tả quán ăn</value>
   </data>
+  <data name="Settings_GpsSensitivity" xml:space="preserve">
+    <value>Độ nhạy GPS</value>
+  </data>
+  <data name="Settings_GpsSensitivity_Balanced" xml:space="preserve">
+    <value>Cân bằng (đề xuất)</value>
+  </data>
+  <data name="Settings_GpsSensitivity_High" xml:space="preserve">
+    <value>Chính xác cao</value>
+  </data>
+  <data name="Settings_GpsSensitivity_Battery" xml:space="preserve">
+    <value>Tiết kiệm pin</value>
+  </data>
+  <data name="Settings_PoiRadius" xml:space="preserve">
+    <value>Bán kính kích hoạt POI</value>
+  </data>
+  <data name="Settings_PoiRadius_Compact" xml:space="preserve">
+    <value>Gọn (0.8x)</value>
+  </data>
+  <data name="Settings_PoiRadius_Normal" xml:space="preserve">
+    <value>Chuẩn (1.0x)</value>
+  </data>
+  <data name="Settings_PoiRadius_Wide" xml:space="preserve">
+    <value>Rộng (1.3x)</value>
+  </data>
+  <data name="Settings_TtsVoice" xml:space="preserve">
+    <value>Giọng TTS</value>
+  </data>
+  <data name="Settings_TtsVoiceAuto" xml:space="preserve">
+    <value>Tự động theo ngôn ngữ đọc</value>
+  </data>
   <data name="Settings_InterfaceLanguage" xml:space="preserve">
     <value>Ngôn ngữ giao diện</value>
   </data>
@@ -71,6 +101,9 @@
   </data>
   <data name="Settings_SelectLanguage" xml:space="preserve">
     <value>Chọn ngôn ngữ</value>
+  </data>
+  <data name="Settings_SelectOption" xml:space="preserve">
+    <value>Chọn chế độ</value>
   </data>
   <data name="Settings_Save" xml:space="preserve">
     <value>Lưu cài đặt</value>

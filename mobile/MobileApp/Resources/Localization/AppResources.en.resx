@@ -63,6 +63,36 @@
   <data name="Settings_StoreNarration" xml:space="preserve">
     <value>Read store descriptions</value>
   </data>
+  <data name="Settings_GpsSensitivity" xml:space="preserve">
+    <value>GPS sensitivity</value>
+  </data>
+  <data name="Settings_GpsSensitivity_Balanced" xml:space="preserve">
+    <value>Balanced (recommended)</value>
+  </data>
+  <data name="Settings_GpsSensitivity_High" xml:space="preserve">
+    <value>High accuracy</value>
+  </data>
+  <data name="Settings_GpsSensitivity_Battery" xml:space="preserve">
+    <value>Battery saver</value>
+  </data>
+  <data name="Settings_PoiRadius" xml:space="preserve">
+    <value>POI trigger radius</value>
+  </data>
+  <data name="Settings_PoiRadius_Compact" xml:space="preserve">
+    <value>Compact (0.8x)</value>
+  </data>
+  <data name="Settings_PoiRadius_Normal" xml:space="preserve">
+    <value>Normal (1.0x)</value>
+  </data>
+  <data name="Settings_PoiRadius_Wide" xml:space="preserve">
+    <value>Wide (1.3x)</value>
+  </data>
+  <data name="Settings_TtsVoice" xml:space="preserve">
+    <value>TTS voice</value>
+  </data>
+  <data name="Settings_TtsVoiceAuto" xml:space="preserve">
+    <value>Automatic by narration language</value>
+  </data>
   <data name="Settings_InterfaceLanguage" xml:space="preserve">
     <value>Interface language</value>
   </data>
@@ -71,6 +101,9 @@
   </data>
   <data name="Settings_SelectLanguage" xml:space="preserve">
     <value>Select language</value>
+  </data>
+  <data name="Settings_SelectOption" xml:space="preserve">
+    <value>Select option</value>
   </data>
   <data name="Settings_Save" xml:space="preserve">
     <value>Save settings</value>

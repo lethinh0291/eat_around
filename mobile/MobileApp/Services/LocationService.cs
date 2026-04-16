@@ -7,6 +7,7 @@ namespace MobileApp.Services;
 
 public class LocationService
 {
+    private const string SettingsKey = "zes_settings_v1";
     private readonly ApiService _apiService;
     private readonly AudioPlaybackService _audioPlaybackService;
     private readonly TranslationService _translationService;
@@ -21,6 +22,7 @@ public class LocationService
     public TimeSpan NarrationCooldown { get; set; } = TimeSpan.FromMinutes(2);
     public TimeSpan AutoNarrationDebounce { get; set; } = TimeSpan.FromSeconds(3);
     public TimeSpan AutoNarrationRetryDelay { get; set; } = TimeSpan.FromSeconds(10);
+    public double PoiRadiusScale { get; set; } = 1.0;
 
     public LocationService(ApiService apiService, AudioPlaybackService audioPlaybackService, TranslationService translationService)
     {
@@ -51,7 +53,8 @@ public class LocationService
         {
             var distance = CalculateDistance(userLoc.Latitude, userLoc.Longitude, poi.Latitude, poi.Longitude);
 
-            if (distance > poi.Radius)
+            var effectiveRadius = Math.Max(1, poi.Radius * PoiRadiusScale);
+            if (distance > effectiveRadius)
             {
                 continue;
             }
@@ -320,10 +323,23 @@ public class LocationService
 
         var options = new SpeechOptions();
         var normalizedLanguage = NormalizeLanguageCode(languageCode);
+        var preferredTtsVoiceCode = GetPreferredTtsVoiceCode();
 
-        if (!string.IsNullOrWhiteSpace(normalizedLanguage))
+        var locales = await TextToSpeech.Default.GetLocalesAsync();
+        if (!string.IsNullOrWhiteSpace(preferredTtsVoiceCode) &&
+            !string.Equals(preferredTtsVoiceCode, "auto", StringComparison.OrdinalIgnoreCase))
         {
-            var locales = await TextToSpeech.Default.GetLocalesAsync();
+            var preferredLocale = locales.FirstOrDefault(candidate =>
+                candidate.Language.Equals(preferredTtsVoiceCode, StringComparison.OrdinalIgnoreCase));
+
+            if (preferredLocale is not null)
+            {
+                options.Locale = preferredLocale;
+            }
+        }
+
+        if (options.Locale is null && !string.IsNullOrWhiteSpace(normalizedLanguage))
+        {
             var locale = locales.FirstOrDefault(candidate =>
                 candidate.Language.StartsWith(normalizedLanguage, StringComparison.OrdinalIgnoreCase));
 
@@ -339,8 +355,7 @@ public class LocationService
 
     private static string GetPreferredLanguageCode()
     {
-        const string settingsKey = "zes_settings_v1";
-        var json = Preferences.Default.Get(settingsKey, string.Empty);
+        var json = Preferences.Default.Get(SettingsKey, string.Empty);
         if (!string.IsNullOrWhiteSpace(json))
         {
             try
@@ -361,6 +376,29 @@ public class LocationService
 
         var code = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
         return NormalizeLanguageCode(code);
+    }
+
+    private static string GetPreferredTtsVoiceCode()
+    {
+        var json = Preferences.Default.Get(SettingsKey, string.Empty);
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            try
+            {
+                var data = System.Text.Json.JsonSerializer.Deserialize<SettingData>(json);
+                var selected = data?.TtsVoiceCode;
+                if (!string.IsNullOrWhiteSpace(selected))
+                {
+                    return selected.Trim();
+                }
+            }
+            catch
+            {
+                // Fall back to automatic locale selection.
+            }
+        }
+
+        return "auto";
     }
 
     private static string ResolvePreferredLanguageCode(string? preferredLanguageOverride)
@@ -465,5 +503,6 @@ public class LocationService
     private sealed class SettingData
     {
         public string NarrationLanguageCode { get; set; } = "auto";
+        public string TtsVoiceCode { get; set; } = "auto";
     }
 }

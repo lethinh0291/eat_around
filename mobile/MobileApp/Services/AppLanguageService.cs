@@ -140,6 +140,9 @@ public sealed class AppLanguageService
         public bool BatteryOptimized { get; set; }
         public bool NotificationEnabled { get; set; }
         public bool StoreNarrationEnabled { get; set; } = true;
+        public string GpsSensitivityCode { get; set; } = "balanced";
+        public double PoiRadiusScale { get; set; } = 1.0;
+        public string TtsVoiceCode { get; set; } = "auto";
         public string NarrationLanguageCode { get; set; } = "auto";
         public string InterfaceLanguageCode { get; set; } = "vi";
     }

@@ -90,7 +90,7 @@ public class ApiService
             return new List<POI>();
         }
     }
-    
+
     public async Task<PoiTranslationResponse?> GetApprovedPoiTranslationAsync(
         int poiId,
         string languageCode,
@@ -618,6 +618,7 @@ public class ApiService
         public string Category { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTime SubmittedAtUtc { get; set; }
+        public bool IsLivePoi { get; set; }
     }
 
     public sealed class AdBanner
@@ -627,7 +628,7 @@ public class ApiService
         public bool IsActive { get; set; }
         public int SortOrder { get; set; }
     }
-    
+
     public sealed class PoiTranslationResponse
     {
         public int Id { get; set; }

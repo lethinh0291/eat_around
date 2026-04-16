@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace ZesTour.Views;
 
@@ -125,6 +126,25 @@ public partial class StoreManagementPage : ContentPage
 
                 _items.Add(store);
             }
+        }
+
+        var livePois = await _apiService.GetPoisAsync();
+        foreach (var poi in livePois)
+        {
+            var poiOwner = ExtractOwnerNameFromPoiDescription(poi.Description);
+            if (string.IsNullOrWhiteSpace(poiOwner) ||
+                !owners.Any(owner => string.Equals(owner, poiOwner, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            var mapped = MapPoiToManagementStoreRegistration(poi, poiOwner);
+            if (_items.Any(existing => existing.Id == mapped.Id))
+            {
+                continue;
+            }
+
+            _items.Add(mapped);
         }
 
         _items = _items.OrderByDescending(item => item.SubmittedAtUtc).ToList();
@@ -581,6 +601,12 @@ public partial class StoreManagementPage : ContentPage
             return;
         }
 
+        if (_selected.IsLivePoi)
+        {
+            StatusLabel.Text = "Quán đã được duyệt. Vui lòng chỉnh mô tả trong trang Chủ quán trên Admin Web.";
+            return;
+        }
+
         var ownerName = _selected.OwnerName?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(ownerName))
         {
@@ -633,6 +659,12 @@ public partial class StoreManagementPage : ContentPage
         if (_selected is null)
         {
             StatusLabel.Text = AppText.Get("StoreManagement_SelectToDelete");
+            return;
+        }
+
+        if (_selected.IsLivePoi)
+        {
+            StatusLabel.Text = "Quán đã được duyệt nên không thể xóa tại màn hình này.";
             return;
         }
 
@@ -702,6 +734,87 @@ public partial class StoreManagementPage : ContentPage
         }
 
         return values;
+    }
+
+    private static ApiService.ManagementStoreRegistration MapPoiToManagementStoreRegistration(SharedLib.Models.POI poi, string ownerName)
+    {
+        var contactPhone = ExtractContactPhoneFromPoiDescription(poi.Description);
+        var mappedAddress = ExtractAddressFromPoiDescription(poi.Description);
+        var mappedCategory = ExtractCategoryFromPoiDescription(poi.Description);
+        var mappedDescription = ExtractNarrationFromPoiDescription(poi.Description);
+
+        return new ApiService.ManagementStoreRegistration
+        {
+            Id = poi.Id,
+            StoreName = poi.Name,
+            OwnerName = ownerName,
+            ImageUrl = poi.ImageUrl,
+            ImageUrls = string.IsNullOrWhiteSpace(poi.ImageUrl) ? [] : new List<string> { poi.ImageUrl.Trim() },
+            Phone = contactPhone,
+            Address = mappedAddress,
+            Latitude = poi.Latitude,
+            Longitude = poi.Longitude,
+            RadiusMeters = poi.Radius,
+            Category = mappedCategory,
+            Description = mappedDescription,
+            SubmittedAtUtc = DateTime.MinValue,
+            IsLivePoi = true
+        };
+    }
+
+    private static string ExtractOwnerNameFromPoiDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Liên hệ:\s*(.*?)\s*-", RegexOptions.IgnoreCase);
+        return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
+    }
+
+    private static string ExtractContactPhoneFromPoiDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Liên hệ:\s*.*?\s*-\s*([^|]+)", RegexOptions.IgnoreCase);
+        return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
+    }
+
+    private static string ExtractAddressFromPoiDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Địa chỉ:\s*([^|]+)", RegexOptions.IgnoreCase);
+        return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
+    }
+
+    private static string ExtractCategoryFromPoiDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Loại hình:\s*([^|]+)", RegexOptions.IgnoreCase);
+        return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
+    }
+
+    private static string ExtractNarrationFromPoiDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Mô tả:\s*([^|]+)", RegexOptions.IgnoreCase);
+        return match.Success ? match.Groups[1].Value.Trim() : description.Trim();
     }
 
     private sealed class ImagePreviewItem : INotifyPropertyChanged
