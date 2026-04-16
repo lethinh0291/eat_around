@@ -336,6 +336,12 @@
   <data name="Main_StoreNearby" xml:space="preserve">
     <value>Cửa hàng gần bạn</value>
   </data>
+  <data name="Main_StoreZoneIdle" xml:space="preserve">
+    <value>Chưa vào vùng quán nào</value>
+  </data>
+  <data name="Main_StoreEnteredZoneStatus" xml:space="preserve">
+    <value>Đã vào vùng quán {0}</value>
+  </data>
   <data name="Main_BadgeAuto" xml:space="preserve">
     <value>TỰ ĐỘNG</value>
   </data>

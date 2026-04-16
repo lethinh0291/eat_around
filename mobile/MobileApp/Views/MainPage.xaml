@@ -156,6 +156,11 @@
                                                                       Text="Số nhà, đường: Chưa có thông tin"
                                                                       FontSize="12"
                                                                       TextColor="{StaticResource TextSecondary}"/>
+                                                               <Label x:Name="StoreTriggerStatusLabel"
+                                                                      Text="Chưa vào vùng quán nào"
+                                                                      FontSize="11"
+                                                                      FontAttributes="Bold"
+                                                                      TextColor="#0F766E"/>
                                                         </VerticalStackLayout>
                                                  </Grid>
 
@@ -256,12 +261,12 @@
                             </Grid>
 
                             <Label Text="Truy cập nhanh các chức năng chính để thao tác ít bước hơn."
-                                      x:Name="SidebarSubtitleLabel"
+                                   x:Name="SidebarSubtitleLabel"
                                    FontSize="12"
                                    TextColor="{StaticResource TextSecondary}"/>
 
                             <Button Text="Trang bản đồ"
-                                       x:Name="SidebarMapButton"
+                                    x:Name="SidebarMapButton"
                                     Clicked="OnSidebarHomeClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"
@@ -269,7 +274,7 @@
                                     HeightRequest="46"/>
 
                             <Button Text="Về trang chính"
-                                       x:Name="SidebarHomeButton"
+                                    x:Name="SidebarHomeButton"
                                     Clicked="OnSidebarMenuClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"
@@ -277,7 +282,7 @@
                                     HeightRequest="46"/>
 
                             <Button Text="Hồ sơ người dùng"
-                                       x:Name="SidebarProfileButton"
+                                    x:Name="SidebarProfileButton"
                                     Clicked="OnSidebarProfileClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"
@@ -285,7 +290,7 @@
                                     HeightRequest="46"/>
 
                             <Button Text="Định vị lại"
-                                       x:Name="SidebarRecenterButton"
+                                    x:Name="SidebarRecenterButton"
                                     Clicked="OnSidebarRecenterClicked"
                                     BackgroundColor="{StaticResource Secondary}"
                                     TextColor="{StaticResource PrimaryDark}"

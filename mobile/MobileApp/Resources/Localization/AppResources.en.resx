@@ -336,6 +336,12 @@
   <data name="Main_StoreNearby" xml:space="preserve">
     <value>Store near you</value>
   </data>
+  <data name="Main_StoreZoneIdle" xml:space="preserve">
+    <value>Not inside any store zone yet</value>
+  </data>
+  <data name="Main_StoreEnteredZoneStatus" xml:space="preserve">
+    <value>Entered store zone: {0}</value>
+  </data>
   <data name="Main_BadgeAuto" xml:space="preserve">
     <value>AUTO</value>
   </data>

@@ -84,6 +84,7 @@ public partial class MainPage : ContentPage
         SidebarHomeButton.Text = AppText.Get("Main_SidebarHome");
         SidebarProfileButton.Text = AppText.Get("Main_SidebarProfile");
         SidebarRecenterButton.Text = AppText.Get("Main_SidebarRecenter");
+        StoreTriggerStatusLabel.Text = AppText.Get("Main_StoreZoneIdle");
     }
 
     private static string FormatAddressText(string address)
@@ -163,6 +164,7 @@ public partial class MainPage : ContentPage
             LocationTitleLabel.Text = AppText.Get("Main_LocationOnMap");
             NowPlayingLabel.Text = AppText.Get("Main_TapToSelect");
             AddressLabel.Text = FormatAddressText(AppText.Get("Main_NoAddress"));
+            SetStoreTriggerStatus(null);
             InitializeMap(null);
             StartRealtimeTracking();
             _ = UpdateLocationAsync(locationTask, cancellationToken);
@@ -358,6 +360,7 @@ public partial class MainPage : ContentPage
         AddressLabel.Text = string.IsNullOrWhiteSpace(poi.Description)
             ? FormatAddressText(AppText.Get("Main_NoAddress"))
             : FormatAddressText(poi.Description);
+        SetStoreTriggerStatus(null);
     }
 
     private static bool IsInsideVinhKhanhBounds(POI poi)
@@ -966,13 +969,21 @@ public partial class MainPage : ContentPage
 
     private async Task<bool> TryNarrateNearbyStoreAsync(Location latestLocation, CancellationToken cancellationToken)
     {
-        if (!_storeNarrationEnabled)
+        var candidateStore = FindNearestStoreInRange(latestLocation);
+        if (candidateStore is null)
         {
+            SetStoreTriggerStatus(null);
+            if (!_storeNarrationEnabled)
+            {
+                return false;
+            }
+
             return false;
         }
 
-        var candidateStore = FindNearestStoreInRange(latestLocation);
-        if (candidateStore is null)
+        SetStoreTriggerStatus(candidateStore.Name);
+
+        if (!_storeNarrationEnabled)
         {
             return false;
         }
@@ -1001,6 +1012,17 @@ public partial class MainPage : ContentPage
         }
 
         return narratedStore;
+    }
+
+    private void SetStoreTriggerStatus(string? storeName)
+    {
+        if (string.IsNullOrWhiteSpace(storeName))
+        {
+            StoreTriggerStatusLabel.Text = AppText.Get("Main_StoreZoneIdle");
+            return;
+        }
+
+        StoreTriggerStatusLabel.Text = AppText.Format("Main_StoreEnteredZoneStatus", storeName);
     }
 
     private static string ExtractStoreNarrationText(string? description)
