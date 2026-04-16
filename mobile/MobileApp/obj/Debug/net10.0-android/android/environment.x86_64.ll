@@ -87,13 +87,15 @@ target triple = "x86_64-unknown-linux-android21"
 @mono_aot_mode_name = dso_local local_unnamed_addr constant ptr @.env.0, align 8
 
 ; Application environment variables array, name:value
-@app_environment_variables = dso_local local_unnamed_addr constant [6 x ptr] [
-	ptr @.env.var.0, ; 0 ('MONO_GC_PARAMS')
-	ptr @.env.var.1, ; 1 ('major=marksweep-conc')
-	ptr @.env.var.2, ; 2 ('MONO_LOG_LEVEL')
-	ptr @.env.var.3, ; 3 ('info')
-	ptr @.env.var.4, ; 4 ('XA_HTTP_CLIENT_HANDLER_TYPE')
-	ptr @.env.var.5 ; 5 ('Xamarin.Android.Net.AndroidMessageHandler')
+@app_environment_variables = dso_local local_unnamed_addr constant [8 x ptr] [
+	ptr @.env.var.0, ; 0 ('DOTNET_MODIFIABLE_ASSEMBLIES')
+	ptr @.env.var.1, ; 1 ('Debug')
+	ptr @.env.var.2, ; 2 ('MONO_GC_PARAMS')
+	ptr @.env.var.3, ; 3 ('major=marksweep-conc')
+	ptr @.env.var.4, ; 4 ('MONO_LOG_LEVEL')
+	ptr @.env.var.5, ; 5 ('info')
+	ptr @.env.var.6, ; 6 ('XA_HTTP_CLIENT_HANDLER_TYPE')
+	ptr @.env.var.7 ; 7 ('Xamarin.Android.Net.AndroidMessageHandler')
 ], align 16
 
 ; System properties defined by the application
@@ -112,7 +114,7 @@ target triple = "x86_64-unknown-linux-android21"
 	i1 false, ; bool ignore_split_configs
 	i8 0, ; uint8_t bound_stream_io_exception_type
 	i32 3, ; uint32_t package_naming_policy
-	i32 6, ; uint32_t environment_variable_count
+	i32 8, ; uint32_t environment_variable_count
 	i32 0, ; uint32_t system_property_count
 	i32 342, ; uint32_t number_of_assemblies_in_apk
 	i32 69, ; uint32_t bundled_assembly_name_width
@@ -4350,12 +4352,14 @@ target triple = "x86_64-unknown-linux-android21"
 @.env.0 = private unnamed_addr constant [7 x i8] c"interp\00", align 1
 
 ; Application environment variables name:value pairs
-@.env.var.0 = private unnamed_addr constant [15 x i8] c"MONO_GC_PARAMS\00", align 1
-@.env.var.1 = private unnamed_addr constant [21 x i8] c"major=marksweep-conc\00", align 16
-@.env.var.2 = private unnamed_addr constant [15 x i8] c"MONO_LOG_LEVEL\00", align 1
-@.env.var.3 = private unnamed_addr constant [5 x i8] c"info\00", align 1
-@.env.var.4 = private unnamed_addr constant [28 x i8] c"XA_HTTP_CLIENT_HANDLER_TYPE\00", align 16
-@.env.var.5 = private unnamed_addr constant [42 x i8] c"Xamarin.Android.Net.AndroidMessageHandler\00", align 16
+@.env.var.0 = private unnamed_addr constant [29 x i8] c"DOTNET_MODIFIABLE_ASSEMBLIES\00", align 16
+@.env.var.1 = private unnamed_addr constant [6 x i8] c"Debug\00", align 1
+@.env.var.2 = private unnamed_addr constant [15 x i8] c"MONO_GC_PARAMS\00", align 1
+@.env.var.3 = private unnamed_addr constant [21 x i8] c"major=marksweep-conc\00", align 16
+@.env.var.4 = private unnamed_addr constant [15 x i8] c"MONO_LOG_LEVEL\00", align 1
+@.env.var.5 = private unnamed_addr constant [5 x i8] c"info\00", align 1
+@.env.var.6 = private unnamed_addr constant [28 x i8] c"XA_HTTP_CLIENT_HANDLER_TYPE\00", align 16
+@.env.var.7 = private unnamed_addr constant [42 x i8] c"Xamarin.Android.Net.AndroidMessageHandler\00", align 16
 
 ;ApplicationConfig
 @.ApplicationConfig.0_android_package_name = private unnamed_addr constant [20 x i8] c"com.zestech.zestour\00", align 16

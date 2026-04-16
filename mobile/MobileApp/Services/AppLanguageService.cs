@@ -20,7 +20,16 @@ public sealed class AppLanguageService
 
         if (settings is null)
         {
-            settings = new AppSettingData();
+            settings = new AppSettingData
+            {
+                InterfaceLanguageCode = "vi"
+            };
+            SaveSettings(settings);
+        }
+
+        if (string.Equals(NormalizeLanguageCode(settings.InterfaceLanguageCode), "auto", StringComparison.OrdinalIgnoreCase))
+        {
+            settings.InterfaceLanguageCode = "vi";
             SaveSettings(settings);
         }
 
@@ -50,7 +59,7 @@ public sealed class AppLanguageService
         var normalized = NormalizeLanguageCode(languageCode);
         if (string.Equals(normalized, "auto", StringComparison.OrdinalIgnoreCase))
         {
-            return ResolveDeviceLanguage();
+            return "vi";
         }
 
         return EnsureSupported(normalized);
@@ -132,6 +141,6 @@ public sealed class AppLanguageService
         public bool NotificationEnabled { get; set; }
         public bool StoreNarrationEnabled { get; set; } = true;
         public string NarrationLanguageCode { get; set; } = "auto";
-        public string InterfaceLanguageCode { get; set; } = "auto";
+        public string InterfaceLanguageCode { get; set; } = "vi";
     }
 }

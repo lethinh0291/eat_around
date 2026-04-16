@@ -39,6 +39,16 @@
     </div>
 </section>
 
+@if (TempData["AdminMessage"] is string successMessage && !string.IsNullOrWhiteSpace(successMessage))
+{
+    <div class="alert alert-success border-0 shadow-sm">@successMessage</div>
+}
+
+@if (TempData["AdminError"] is string errorMessage && !string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger border-0 shadow-sm">@errorMessage</div>
+}
+
 <div class="row g-4">
     <div class="col-xl-6">
         <div class="surface-card p-4 h-100">
@@ -105,11 +115,13 @@
                                 <th>Tên quán</th>
                                 <th>Ưu tiên</th>
                                 <th>Bán kính</th>
+                                <th style="min-width: 320px;">Mô tả thuyết minh tự động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var restaurant in Model.LiveRestaurants)
+                            @foreach (var item in Model.EditableLiveRestaurants)
                             {
+                                var restaurant = item.Poi;
                                 <tr>
                                     <td>
                                         <div class="poi-name">@restaurant.Name</div>
@@ -120,6 +132,18 @@
                                     </td>
                                     <td>
                                         <span class="admin-badge admin-badge-muted">@restaurant.Radius.ToString("0.#")m</span>
+                                    </td>
+                                    <td>
+                                        <form asp-action="UpdateNarrationDescription" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@restaurant.Id" />
+                                            <div class="d-grid gap-2">
+                                                <textarea name="narrationDescription" class="form-control" rows="3"
+                                                          maxlength="2000"
+                                                          placeholder="Nhập nội dung sẽ được app mobile đọc bằng text-to-speech khi khách đến gần quán">@item.NarrationDescription</textarea>
+                                                <button type="submit" class="btn btn-sm btn-primary">Lưu mô tả</button>
+                                            </div>
+                                        </form>
                                     </td>
                                 </tr>
                             }

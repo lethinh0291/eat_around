@@ -1,6 +1,7 @@
 using SharedLib.Models;
 using System.Globalization;
 using Microsoft.Maui.Storage;
+using System.Text.RegularExpressions;
 
 namespace MobileApp.Services;
 
@@ -11,9 +12,15 @@ public class LocationService
     private readonly TranslationService _translationService;
     private readonly Dictionary<int, DateTime> _lastNarratedAtByPoi = new();
     private readonly Dictionary<string, DateTime> _lastNarratedAtByKey = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, DateTime> _lastAutoNarrationAttemptAtByKey = new(StringComparer.OrdinalIgnoreCase);
     private readonly SemaphoreSlim _speakLock = new(1, 1);
+    private string? _activeAutoPoiKey;
+    private string? _pendingAutoPoiKey;
+    private DateTime _pendingAutoPoiSinceUtc;
 
     public TimeSpan NarrationCooldown { get; set; } = TimeSpan.FromMinutes(2);
+    public TimeSpan AutoNarrationDebounce { get; set; } = TimeSpan.FromSeconds(3);
+    public TimeSpan AutoNarrationRetryDelay { get; set; } = TimeSpan.FromSeconds(10);
 
     public LocationService(ApiService apiService, AudioPlaybackService audioPlaybackService, TranslationService translationService)
     {
@@ -93,6 +100,79 @@ public class LocationService
         return nowUtc - lastPlayedAtUtc >= NarrationCooldown;
     }
 
+    public async Task<POI?> TryNarrateAutoPoiAsync(
+        Location userLocation,
+        IReadOnlyList<POI> allPois,
+        CancellationToken cancellationToken = default,
+        string? preferredLanguageOverride = null)
+    {
+        if (allPois.Count == 0)
+        {
+            ResetAutoNarrationState();
+            return null;
+        }
+
+        var candidate = FindBestPoiInRange(userLocation, allPois);
+        if (candidate is null)
+        {
+            ResetAutoNarrationState();
+            return null;
+        }
+
+        var narrationKey = GetAutoNarrationKey(candidate.Id);
+        var nowUtc = DateTime.UtcNow;
+
+        if (!string.Equals(_activeAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(_pendingAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase))
+        {
+            _pendingAutoPoiKey = narrationKey;
+            _pendingAutoPoiSinceUtc = nowUtc;
+            return null;
+        }
+
+        if (!string.Equals(_pendingAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase))
+        {
+            _pendingAutoPoiKey = narrationKey;
+            _pendingAutoPoiSinceUtc = nowUtc;
+            return null;
+        }
+
+        if (nowUtc - _pendingAutoPoiSinceUtc < AutoNarrationDebounce)
+        {
+            return null;
+        }
+
+        if (string.Equals(_activeAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (_lastAutoNarrationAttemptAtByKey.TryGetValue(narrationKey, out var lastAttemptAtUtc) &&
+            nowUtc - lastAttemptAtUtc < AutoNarrationRetryDelay)
+        {
+            return null;
+        }
+
+        if (!CanNarrate(narrationKey, nowUtc))
+        {
+            _activeAutoPoiKey = narrationKey;
+            return null;
+        }
+
+        _lastAutoNarrationAttemptAtByKey[narrationKey] = nowUtc;
+
+        var narrated = await NarratePoiAsync(candidate, userLocation, cancellationToken, preferredLanguageOverride);
+        if (!narrated)
+        {
+            return null;
+        }
+
+        _activeAutoPoiKey = narrationKey;
+        _pendingAutoPoiKey = narrationKey;
+        _pendingAutoPoiSinceUtc = nowUtc;
+        return candidate;
+    }
+
     public async Task<bool> NarratePoiAsync(
         POI poi,
         Location? userLocation = null,
@@ -100,7 +180,8 @@ public class LocationService
         string? preferredLanguageOverride = null)
     {
         var narrationKey = $"poi:{poi.Id}";
-        if (string.IsNullOrWhiteSpace(poi.Description) || !CanNarrate(narrationKey, DateTime.UtcNow))
+        var narrationSource = ExtractNarrationText(poi.Description);
+        if (string.IsNullOrWhiteSpace(narrationSource) || !CanNarrate(narrationKey, DateTime.UtcNow))
         {
             return false;
         }
@@ -114,7 +195,7 @@ public class LocationService
                 return false;
             }
 
-            var sourceText = poi.Description.Trim();
+            var sourceText = narrationSource;
             var sourceLanguage = NormalizeLanguageCode(poi.LanguageCode);
             var preferredLanguage = ResolvePreferredLanguageCode(preferredLanguageOverride);
             var selectedLanguage = sourceLanguage;
@@ -321,6 +402,34 @@ public class LocationService
         }
 
         return url.Trim();
+    }
+
+    private static string ExtractNarrationText(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Mô tả:\s*([^|]+)", RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            return match.Groups[1].Value.Trim();
+        }
+
+        return description.Trim();
+    }
+
+    private void ResetAutoNarrationState()
+    {
+        _activeAutoPoiKey = null;
+        _pendingAutoPoiKey = null;
+        _pendingAutoPoiSinceUtc = default;
+    }
+
+    private static string GetAutoNarrationKey(int poiId)
+    {
+        return $"poi:{poiId}";
     }
 
     private void MarkNarrated(int poiId, string narrationKey, DateTime narratedAtUtc)

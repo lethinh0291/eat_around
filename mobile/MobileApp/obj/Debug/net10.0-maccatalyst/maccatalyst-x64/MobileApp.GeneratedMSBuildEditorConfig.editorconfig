@@ -20,13 +20,13 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MobileApp
-build_property.ProjectDir = C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp\
+build_property.ProjectDir = D:\CODE\C\mobile\MobileApp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/App.xaml]
+[D:/CODE/C/mobile/MobileApp/App.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.App.xaml
 build_metadata.AdditionalFiles.TargetPath = App.xaml
@@ -36,7 +36,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/AppShell.xaml]
+[D:/CODE/C/mobile/MobileApp/AppShell.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.AppShell.xaml
 build_metadata.AdditionalFiles.TargetPath = AppShell.xaml
@@ -46,7 +46,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Resources/Styles/Colors.xaml]
+[D:/CODE/C/mobile/MobileApp/Resources/Styles/Colors.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Resources.Styles.Colors.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
@@ -56,7 +56,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Resources/Styles/Styles.xaml]
+[D:/CODE/C/mobile/MobileApp/Resources/Styles/Styles.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Resources.Styles.Styles.xaml
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
@@ -66,7 +66,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/HelpFeedbackPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/HelpFeedbackPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.HelpFeedbackPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\HelpFeedbackPage.xaml
@@ -76,7 +76,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/LoadingPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/LoadingPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.LoadingPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\LoadingPage.xaml
@@ -86,7 +86,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/LoginPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/LoginPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.LoginPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\LoginPage.xaml
@@ -96,7 +96,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/MainPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/MainPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.MainPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\MainPage.xaml
@@ -106,7 +106,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/MenuPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/MenuPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.MenuPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\MenuPage.xaml
@@ -116,7 +116,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/MyTripsPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/MyTripsPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.MyTripsPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\MyTripsPage.xaml
@@ -126,7 +126,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/ProfilePage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/ProfilePage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.ProfilePage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\ProfilePage.xaml
@@ -136,7 +136,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/QrTriggerPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/QrTriggerPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.QrTriggerPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\QrTriggerPage.xaml
@@ -146,7 +146,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/RegisterPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/RegisterPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.RegisterPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\RegisterPage.xaml
@@ -156,7 +156,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/SettingsPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/SettingsPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.SettingsPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\SettingsPage.xaml
@@ -166,7 +166,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/StoreManagementPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/StoreManagementPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.StoreManagementPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\StoreManagementPage.xaml
@@ -176,7 +176,7 @@ build_metadata.AdditionalFiles.NoWarn =
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
 
-[C:/Users/thiee/ProjectC\#\#/eat_around/mobile/MobileApp/Views/StoreRegistrationPage.xaml]
+[D:/CODE/C/mobile/MobileApp/Views/StoreRegistrationPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.StoreRegistrationPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\StoreRegistrationPage.xaml

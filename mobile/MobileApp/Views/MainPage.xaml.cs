@@ -877,22 +877,16 @@ public partial class MainPage : ContentPage
 
     private async Task TryNarrateNearbyPoiAsync(Location latestLocation, CancellationToken cancellationToken)
     {
-        var candidatePoi = _locationService.FindBestPoiInRange(latestLocation, _allPois);
-        if (candidatePoi is null)
+        var narratedPoi = await _locationService.TryNarrateAutoPoiAsync(latestLocation, _allPois, cancellationToken);
+        if (narratedPoi is null)
         {
             return;
         }
 
-        var narrated = await _locationService.NarratePoiAsync(candidatePoi, latestLocation, cancellationToken);
-        if (!narrated)
-        {
-            return;
-        }
-
-        _currentPoi = candidatePoi;
+        _currentPoi = narratedPoi;
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            BindPoi(candidatePoi);
+            BindPoi(narratedPoi);
             PoiBadgeLabel.Text = AppText.Get("Main_BadgeAuto");
         });
     }

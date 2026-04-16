@@ -3614,23 +3614,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\thiee\\.nuget\\packages\\": {},
+    "C:\\Users\\ASUS\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\thiee\\ProjectC##\\eat_around\\backend\\BackendAPI\\BackendAPI.csproj",
+      "projectUniqueName": "D:\\CODE\\C\\backend\\BackendAPI\\BackendAPI.csproj",
       "projectName": "BackendAPI",
-      "projectPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\backend\\BackendAPI\\BackendAPI.csproj",
-      "packagesPath": "C:\\Users\\thiee\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\backend\\BackendAPI\\obj\\",
+      "projectPath": "D:\\CODE\\C\\backend\\BackendAPI\\BackendAPI.csproj",
+      "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
+      "outputPath": "D:\\CODE\\C\\backend\\BackendAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\thiee\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3646,8 +3646,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj": {
-              "projectPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj"
+            "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj": {
+              "projectPath": "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj"
             }
           }
         }

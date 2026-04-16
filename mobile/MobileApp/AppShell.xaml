@@ -7,7 +7,7 @@
     Title="MobileApp">
 
     <ShellContent
-        Title="Home"
+        Title="Trang chủ"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage"/>
 

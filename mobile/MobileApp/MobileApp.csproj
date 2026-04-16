@@ -47,6 +47,11 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-android' and '$(Configuration)' == 'Debug'">
+		<!-- Keep assemblies inside APK so manual adb install works without Fast Deployment override files. -->
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\logo.svg" ForegroundFile="Resources\AppIcon\logo.svg" Color="#512BD4" />

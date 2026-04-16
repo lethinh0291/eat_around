@@ -46,10 +46,53 @@ public class OwnerPortalController : Controller
         var model = new OwnerPortalViewModel
         {
             PendingStores = myPendingStores,
-            LiveRestaurants = myRestaurants
+            LiveRestaurants = myRestaurants,
+            EditableLiveRestaurants = myRestaurants
+                .Select(item => new EditableLiveRestaurantItem
+                {
+                    Poi = item,
+                    NarrationDescription = ExtractNarrationDescription(item.Description)
+                })
+                .ToList()
         };
 
         return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateNarrationDescription(int id, string? narrationDescription)
+    {
+        var ownerName = User.Identity?.Name?.Trim() ?? string.Empty;
+        var ownerUsername = User.FindFirstValue(ClaimTypes.GivenName)?.Trim() ?? string.Empty;
+        var normalizedNarration = narrationDescription?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(normalizedNarration))
+        {
+            TempData["AdminError"] = "Mô tả thuyết minh không được để trống.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var poi = await _poiApiClient.GetByIdAsync(id);
+        if (poi is null)
+        {
+            TempData["AdminError"] = "Không tìm thấy quán cần cập nhật.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        if (!IsSameOwner(ExtractOwnerNameFromPoiDescription(poi.Description), ownerName, ownerUsername))
+        {
+            return Forbid();
+        }
+
+        poi.Description = UpsertNarrationDescription(poi.Description, normalizedNarration);
+        var updated = await _poiApiClient.UpdateAsync(poi);
+
+        TempData["AdminMessage"] = updated
+            ? $"Đã cập nhật mô tả thuyết minh cho quán {poi.Name}."
+            : "Không thể cập nhật mô tả thuyết minh lúc này.";
+
+        return RedirectToAction(nameof(Index));
     }
 
     private static bool IsSameOwner(string? candidate, string ownerName, string ownerUsername)
@@ -75,9 +118,47 @@ public class OwnerPortalController : Controller
         return match.Success ? match.Groups[1].Value.Trim() : string.Empty;
     }
 
+    private static string ExtractNarrationDescription(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return string.Empty;
+        }
+
+        var match = Regex.Match(description, @"Mô tả:\s*([^|]+)", RegexOptions.IgnoreCase);
+        return match.Success ? match.Groups[1].Value.Trim() : description.Trim();
+    }
+
+    private static string UpsertNarrationDescription(string? sourceDescription, string narrationDescription)
+    {
+        var normalizedNarration = narrationDescription.Trim();
+        if (string.IsNullOrWhiteSpace(sourceDescription))
+        {
+            return $"Mô tả: {normalizedNarration}";
+        }
+
+        if (Regex.IsMatch(sourceDescription, @"Mô tả:\s*([^|]+)", RegexOptions.IgnoreCase))
+        {
+            return Regex.Replace(
+                sourceDescription,
+                @"Mô tả:\s*([^|]+)",
+                _ => $"Mô tả: {normalizedNarration}",
+                RegexOptions.IgnoreCase);
+        }
+
+        return $"{sourceDescription.Trim()} | Mô tả: {normalizedNarration}";
+    }
+
     public sealed class OwnerPortalViewModel
     {
         public List<AdminManagementApiClient.AdminStoreRegistrationDto> PendingStores { get; set; } = new();
         public List<POI> LiveRestaurants { get; set; } = new();
+        public List<EditableLiveRestaurantItem> EditableLiveRestaurants { get; set; } = new();
+    }
+
+    public sealed class EditableLiveRestaurantItem
+    {
+        public POI Poi { get; set; } = new();
+        public string NarrationDescription { get; set; } = string.Empty;
     }
 }

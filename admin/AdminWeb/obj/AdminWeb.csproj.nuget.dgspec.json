@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\thiee\\ProjectC##\\eat_around\\admin\\AdminWeb\\AdminWeb.csproj": {}
+    "D:\\CODE\\C\\admin\\AdminWeb\\AdminWeb.csproj": {}
   },
   "projects": {
-    "C:\\Users\\thiee\\ProjectC##\\eat_around\\admin\\AdminWeb\\AdminWeb.csproj": {
+    "D:\\CODE\\C\\admin\\AdminWeb\\AdminWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\thiee\\ProjectC##\\eat_around\\admin\\AdminWeb\\AdminWeb.csproj",
+        "projectUniqueName": "D:\\CODE\\C\\admin\\AdminWeb\\AdminWeb.csproj",
         "projectName": "AdminWeb",
-        "projectPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\admin\\AdminWeb\\AdminWeb.csproj",
-        "packagesPath": "C:\\Users\\thiee\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\admin\\AdminWeb\\obj\\",
+        "projectPath": "D:\\CODE\\C\\admin\\AdminWeb\\AdminWeb.csproj",
+        "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
+        "outputPath": "D:\\CODE\\C\\admin\\AdminWeb\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\thiee\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -33,8 +33,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj": {
-                "projectPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj"
+              "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj": {
+                "projectPath": "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj"
               }
             }
           }
@@ -491,20 +491,20 @@
         }
       }
     },
-    "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj": {
+    "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj",
+        "projectUniqueName": "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj",
         "projectName": "SharedLib",
-        "projectPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\SharedLib.csproj",
-        "packagesPath": "C:\\Users\\thiee\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\thiee\\ProjectC##\\eat_around\\shared\\SharedLib\\obj\\",
+        "projectPath": "D:\\CODE\\C\\shared\\SharedLib\\SharedLib.csproj",
+        "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
+        "outputPath": "D:\\CODE\\C\\shared\\SharedLib\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\thiee\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

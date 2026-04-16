@@ -10,7 +10,7 @@
       <dSYMInfoPlistRelativePath>MobileApp.app.dSYM\Contents\Info.plist</dSYMInfoPlistRelativePath>
       <SymbolFile></SymbolFile>
       <DSymName>MobileApp.app.dSYM</DSymName>
-      <SourceProjectPath>C:\Users\thiee\ProjectC##\eat_around\mobile\MobileApp</SourceProjectPath>
+      <SourceProjectPath>D:\CODE\C\mobile\MobileApp</SourceProjectPath>
       <IsXPCService></IsXPCService>
     </_PostProcessingItem>
   </ItemGroup>

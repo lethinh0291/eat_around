@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MobileApp")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute(" ")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+80fd11ec41ceb62e23b666af675365eae2432bcb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+33ecc7707e3570ac39ab7a8d5ab2693f4f5cfcef")]
 [assembly: System.Reflection.AssemblyProductAttribute("MobileApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MobileApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

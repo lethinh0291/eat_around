@@ -89,6 +89,13 @@ body.admin-body {
   background: rgba(249, 115, 22, 0.18);
 }
 
+.admin-nav-button {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
 .admin-main {
   min-height: calc(100vh - 130px);
 }
