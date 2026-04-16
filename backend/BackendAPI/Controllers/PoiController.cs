@@ -50,7 +50,7 @@ public class PoiController : ControllerBase
         {
             var languageCode = string.IsNullOrEmpty(poi.LanguageCode) ? "vi" : poi.LanguageCode;
             var qrTrigger = await _qrGeneratorService.GenerateQRTriggerAsync(poi.Id, languageCode);
-            
+
             _context.QRTriggers.Add(qrTrigger);
             await _context.SaveChangesAsync();
 
@@ -70,18 +70,28 @@ public class PoiController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, POI poi)
     {
-        if (id != poi.Id) return BadRequest(new { Message = "ID trong URL không khớp" });
-        _context.Entry(poi).State = EntityState.Modified;
-        try
+        if (id != poi.Id)
         {
-            await _context.SaveChangesAsync();
+            return BadRequest(new { Message = "ID trong URL không khớp" });
         }
-        catch (DbUpdateConcurrencyException)
+
+        var existing = await _context.POIs.FirstOrDefaultAsync(item => item.Id == id);
+        if (existing is null)
         {
-            if (!_context.POIs.Any(e => e.Id == id))
-                return NotFound(new { Message = $"POI với mã ID {id} không tồn tại." });
-            else throw;
+            return NotFound(new { Message = $"POI với mã ID {id} không tồn tại." });
         }
+
+        existing.Name = poi.Name?.Trim() ?? string.Empty;
+        existing.Description = string.IsNullOrWhiteSpace(poi.Description) ? null : poi.Description.Trim();
+        existing.Latitude = poi.Latitude;
+        existing.Longitude = poi.Longitude;
+        existing.Radius = poi.Radius;
+        existing.Priority = poi.Priority;
+        existing.ImageUrl = string.IsNullOrWhiteSpace(poi.ImageUrl) ? null : poi.ImageUrl.Trim();
+        existing.AudioUrl = string.IsNullOrWhiteSpace(poi.AudioUrl) ? null : poi.AudioUrl.Trim();
+        existing.LanguageCode = string.IsNullOrWhiteSpace(poi.LanguageCode) ? "vi" : poi.LanguageCode.Trim();
+
+        await _context.SaveChangesAsync();
         return NoContent();
     }
 

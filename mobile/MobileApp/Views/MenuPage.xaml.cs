@@ -1,5 +1,6 @@
 using MobileApp.Services;
 using MobileApp.Resources.Localization;
+using System.IO;
 
 namespace ZesTour.Views;
 
@@ -19,7 +20,8 @@ public partial class MenuPage : ContentPage
         _apiService = new ApiService();
         InitializeComponent();
         ApplyLocalizedText();
-        BindingContext = new { User = _authService.CurrentUser };
+        RefreshUserBinding();
+        UpdateAvatarDisplay();
     }
 
     private void ApplyLocalizedText()
@@ -54,7 +56,10 @@ public partial class MenuPage : ContentPage
     {
         base.OnAppearing();
         await CloseSidebarAsync(false);
+        RefreshUserBinding();
         UpdateRoleBadge();
+        UpdateAvatarDisplay();
+        UpdateWelcomeCardBackground();
         var isSeller = IsSeller();
         StoreRegistrationCard.IsVisible = isSeller;
         StoreManagementCard.IsVisible = isSeller;
@@ -257,6 +262,58 @@ public partial class MenuPage : ContentPage
         SidebarFab.IsVisible = true;
         _isSidebarOpen = false;
         _isSidebarAnimating = false;
+    }
+
+    private void UpdateAvatarDisplay()
+    {
+        var user = _authService.CurrentUser;
+        if (user is null)
+        {
+            AvatarImage.Source = null;
+            AvatarImage.IsVisible = false;
+            AvatarInitialsLabel.Text = "U";
+            AvatarInitialsLabel.IsVisible = true;
+            return;
+        }
+
+        AvatarInitialsLabel.Text = _authService.GetInitials(user);
+
+        if (!string.IsNullOrWhiteSpace(user.AvatarUrl) && Uri.TryCreate(user.AvatarUrl, UriKind.Absolute, out var avatarUri))
+        {
+            AvatarImage.Source = ImageSource.FromUri(avatarUri);
+            AvatarImage.IsVisible = true;
+            AvatarInitialsLabel.IsVisible = false;
+            return;
+        }
+
+        AvatarImage.Source = null;
+        AvatarImage.IsVisible = false;
+        AvatarInitialsLabel.IsVisible = true;
+    }
+
+    private void RefreshUserBinding()
+    {
+        BindingContext = new { User = _authService.CurrentUser };
+    }
+
+    private void UpdateWelcomeCardBackground()
+    {
+        var imagePath = _authService.GetMenuWelcomeImagePath();
+        if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
+        {
+            WelcomeCardImage.Source = ImageSource.FromFile(imagePath);
+            WelcomeCardImage.IsVisible = true;
+            WelcomeCardOverlay.IsVisible = true;
+            WelcomeCardBorder.BackgroundColor = Color.FromArgb("#E85A2A");
+            return;
+        }
+
+        WelcomeCardImage.Source = null;
+        WelcomeCardImage.IsVisible = false;
+        WelcomeCardOverlay.IsVisible = false;
+        WelcomeCardBorder.BackgroundColor = Application.Current?.Resources.TryGetValue("Primary", out var primaryColor) == true && primaryColor is Color color
+            ? color
+            : Color.FromArgb("#F55B23");
     }
 
     private async void OnMyTripsTapped(object? sender, TappedEventArgs e)

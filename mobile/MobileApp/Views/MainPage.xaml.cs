@@ -450,6 +450,11 @@ public partial class MainPage : ContentPage
         .poi-name-label:before {{
             display: none;
         }}
+        .poi-radius-hint {{
+            color: #7c2d12;
+            font-size: 11px;
+            margin-top: 4px;
+        }}
     </style>
 </head>
 <body>
@@ -648,7 +653,19 @@ public partial class MainPage : ContentPage
         }}
 
         function addPoiMarker(item, focus) {{
-            const popup = `<div class='poi-popup-name'>${{item.name}}</div><div class='poi-popup-desc'>${{item.desc}}</div>`;
+            const radiusMeters = Number.isFinite(item.radius) && item.radius > 0 ? item.radius : 100;
+            const popup = `<div class='poi-popup-name'>${{item.name}}</div><div class='poi-popup-desc'>${{item.desc}}</div><div class='poi-radius-hint'>Phạm vi: ${{Math.round(radiusMeters)}}m</div>`;
+
+            L.circle([item.lat, item.lng], {{
+                radius: radiusMeters,
+                color: '#f97316',
+                weight: 1.5,
+                opacity: 0.65,
+                fillColor: '#fb923c',
+                fillOpacity: 0.13,
+                interactive: false
+            }}).addTo(map);
+
             const marker = L.marker([item.lat, item.lng], {{ icon: storeIcon, riseOnHover: true }})
                 .addTo(map)
                 .bindPopup(popup)
@@ -693,7 +710,8 @@ public partial class MainPage : ContentPage
                 lat: selectedPoiLat,
                 lng: selectedPoiLng,
                 name: selectedPoiName,
-                desc: selectedPoiDesc
+                desc: selectedPoiDesc,
+                radius: 100
             }};
             addPoiMarker(selectedItem, true);
             routeTo(selectedPoiLat, selectedPoiLng);
@@ -774,10 +792,10 @@ public partial class MainPage : ContentPage
         };
     }
 
-    private static string BuildAllPoisBlock(IEnumerable<POI> pois)
+    private string BuildAllPoisBlock(IEnumerable<POI> pois)
     {
         var entries = pois.Select(poi =>
-            $"{{lat:{poi.Latitude.ToString(CultureInfo.InvariantCulture)},lng:{poi.Longitude.ToString(CultureInfo.InvariantCulture)},name:'{EscapeJavaScript(poi.Name)}',desc:'{EscapeJavaScript(poi.Description ?? AppText.Get("Main_NoDescription"))}'}}");
+            $"{{lat:{poi.Latitude.ToString(CultureInfo.InvariantCulture)},lng:{poi.Longitude.ToString(CultureInfo.InvariantCulture)},radius:{Math.Max(1, poi.Radius * _poiRadiusScale).ToString(CultureInfo.InvariantCulture)},name:'{EscapeJavaScript(poi.Name)}',desc:'{EscapeJavaScript(poi.Description ?? AppText.Get("Main_NoDescription"))}'}}");
 
         return $"[{string.Join(",", entries)}]";
     }
