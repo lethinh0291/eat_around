@@ -1,0 +1,234 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="E5qi_puAixKyOVlGNEOw">
+        <mxGraphModel dx="969" dy="1358" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-8" value="alt" style="shape=umlFrame;dashed=1;pointerEvents=0;dropTarget=0;strokeColor=#000000;height=727;width=898;fillColor=#99CCFF;fontColor=light-dark(#333333,#cccccc);" parent="1" vertex="1">
+                    <mxGeometry x="279" y="1133" width="898" height="727" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-9" value="[Có dữ liệu thay đổi]" style="text;strokeColor=#000000;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" parent="zbiWaFVQF0OnbmhKVd58-8" vertex="1">
+                    <mxGeometry x="30" width="868" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-10" value="[Không có dữ liệu thay đổi]" style="shape=line;dashed=1;whiteSpace=wrap;verticalAlign=top;labelPosition=center;verticalLabelPosition=middle;align=center;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-8" vertex="1">
+                    <mxGeometry y="571" width="898" height="3" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-6" value="loop" style="shape=umlFrame;dashed=1;pointerEvents=0;dropTarget=0;strokeColor=#000000;height=293;width=878;fillColor=#FFFF99;fontColor=light-dark(#333333,#cccccc);" parent="1" vertex="1">
+                    <mxGeometry x="289" y="1288" width="878" height="293" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-7" value="[Duyệt qua danh sách File Audio mới cần tải]" style="text;strokeColor=#000000;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" parent="zbiWaFVQF0OnbmhKVd58-6" vertex="1">
+                    <mxGeometry x="40" width="838" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-1" value="Network Monitor (App)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="21" y="680" width="185" height="1275" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-2" value="Sync Manager (App)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="355" y="680" width="163" height="1275" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-3" value="SQLite (Dữ liệu Local)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="825" y="680" width="171" height="1275" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-4" value="Backend API (ASP.NET Core)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1046" y="680" width="219" height="1275" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-5" value="SQL Server (Dữ liệu Online)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1443" y="680" width="211" height="1275" as="geometry"/>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-11" value="Phát hiện có kết nối mạng (Wifi/4G)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-1" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="284" y="789"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-12" value="1" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-11" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-169" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-13" value="Lấy mốc thời gian đồng bộ cuối (LastSyncTime)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="682" y="843"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-14" value="2" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-13" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-244.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-15" value="Trả về LastSyncTime" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-3" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="685" y="897"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-16" value="3" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-15" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="230.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-17" value="Gọi API Đồng bộ (Gửi kèm LastSyncTime)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="805" y="951"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-18" value="4" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-17" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-367" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-19" value="Truy vấn các thay đổi (Delta) từ LastSyncTime" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-4" target="zbiWaFVQF0OnbmhKVd58-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1361" y="1005"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-20" value="5" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-19" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-204" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-21" value="Trả về danh sách POI, Content, Audio thay đổi" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-5" target="zbiWaFVQF0OnbmhKVd58-4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1364" y="1059"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-22" value="6" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-21" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="190" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-23" value="Trả về JSON Data (Danh sách Delta)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-4" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="808" y="1113"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-24" value="7" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-23" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="353" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-25" value="Cập nhật dữ liệu (Thêm/Sửa/Xóa POI &amp; Content)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="682" y="1214"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-26" value="8" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-25" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-244.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-27" value="Cập nhật DB thành công" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-3" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="685" y="1268"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-28" value="9" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-27" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="230.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-29" value="Gửi Request tải file Audio" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="805" y="1369"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-30" value="10" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-29" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-367" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-31" value="Trả về Stream (File Audio)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-4" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="808" y="1423"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-32" value="11" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-31" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="353" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-33" value="Lưu file nén vào thư mục Local của App" style="curved=1;endArrow=block;rounded=0;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="488" y="1477"/>
+                            <mxPoint x="488" y="1507"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-34" value="12" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-33" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-57" y="-22" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-35" value="Cập nhật đường dẫn Audio Local cho Content tương ứng" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="682" y="1561"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-36" value="13" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-35" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-244.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-37" value="Cập nhật LastSyncTime mới" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="682" y="1625"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-38" value="14" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-37" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-244.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-39" value="Hoàn tất quá trình đồng bộ" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-3" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="685" y="1679"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-40" value="15" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-39" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="230.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-41" value="Kết thúc luồng" style="curved=1;endArrow=block;rounded=0;strokeColor=#000000;" parent="1" source="zbiWaFVQF0OnbmhKVd58-2" target="zbiWaFVQF0OnbmhKVd58-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="488" y="1780"/>
+                            <mxPoint x="488" y="1810"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="zbiWaFVQF0OnbmhKVd58-42" value="16" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="zbiWaFVQF0OnbmhKVd58-41" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-57" y="-22" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

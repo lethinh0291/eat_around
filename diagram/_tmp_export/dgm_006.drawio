@@ -1,0 +1,228 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="js_eJ2gr_8YJzolqUqa0">
+        <mxGraphModel dx="1744" dy="3613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-9" value="" style="shape=umlFrame;dashed=1;pointerEvents=0;dropTarget=0;strokeColor=#d6b656;height=692;width=2076;fillColor=#fff2cc;" parent="1" vertex="1">
+                    <mxGeometry x="84" y="449" width="2076" height="692" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-10" value="" style="text;strokeColor=#000000;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" parent="htcznDtkHJAIqYLq1PFs-9" vertex="1">
+                    <mxGeometry width="2076" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-7" value="" style="shape=umlFrame;dashed=1;pointerEvents=0;dropTarget=0;strokeColor=#d6b656;height=344;width=913;fillColor=#fff2cc;" parent="1" vertex="1">
+                    <mxGeometry x="1248" y="95" width="913" height="344" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-8" value="" style="text;strokeColor=#000000;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" parent="htcznDtkHJAIqYLq1PFs-7" vertex="1">
+                    <mxGeometry width="913" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-1" value="Chủ quán / Admin" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;align=center;size=65;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=#000000;fontColor=light-dark(#333333,#cccccc);" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="35" height="1216" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-2" value="Admin Web (MVC)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="442" y="20" width="152" height="1216" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-3" value="PoiApiClient / AuthClient" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="943" y="20" width="195" height="1216" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-4" value="Backend API (Kestrel)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1326" y="20" width="169" height="1216" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-5" value="AppDbContext (EF Core)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1746" y="20" width="193" height="1216" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-6" value="SQL Server" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="2074" y="20" width="150" height="1216" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-11" value="Khởi tạo Dependency Injection &amp; Đọc chuỗi kết nối" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-4" target="htcznDtkHJAIqYLq1PFs-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1635" y="197"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-12" value="1" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-11" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-223.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-13" value="Mở Pool kết nối đến SQL Server" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-5" target="htcznDtkHJAIqYLq1PFs-6" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="2004" y="251"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-14" value="2" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-13" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-161" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-15" value="Xác nhận kết nối thành công" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-6" target="htcznDtkHJAIqYLq1PFs-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="2007" y="305"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-16" value="3" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-15" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="147" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-17" value="Khởi chạy các Background Services (nếu có)" style="curved=1;endArrow=block;rounded=0;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-4" target="htcznDtkHJAIqYLq1PFs-4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1461" y="359"/>
+                            <mxPoint x="1461" y="389"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-18" value="4" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-17" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-57" y="-22" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-19" value="Truy cập Dashboard (Ví dụ: /Dashboard/Overview)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-1" target="htcznDtkHJAIqYLq1PFs-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="315" y="551"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-20" value="5" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-19" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-219" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-21" value="Yêu cầu lấy dữ liệu thống kê &amp; Danh sách POI" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-2" target="htcznDtkHJAIqYLq1PFs-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="788" y="605"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-22" value="6" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-21" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-268.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-23" value="Gọi HTTP GET /api/poi (Kèm Bearer Token)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-3" target="htcznDtkHJAIqYLq1PFs-4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1234" y="659"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-24" value="7" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-23" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-192.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-25" value="Xác thực &amp; Phân quyền (Role Authorization)" style="curved=1;endArrow=block;rounded=0;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-4" target="htcznDtkHJAIqYLq1PFs-4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1461" y="713"/>
+                            <mxPoint x="1461" y="743"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-26" value="8" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-25" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-57" y="-22" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-27" value="Truy vấn dữ liệu qua Entity Framework (LINQ)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-4" target="htcznDtkHJAIqYLq1PFs-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1635" y="797"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-28" value="9" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-27" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-223.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-29" value="Chuyển đổi thành câu lệnh T-SQL" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-5" target="htcznDtkHJAIqYLq1PFs-6" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="2004" y="851"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-30" value="10" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-29" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="-161" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-31" value="Trả về các dòng dữ liệu (Rows)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-6" target="htcznDtkHJAIqYLq1PFs-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="2007" y="905"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-32" value="11" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-31" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="147" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-33" value="Mapping dữ liệu sang Entity Models (POI, User)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-5" target="htcznDtkHJAIqYLq1PFs-4" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1638" y="959"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-34" value="12" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-33" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="209.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-35" value="Trả về JSON Response" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-4" target="htcznDtkHJAIqYLq1PFs-3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1237" y="1013"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-36" value="13" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-35" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="178.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-37" value="Trích xuất và bind vào ViewModels (PoiManagementViewModel)" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-3" target="htcznDtkHJAIqYLq1PFs-2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="791" y="1067"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-38" value="14" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-37" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="254.5" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-39" value="Render HTML giao diện Bảng điều khiển" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;dashed=1;dashPattern=2 3;endArrow=block;strokeColor=#000000;" parent="1" source="htcznDtkHJAIqYLq1PFs-2" target="htcznDtkHJAIqYLq1PFs-1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="318" y="1121"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-40" value="15" style="ellipse;aspect=fixed;fillColor=#000000;align=center;fontColor=#FFFFFF;strokeColor=#000000;" parent="htcznDtkHJAIqYLq1PFs-39" vertex="1">
+                    <mxGeometry width="14" height="14" relative="1" as="geometry">
+                        <mxPoint x="205" y="-7" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-41" value="Giai đoạn 1: Server Khởi động (Program.cs)" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=light-dark(#333333,#cccccc);" parent="1" vertex="1">
+                    <mxGeometry x="1435" y="115" width="322" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="htcznDtkHJAIqYLq1PFs-42" value="Giai đoạn 2: User truy cập trang Quản trị" style="fillColor=#FFFFFF;strokeColor=#000000;fontColor=light-dark(#333333,#cccccc);" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="469" width="305" height="48" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

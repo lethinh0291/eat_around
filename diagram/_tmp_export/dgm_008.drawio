@@ -1,0 +1,83 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="NUHVx2Ll9ValIURyWU7s">
+    <mxGraphModel dx="1288" dy="803" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-1" parent="1" style="rounded=1;arcSize=20;strokeWidth=2;fillColor=light-dark(#66B2FF,#1F2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Generated" vertex="1">
+          <mxGeometry height="40" width="156" x="237" y="132" as="geometry" />
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-2" parent="1" style="rounded=1;arcSize=20;strokeWidth=2;fillColor=light-dark(#66B2FF,#1F2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Ready" vertex="1">
+          <mxGeometry height="40" width="138" x="247" y="246" as="geometry" />
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-3" parent="1" style="rounded=1;arcSize=20;strokeWidth=2;fillColor=light-dark(#66B2FF,#1F2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Scanned" vertex="1">
+          <mxGeometry height="40" width="147" x="137" y="388" as="geometry" />
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-4" parent="1" style="rounded=1;arcSize=20;strokeWidth=2;fillColor=light-dark(#66B2FF,#1F2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Đã xử lý" vertex="1">
+          <mxGeometry height="40" width="162" x="20" y="542" as="geometry" />
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-5" parent="1" style="rounded=1;arcSize=20;strokeWidth=2;fillColor=light-dark(#66B2FF,#1F2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Không hợp lệ &#xa;Hết hạn" vertex="1">
+          <mxGeometry height="64" width="216" x="327" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-6" parent="1" style="ellipse;fillColor=strokeColor;fontColor=light-dark(#333333,#cccccc);" value="" vertex="1">
+          <mxGeometry height="14" width="14" x="308" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-7" parent="1" style="ellipse;shape=endState;fillColor=strokeColor;fontColor=light-dark(#333333,#cccccc);" value="" vertex="1">
+          <mxGeometry height="14" width="14" x="280" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-8" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-6" style="curved=1;startArrow=none;;fillColor=none;;exitX=0.53;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="GEVfJ73HMtoBnoTRmdU5-1" value="Tạo mã QR">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-9" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-1" style="curved=1;startArrow=none;;fillColor=none;;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="GEVfJ73HMtoBnoTRmdU5-2" value="Gán QR vào POI">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-10" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-2" style="startArrow=none;;fillColor=none;;exitX=0.28;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="GEVfJ73HMtoBnoTRmdU5-3" value="Quét mã QR">
+          <mxGeometry relative="1" x="-0.022" y="-7" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-11" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-2" style="startArrow=none;;fillColor=none;;exitX=0.706;exitY=1.045;entryX=0.61;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;exitDx=0;exitDy=0;exitPerimeter=0;" target="GEVfJ73HMtoBnoTRmdU5-5" value="Quá thời hạn&#xa; Admin hủy mã">
+          <mxGeometry relative="1" x="0.4391" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="344" y="340" />
+              <mxPoint x="459" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-12" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-3" style="startArrow=none;;fillColor=none;;exitX=0.3;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="GEVfJ73HMtoBnoTRmdU5-4" value="Hệ thống xác thực">
+          <mxGeometry relative="1" x="0.1139" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-13" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-3" style="startArrow=none;;fillColor=none;;exitX=0.73;exitY=1;entryX=0.31;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="GEVfJ73HMtoBnoTRmdU5-5" value="Mã không hợp lệ">
+          <mxGeometry relative="1" x="0.0068" y="9" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-14" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-4" style="startArrow=none;;fillColor=none;;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;entryDx=0;entryDy=0;" target="GEVfJ73HMtoBnoTRmdU5-7" value="Phát thuyết minh cho User">
+          <mxGeometry relative="1" x="0.0291" y="10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="101" y="670" />
+              <mxPoint x="287" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GEVfJ73HMtoBnoTRmdU5-15" edge="1" parent="1" source="GEVfJ73HMtoBnoTRmdU5-5" style="startArrow=none;;fillColor=none;;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;entryDx=0;entryDy=0;" target="GEVfJ73HMtoBnoTRmdU5-7" value="Báo lỗi trên App">
+          <mxGeometry relative="1" x="0.0272" y="-10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="435" y="670" />
+              <mxPoint x="287" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
