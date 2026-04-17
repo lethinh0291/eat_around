@@ -1,0 +1,19 @@
+# Build
+bin/
+obj/
+
+# Android
+*.apk
+*.aab
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
