@@ -385,6 +385,32 @@ public class ApiService
         }
     }
 
+    public async Task<(bool Success, string Message)> UpdatePoiAsync(POI poi)
+    {
+        if (poi.Id <= 0)
+        {
+            return (false, "POI không hợp lệ.");
+        }
+
+        try
+        {
+            var response = await _httpClient.PutAsJsonAsync($"poi/{poi.Id}", poi);
+            var payload = await response.Content.ReadFromJsonAsync<ApiMessageResponse>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return (true, payload?.Message ?? "Cập nhật quán đã duyệt thành công.");
+            }
+
+            return (false, payload?.Message ?? "Cập nhật quán đã duyệt thất bại.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi cập nhật POI {poi.Id}: {ex.Message}");
+            return (false, "Không thể kết nối máy chủ.");
+        }
+    }
+
     public async Task<(bool Success, string Message)> DeleteMyStoreRegistrationAsync(int id, string ownerName)
     {
         try

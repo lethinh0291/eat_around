@@ -1,0 +1,32 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bg" x1="80" y1="40" x2="1130" y2="660" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#0B4F6C" />
+            <stop offset="0.5" stop-color="#2563EB" />
+            <stop offset="1" stop-color="#14B8A6" />
+        </linearGradient>
+        <radialGradient id="mesh1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(240 220) rotate(16) scale(360 320)">
+            <stop stop-color="#67E8F9" stop-opacity="0.68" />
+            <stop offset="1" stop-color="#67E8F9" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="mesh2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(640 430) rotate(25) scale(460 360)">
+            <stop stop-color="#93C5FD" stop-opacity="0.55" />
+            <stop offset="1" stop-color="#93C5FD" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="mesh3" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(980 180) rotate(-10) scale(300 260)">
+            <stop stop-color="#A7F3D0" stop-opacity="0.58" />
+            <stop offset="1" stop-color="#A7F3D0" stop-opacity="0" />
+        </radialGradient>
+    </defs>
+
+    <rect width="1200" height="700" rx="40" fill="url(#bg)" />
+    <rect width="1200" height="700" rx="40" fill="url(#mesh1)" />
+    <rect width="1200" height="700" rx="40" fill="url(#mesh2)" />
+    <rect width="1200" height="700" rx="40" fill="url(#mesh3)" />
+
+    <path d="M0 620C180 530 370 525 520 560C640 589 820 658 1040 630C1115 621 1165 602 1200 585V700H0V620Z"
+        fill="#E0F2FE" fill-opacity="0.18" />
+</svg>

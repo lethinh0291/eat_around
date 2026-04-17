@@ -83,21 +83,6 @@
                                 StrokeShape="RoundRectangle 14"
                                 Padding="10,8">
                             <Grid ColumnDefinitions="*,Auto">
-                                <Label x:Name="BatteryLabel"
-                                       Text="Tối ưu pin"
-                                       TextColor="{StaticResource TextPrimary}"
-                                       VerticalTextAlignment="Center"/>
-                                <Switch Grid.Column="1"
-                                        x:Name="BatterySwitch"/>
-                            </Grid>
-                        </Border>
-
-                        <Border StrokeThickness="1"
-                                Stroke="#E8D6CA"
-                                BackgroundColor="#FFF9F6"
-                                StrokeShape="RoundRectangle 14"
-                                Padding="10,8">
-                            <Grid ColumnDefinitions="*,Auto">
                                 <Label x:Name="NotificationLabel"
                                        Text="Nhận thông báo"
                                        TextColor="{StaticResource TextPrimary}"

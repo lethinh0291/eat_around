@@ -3,44 +3,89 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ZesTour.Views.MenuPage"
              NavigationPage.HasNavigationBar="False"
-             BackgroundColor="{StaticResource AppBackground}">
+             BackgroundColor="#F7F5F1">
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                 EndPoint="1,1">
+                <GradientStop Color="#FCFBF8"
+                              Offset="0"/>
+                <GradientStop Color="#F4F0EA"
+                              Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <BoxView Color="#F5E7DD"
+                 Opacity="0.28"
+                 HeightRequest="220"
+                 WidthRequest="220"
+                 CornerRadius="110"
+                 TranslationX="-92"
+                 TranslationY="-40"/>
+        <BoxView Color="#DDE7E3"
+                 Opacity="0.28"
+                 HeightRequest="260"
+                 WidthRequest="260"
+                 CornerRadius="130"
+                 TranslationX="240"
+                 TranslationY="680"/>
+
         <ScrollView>
-            <VerticalStackLayout Padding="16,32,16,14"
+            <VerticalStackLayout Padding="16,28,16,20"
                                  Spacing="14">
                 <Border StrokeThickness="0"
                         x:Name="WelcomeCardBorder"
-                        BackgroundColor="{StaticResource Primary}"
-                        StrokeShape="RoundRectangle 24"
-                        Padding="14">
-                    <Grid>
+                        BackgroundColor="#B97148"
+                        StrokeShape="RoundRectangle 28"
+                        HeightRequest="220"
+                        Padding="0">
+                    <Grid x:Name="WelcomeCardHost"
+                          IsClippedToBounds="True">
+                        <BoxView x:Name="WelcomeCardFallbackTint">
+                            <BoxView.Background>
+                                <LinearGradientBrush StartPoint="0,0"
+                                                     EndPoint="1,1">
+                                    <GradientStop Color="#EFE4D8"
+                                                  Offset="0"/>
+                                    <GradientStop Color="#E6D4C5"
+                                                  Offset="0.55"/>
+                                    <GradientStop Color="#D8C0AF"
+                                                  Offset="1"/>
+                                </LinearGradientBrush>
+                            </BoxView.Background>
+                        </BoxView>
                         <Image x:Name="WelcomeCardImage"
                                Aspect="AspectFill"
-                               Opacity="0.4"
+                               Opacity="1"
+                               Scale="1.08"
+                               HorizontalOptions="Fill"
+                               VerticalOptions="Fill"
+                               InputTransparent="True"
                                IsVisible="False"/>
                         <BoxView x:Name="WelcomeCardOverlay"
-                                 BackgroundColor="#441F2937"
+                                 BackgroundColor="#0A000000"
                                  IsVisible="False"/>
 
-                        <VerticalStackLayout Spacing="12">
-                            <Grid ColumnDefinitions="Auto,*"
+                        <VerticalStackLayout Spacing="12"
+                                             Padding="16">
+                            <Grid ColumnDefinitions="Auto,*,Auto"
                                   ColumnSpacing="10">
-                                <Border WidthRequest="48"
-                                        HeightRequest="48"
+                                <Border WidthRequest="52"
+                                        HeightRequest="52"
                                         StrokeThickness="0"
-                                        BackgroundColor="#FFF1E8"
-                                        StrokeShape="RoundRectangle 16">
+                                        BackgroundColor="#FFF5EC"
+                                        StrokeShape="RoundRectangle 18">
                                     <Grid>
                                         <Image x:Name="AvatarImage"
                                                Aspect="AspectFill"
                                                IsVisible="False"/>
                                         <Label x:Name="AvatarInitialsLabel"
                                                Text="U"
-                                               FontSize="18"
+                                               FontSize="19"
                                                FontAttributes="Bold"
                                                HorizontalTextAlignment="Center"
                                                VerticalTextAlignment="Center"
-                                               TextColor="{StaticResource PrimaryDark}"/>
+                                               TextColor="#9A3412"/>
                                     </Grid>
                                 </Border>
 
@@ -50,195 +95,174 @@
                                     <Label x:Name="HelloLabel"
                                            Text="Xin chào"
                                            FontSize="11"
-                                           TextColor="#FFF7F1"/>
+                                           TextColor="#FFF4EC"/>
                                     <Label Text="{Binding User.Name}"
-                                           FontSize="20"
+                                           FontSize="22"
                                            FontAttributes="Bold"
-                                           TextColor="White"/>
-                                    <Border x:Name="RoleBadgeBorder"
-                                            StrokeThickness="0"
-                                            BackgroundColor="#FFF1E8"
-                                            StrokeShape="RoundRectangle 999"
-                                            Padding="8,3"
-                                            HorizontalOptions="Start"
-                                            Margin="0,3,0,0">
-                                        <Label x:Name="RoleBadgeLabel"
-                                               Text="Khách hàng"
-                                               FontSize="10"
-                                               FontAttributes="Bold"
-                                               TextColor="#8E2F18"/>
-                                    </Border>
+                                           TextColor="#FFFDF9"/>
                                 </VerticalStackLayout>
+
+                                <Border Grid.Column="2"
+                                        x:Name="RoleBadgeBorder"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#FFF1E8"
+                                        StrokeShape="RoundRectangle 999"
+                                        Padding="10,5"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Start">
+                                    <Label x:Name="RoleBadgeLabel"
+                                           Text="Khách hàng"
+                                           FontSize="10"
+                                           FontAttributes="Bold"
+                                           TextColor="#7A3F28"/>
+                                </Border>
                             </Grid>
 
-                            <Border StrokeThickness="0"
-                                    BackgroundColor="#B74424"
-                                    StrokeShape="RoundRectangle 14"
-                                    Padding="12,8">
-                                <Entry x:Name="SearchEntry"
-                                       Placeholder="Tìm tính năng: bản đồ, cài đặt, cửa hàng..."
-                                       PlaceholderColor="#FFE4D6"
-                                       TextColor="White"
-                                       BackgroundColor="Transparent"
-                                       FontSize="12"
-                                       Completed="OnSearchCompleted"/>
-                            </Border>
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
 
-                <Border StrokeThickness="1"
-                        Stroke="#D6E1E9"
-                        BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 20"
+                <Border StrokeThickness="0"
+                        BackgroundColor="#FBFAF7"
+                        StrokeShape="RoundRectangle 22"
                         Padding="12">
-                    <VerticalStackLayout Spacing="8">
+                    <VerticalStackLayout Spacing="10">
                         <Label x:Name="ExploreSectionLabel"
                                Text="Khám phá"
                                FontSize="13"
                                FontAttributes="Bold"
-                               TextColor="#0F172A"/>
+                               TextColor="#2F2A25"/>
 
                         <Border x:Name="BannerSection"
                                 IsVisible="False"
                                 StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                BackgroundColor="#FFFFFF"
-                                StrokeShape="RoundRectangle 14"
+                                Stroke="#E7E0D7"
+                                BackgroundColor="#FCFBF8"
+                                StrokeShape="RoundRectangle 16"
                                 Padding="8"
-                                Margin="0,2,0,4">
+                                Margin="0,0,0,2">
                             <VerticalStackLayout Spacing="8">
                                 <CarouselView x:Name="BannerCarousel"
-                                              HeightRequest="146"
+                                              HeightRequest="150"
                                               IndicatorView="BannerIndicator"
                                               PeekAreaInsets="6">
                                     <CarouselView.ItemTemplate>
                                         <DataTemplate>
                                             <Border StrokeThickness="0"
-                                                    StrokeShape="RoundRectangle 12"
+                                                    StrokeShape="RoundRectangle 14"
                                                     Margin="2,0">
                                                 <Image Source="{Binding ImageUrl}"
                                                        Aspect="AspectFill"
-                                                       HeightRequest="146"/>
+                                                       HeightRequest="150"/>
                                             </Border>
                                         </DataTemplate>
                                     </CarouselView.ItemTemplate>
                                 </CarouselView>
                                 <IndicatorView x:Name="BannerIndicator"
                                                HorizontalOptions="Center"
-                                               IndicatorColor="#CFD9E3"
-                                               SelectedIndicatorColor="{StaticResource Primary}"/>
+                                               IndicatorColor="#D5CABC"
+                                               SelectedIndicatorColor="#B66B46"/>
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                BackgroundColor="#F7FAFC"
-                                StrokeShape="RoundRectangle 14"
-                                Padding="12,10">
+                        <Border StrokeThickness="0"
+                                BackgroundColor="#F4E8DD"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="14,12">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnOpenMapTapped"/>
                             </Border.GestureRecognizers>
                             <Grid ColumnDefinitions="*,Auto"
                                   ColumnSpacing="10">
                                 <VerticalStackLayout Grid.Column="0"
-                                                     Spacing="1">
+                                                     Spacing="2"
+                                                     VerticalOptions="Center">
                                     <Label x:Name="DiscoverTitleLabel"
                                            Text="Khám phá điểm đến"
-                                           FontSize="14"
+                                           FontSize="15"
                                            FontAttributes="Bold"
-                                           TextColor="#0F172A"/>
+                                           TextColor="#8A5A42"/>
                                     <Label x:Name="DiscoverSubtitleLabel"
                                            Text="Bản đồ, chỉ đường và phát mô tả tự động"
                                            FontSize="11"
-                                           TextColor="#64748B"/>
+                                           TextColor="#7B6A60"/>
                                 </VerticalStackLayout>
                                 <Label Grid.Column="1"
                                        Text="›"
-                                       FontSize="20"
-                                       TextColor="{StaticResource Primary}"
+                                       FontSize="24"
+                                       TextColor="#B66B46"
                                        VerticalTextAlignment="Center"/>
                             </Grid>
                         </Border>
 
-                        <Border StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                BackgroundColor="#F7FAFC"
-                                StrokeShape="RoundRectangle 14"
-                                Padding="12,10">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnMyTripsTapped"/>
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="*,Auto"
-                                  ColumnSpacing="10">
-                                <VerticalStackLayout Grid.Column="0"
-                                                     Spacing="1">
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="8">
+                            <Border Grid.Column="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#EEF0F4"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="10,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnMyTripsTapped"/>
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
                                     <Label x:Name="MyTripsTitleLabel"
                                            Text="Hành trình của tôi"
-                                           FontSize="14"
+                                           FontSize="13"
                                            FontAttributes="Bold"
-                                           TextColor="#0F172A"/>
+                                           TextColor="#475569"/>
                                     <Label x:Name="MyTripsSubtitleLabel"
                                            Text="Xem lại các điểm bạn đã chọn"
-                                           FontSize="11"
-                                           TextColor="#64748B"/>
+                                           FontSize="10"
+                                           TextColor="#64748B"
+                                           MaxLines="2"
+                                           LineBreakMode="TailTruncation"/>
                                 </VerticalStackLayout>
-                                <Label Grid.Column="1"
-                                       Text="›"
-                                       FontSize="20"
-                                       TextColor="{StaticResource Primary}"
-                                       VerticalTextAlignment="Center"/>
-                            </Grid>
-                        </Border>
+                            </Border>
 
-                        <Border StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                BackgroundColor="#F7FAFC"
-                                StrokeShape="RoundRectangle 14"
-                                Padding="12,10">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnQrTriggerTapped"/>
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="*,Auto"
-                                  ColumnSpacing="10">
-                                <VerticalStackLayout Grid.Column="0"
-                                                     Spacing="1">
+                            <Border Grid.Column="1"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#EEF6F3"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="10,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnQrTriggerTapped"/>
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
                                     <Label x:Name="QrTriggerTitleLabel"
                                            Text="Kích hoạt thuyết minh bằng QR"
-                                           FontSize="14"
+                                           FontSize="13"
                                            FontAttributes="Bold"
-                                           TextColor="#0F172A"/>
+                                           TextColor="#3D6461"
+                                           MaxLines="2"
+                                           LineBreakMode="TailTruncation"/>
                                     <Label x:Name="QrTriggerSubtitleLabel"
                                            Text="Quét mã QR để mở nội dung thuyết minh phù hợp"
-                                           FontSize="11"
-                                           TextColor="#64748B"/>
+                                           FontSize="10"
+                                           TextColor="#64748B"
+                                           MaxLines="2"
+                                           LineBreakMode="TailTruncation"/>
                                 </VerticalStackLayout>
-                                <Label Grid.Column="1"
-                                       Text="›"
-                                       FontSize="20"
-                                       TextColor="{StaticResource Primary}"
-                                       VerticalTextAlignment="Center"/>
-                            </Grid>
-                        </Border>
+                            </Border>
+                        </Grid>
                     </VerticalStackLayout>
                 </Border>
 
-                <Border StrokeThickness="1"
-                        Stroke="#D6E1E9"
-                        BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 20"
+                <Border StrokeThickness="0"
+                        BackgroundColor="#FBFAF7"
+                        StrokeShape="RoundRectangle 22"
                         Padding="12">
                     <VerticalStackLayout Spacing="8">
                         <Label x:Name="AccountSectionLabel"
                                Text="Tài khoản"
                                FontSize="13"
                                FontAttributes="Bold"
-                               TextColor="#0F172A"/>
+                               TextColor="#2F2A25"/>
 
                         <Border StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                BackgroundColor="#F7FAFC"
-                                StrokeShape="RoundRectangle 14"
+                                Stroke="#E6DED5"
+                                BackgroundColor="#FCFBF8"
+                                StrokeShape="RoundRectangle 16"
                                 Padding="12,10">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnAccountTapped"/>
@@ -250,20 +274,20 @@
                                        Text="Tài khoản và thanh toán"
                                        FontSize="14"
                                        FontAttributes="Bold"
-                                       TextColor="#0F172A"
+                                       TextColor="#3E352F"
                                        VerticalTextAlignment="Center"/>
                                 <Label Grid.Column="1"
                                        Text="›"
                                        FontSize="20"
-                                       TextColor="{StaticResource Primary}"
+                                       TextColor="#B66B46"
                                        VerticalTextAlignment="Center"/>
                             </Grid>
                         </Border>
 
                         <Border StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                BackgroundColor="#F7FAFC"
-                                StrokeShape="RoundRectangle 14"
+                                Stroke="#E6DED5"
+                                BackgroundColor="#FCFBF8"
+                                StrokeShape="RoundRectangle 16"
                                 Padding="12,10">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnSettingsTapped"/>
@@ -275,88 +299,77 @@
                                        Text="Cài đặt"
                                        FontSize="14"
                                        FontAttributes="Bold"
-                                       TextColor="#0F172A"
+                                       TextColor="#3E352F"
                                        VerticalTextAlignment="Center"/>
                                 <Label Grid.Column="1"
                                        Text="›"
                                        FontSize="20"
-                                       TextColor="{StaticResource Primary}"
+                                       TextColor="#B66B46"
                                        VerticalTextAlignment="Center"/>
                             </Grid>
                         </Border>
                     </VerticalStackLayout>
                 </Border>
 
-                <Border StrokeThickness="1"
-                        Stroke="#D6E1E9"
-                        x:Name="StoreManagementCard"
-                        BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 20"
+                <Border x:Name="StoreManagementCard"
+                        StrokeThickness="0"
+                        BackgroundColor="#FBFAF7"
+                        StrokeShape="RoundRectangle 22"
                         Padding="12">
                     <VerticalStackLayout Spacing="8">
                         <Label x:Name="SellerSectionLabel"
                                Text="Dành cho người bán"
                                FontSize="13"
                                FontAttributes="Bold"
-                               TextColor="#0F172A"/>
+                               TextColor="#2F2A25"/>
 
-                        <Border StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                BackgroundColor="#F7FAFC"
-                                StrokeShape="RoundRectangle 14"
-                                Padding="12,10">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnStoreManagementTapped"/>
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="*,Auto"
-                                  ColumnSpacing="10">
-                                <Label Grid.Column="0"
-                                       x:Name="StoreManagementLabel"
-                                       Text="Quản lý cửa hàng của tôi"
-                                       FontSize="14"
-                                       FontAttributes="Bold"
-                                       TextColor="#0F172A"
-                                       VerticalTextAlignment="Center"/>
-                                <Label Grid.Column="1"
-                                       Text="›"
-                                       FontSize="20"
-                                       TextColor="{StaticResource Primary}"
-                                       VerticalTextAlignment="Center"/>
-                            </Grid>
-                        </Border>
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="8">
+                            <Border Grid.Column="0"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#F4E8DD"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="10,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStoreManagementTapped"/>
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label x:Name="StoreManagementLabel"
+                                           Text="Quản lý cửa hàng của tôi"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="#8A5A42"
+                                           MaxLines="2"
+                                           LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
+                            </Border>
 
-                        <Border StrokeThickness="1"
-                                Stroke="#D6E1E9"
-                                x:Name="StoreRegistrationCard"
-                                BackgroundColor="#F7FAFC"
-                                StrokeShape="RoundRectangle 14"
-                                Padding="12,10">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnStoreRegistrationTapped"/>
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="*,Auto"
-                                  ColumnSpacing="10">
-                                <Label Grid.Column="0"
-                                       x:Name="StoreRegistrationLabel"
-                                       Text="Gửi đăng ký cửa hàng"
-                                       FontSize="14"
-                                       FontAttributes="Bold"
-                                       TextColor="#0F172A"
-                                       VerticalTextAlignment="Center"/>
-                                <Label Grid.Column="1"
-                                       Text="›"
-                                       FontSize="20"
-                                       TextColor="{StaticResource Primary}"
-                                       VerticalTextAlignment="Center"/>
-                            </Grid>
-                        </Border>
+                            <Border Grid.Column="1"
+                                    x:Name="StoreRegistrationCard"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#EEF2F8"
+                                    StrokeShape="RoundRectangle 16"
+                                    Padding="10,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnStoreRegistrationTapped"/>
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label x:Name="StoreRegistrationLabel"
+                                           Text="Gửi đăng ký cửa hàng"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="#5B6273"
+                                           MaxLines="2"
+                                           LineBreakMode="TailTruncation"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
                     </VerticalStackLayout>
                 </Border>
 
-                <Border StrokeThickness="1"
-                        Stroke="#D6E1E9"
-                        BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 20"
+                <Border StrokeThickness="0"
+                        BackgroundColor="#FBFAF7"
+                        StrokeShape="RoundRectangle 22"
                         Padding="12">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnSupportTapped"/>
@@ -369,7 +382,7 @@
                                    Text="Trợ giúp và phản hồi"
                                    FontSize="14"
                                    FontAttributes="Bold"
-                                   TextColor="#0F172A"/>
+                                   TextColor="#2F2A25"/>
                             <Label x:Name="SupportSubtitleLabel"
                                    Text="Báo lỗi hoặc góp ý để cải thiện ứng dụng"
                                    FontSize="11"
@@ -378,7 +391,7 @@
                         <Label Grid.Column="1"
                                Text="›"
                                FontSize="20"
-                               TextColor="{StaticResource Primary}"
+                               TextColor="#B66B46"
                                VerticalTextAlignment="Center"/>
                     </Grid>
                 </Border>
@@ -392,10 +405,11 @@
                 HorizontalOptions="End"
                 VerticalOptions="End"
                 StrokeThickness="0"
-                BackgroundColor="{StaticResource Primary}"
+                BackgroundColor="#B66B46"
                 StrokeShape="RoundRectangle 18">
-            <Label Text="☰"
-                   FontSize="22"
+            <Label Text="Menu"
+                   FontSize="12"
+                   FontAttributes="Bold"
                    TextColor="White"
                    HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center">
@@ -423,8 +437,8 @@
                 Padding="16,18"
                 TranslationX="320"
                 StrokeThickness="1"
-                Stroke="#E8D6CA"
-                BackgroundColor="#FFFFFF"
+                Stroke="#E6DED5"
+                BackgroundColor="#FCFBF8"
                 StrokeShape="RoundRectangle 24">
             <VerticalStackLayout Spacing="12">
                 <Grid ColumnDefinitions="*,Auto">
@@ -432,18 +446,18 @@
                            Text="Chức năng nhanh"
                            FontSize="18"
                            FontAttributes="Bold"
-                           TextColor="{StaticResource TextPrimary}"/>
+                           TextColor="#2F2A25"/>
 
                     <Border Grid.Column="1"
                             WidthRequest="34"
                             HeightRequest="34"
                             StrokeThickness="1"
-                            Stroke="#E8D6CA"
-                            BackgroundColor="#FFFFFF"
+                            Stroke="#E6DED5"
+                            BackgroundColor="#F9F7F4"
                             StrokeShape="RoundRectangle 12">
                         <Label Text="✕"
                                FontSize="13"
-                               TextColor="{StaticResource TextPrimary}"
+                               TextColor="#3E352F"
                                HorizontalTextAlignment="Center"
                                VerticalTextAlignment="Center">
                             <Label.GestureRecognizers>
@@ -461,8 +475,8 @@
                 <Button x:Name="SidebarHomeButton"
                         Text="Trang chính"
                         Clicked="OnSidebarHomeTapped"
-                        BackgroundColor="{StaticResource Secondary}"
-                        TextColor="{StaticResource PrimaryDark}"
+                        BackgroundColor="#F3ECE5"
+                        TextColor="#5A4B41"
                         CornerRadius="14"
                         HeightRequest="46"
                         FontAttributes="Bold"/>
@@ -470,8 +484,8 @@
                 <Button x:Name="SidebarProfileButton"
                         Text="Hồ sơ người dùng"
                         Clicked="OnSidebarProfileTapped"
-                        BackgroundColor="{StaticResource Secondary}"
-                        TextColor="{StaticResource PrimaryDark}"
+                        BackgroundColor="#F3ECE5"
+                        TextColor="#5A4B41"
                         CornerRadius="14"
                         HeightRequest="46"
                         FontAttributes="Bold"/>
@@ -479,8 +493,8 @@
                 <Button x:Name="SidebarSettingsButton"
                         Text="Cài đặt"
                         Clicked="OnSidebarSettingsTapped"
-                        BackgroundColor="{StaticResource Secondary}"
-                        TextColor="{StaticResource PrimaryDark}"
+                        BackgroundColor="#F3ECE5"
+                        TextColor="#5A4B41"
                         CornerRadius="14"
                         HeightRequest="46"
                         FontAttributes="Bold"/>
@@ -488,8 +502,8 @@
                 <Button x:Name="SidebarSupportButton"
                         Text="Trợ giúp và phản hồi"
                         Clicked="OnSidebarSupportTapped"
-                        BackgroundColor="{StaticResource Secondary}"
-                        TextColor="{StaticResource PrimaryDark}"
+                        BackgroundColor="#F3ECE5"
+                        TextColor="#5A4B41"
                         CornerRadius="14"
                         HeightRequest="46"
                         FontAttributes="Bold"/>

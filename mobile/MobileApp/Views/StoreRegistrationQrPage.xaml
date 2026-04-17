@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             x:Class="ZesTour.Views.StoreRegistrationQrPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource AppBackground}">
+    <Grid Padding="20,44,20,24"
+          RowDefinitions="Auto,Auto,Auto,Auto,*"
+          RowSpacing="12">
+        <Grid ColumnDefinitions="Auto,*"
+              ColumnSpacing="10">
+            <Border WidthRequest="42"
+                    HeightRequest="42"
+                    StrokeThickness="1"
+                    Stroke="#E8D6CA"
+                    BackgroundColor="#FFFFFF"
+                    StrokeShape="RoundRectangle 14">
+                <Label Text="←"
+                       FontSize="18"
+                       TextColor="{StaticResource TextPrimary}"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Border>
+
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="2"
+                                 VerticalOptions="Center">
+                <Label Text="Mã QR cửa hàng"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"/>
+                <Label Text="Khách quét mã để mở chỉ đường tới quán"
+                       FontSize="11"
+                       TextColor="{StaticResource TextSecondary}"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <Border Grid.Row="1"
+                StrokeThickness="1"
+                Stroke="#E8D6CA"
+                BackgroundColor="#FFFFFF"
+                StrokeShape="RoundRectangle 20"
+                Padding="12">
+            <VerticalStackLayout Spacing="6">
+                <Label x:Name="StoreNameLabel"
+                       Text=""
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}"/>
+                <Label x:Name="StoreAddressLabel"
+                       Text=""
+                       FontSize="12"
+                       TextColor="{StaticResource TextSecondary}"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="2"
+                StrokeThickness="1"
+                Stroke="#E8D6CA"
+                BackgroundColor="#FFFFFF"
+                StrokeShape="RoundRectangle 20"
+                Padding="16"
+                HorizontalOptions="Center">
+            <zxing:BarcodeGeneratorView x:Name="StoreQrCodeView"
+                                        WidthRequest="240"
+                                        HeightRequest="240"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        ForegroundColor="#111827"
+                                        BackgroundColor="#FFFFFF"/>
+        </Border>
+
+        <Label Grid.Row="3"
+               Text="Mã QR chứa liên kết Google Maps theo tọa độ quán."
+               FontSize="11"
+               TextColor="{StaticResource TextSecondary}"
+               HorizontalTextAlignment="Center"/>
+
+        <VerticalStackLayout Grid.Row="4"
+                             Spacing="8"
+                             VerticalOptions="End">
+            <Button Text="Mở chỉ đường"
+                    Clicked="OnOpenMapsClicked"
+                    HeightRequest="46"
+                    CornerRadius="14"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    FontAttributes="Bold"/>
+            <Button Text="Sao chép liên kết"
+                    Clicked="OnCopyLinkClicked"
+                    HeightRequest="44"
+                    CornerRadius="14"
+                    BackgroundColor="{StaticResource Secondary}"
+                    TextColor="{StaticResource PrimaryDark}"/>
+            <Button Text="Xong"
+                    Clicked="OnDoneClicked"
+                    HeightRequest="44"
+                    CornerRadius="14"
+                    BackgroundColor="#FFF1E8"
+                    TextColor="{StaticResource PrimaryDark}"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

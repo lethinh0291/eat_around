@@ -6,13 +6,13 @@
     "target.prop.ro.product.manufacturer": "Google",
     "target.prop.ro.product.model": "sdk_gphone64_x86_64",
     "target.prop.ro.product.cpu.abi": "unknown",
-    "deploy.error.code": "ADB0060",
+    "deploy.error.code": "",
     "deploy.tool": "xamarin.sync",
-    "deploy.result": "Failed",
+    "deploy.result": "Success",
     "deploy.supports.fastdev": "True",
     "deploy.systemapp": "False",
-    "deploy.duration.ms": "7760",
-    "pii.deploy.error": "Mono.AndroidTools.InsufficientSpaceException: There is not enough storage space on the device to store package: /data/local/tmp/com.zestech.zestour-Signed.apk. Free up some space and try again.\r\n   at Mono.AndroidTools.Internal.AdbOutputParsing.CheckInstallSuccess(String output, String packageName)\r\n   at Mono.AndroidTools.AndroidDevice.\u003C\u003Ec__DisplayClass105_0.\u003CInstallPackage\u003Eb__0(Task\u00601 t)\r\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\r\n--- End of stack trace from previous location ---\r\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\r\n   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task\u0026 currentTaskSlot, Thread threadPoolThread)\r\n--- End of stack trace from previous location ---\r\n   at AndroidDeviceExtensions.PushAndInstallPackageAsync(AndroidDevice device, PushAndInstallCommand command, CancellationToken token)\r\n   at AndroidDeviceExtensions.PushAndInstallPackageAsync(AndroidDevice device, PushAndInstallCommand command, CancellationToken token)\r\n   at Xamarin.Android.Tasks.FastDeploy.InstallPackage(Boolean installed)\r\n   at Xamarin.Android.Tasks.FastDeploy.InstallPackage(Boolean installed)\r\n   at Xamarin.Android.Tasks.FastDeploy.RunInstall()",
+    "deploy.duration.ms": "9651",
+    "pii.deploy.error": "",
     "pii.deploy.file": ""
   }
 }

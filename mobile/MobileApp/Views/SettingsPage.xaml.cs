@@ -64,8 +64,7 @@ public partial class SettingsPage : ContentPage
         _gpsSensitivityOptions = new List<GpsSensitivityOption>
         {
             new(AppText.Get("Settings_GpsSensitivity_Balanced"), "balanced"),
-            new(AppText.Get("Settings_GpsSensitivity_High"), "high"),
-            new(AppText.Get("Settings_GpsSensitivity_Battery"), "battery")
+            new(AppText.Get("Settings_GpsSensitivity_High"), "high")
         };
     }
 
@@ -123,7 +122,6 @@ public partial class SettingsPage : ContentPage
         StorageHintLabel.Text = AppText.Get("Settings_LocalStorageHint");
         SystemOptionsLabel.Text = AppText.Get("Settings_SystemOptions");
         AutoPlayLabel.Text = AppText.Get("Settings_AutoPlay");
-        BatteryLabel.Text = AppText.Get("Settings_Battery");
         NotificationLabel.Text = AppText.Get("Settings_Notifications");
         StoreNarrationLabel.Text = AppText.Get("Settings_StoreNarration");
         GpsSensitivityLabel.Text = AppText.Get("Settings_GpsSensitivity");
@@ -165,7 +163,6 @@ public partial class SettingsPage : ContentPage
             }
 
             AutoPlaySwitch.IsToggled = data.AutoPlay;
-            BatterySwitch.IsToggled = data.BatteryOptimized;
             NotificationSwitch.IsToggled = data.NotificationEnabled;
             StoreNarrationSwitch.IsToggled = data.StoreNarrationEnabled;
             _savedGpsSensitivityCode = NormalizeGpsSensitivityCode(data.GpsSensitivityCode);
@@ -204,7 +201,6 @@ public partial class SettingsPage : ContentPage
         var data = new SettingData
         {
             AutoPlay = AutoPlaySwitch.IsToggled,
-            BatteryOptimized = BatterySwitch.IsToggled,
             NotificationEnabled = NotificationSwitch.IsToggled,
             StoreNarrationEnabled = StoreNarrationSwitch.IsToggled,
             GpsSensitivityCode = GetSelectedGpsSensitivityCode(),
@@ -242,7 +238,6 @@ public partial class SettingsPage : ContentPage
     private sealed class SettingData
     {
         public bool AutoPlay { get; set; }
-        public bool BatteryOptimized { get; set; }
         public bool NotificationEnabled { get; set; }
         public bool StoreNarrationEnabled { get; set; } = true;
         public string GpsSensitivityCode { get; set; } = "balanced";
@@ -356,7 +351,6 @@ public partial class SettingsPage : ContentPage
         return normalized switch
         {
             "high" => "high",
-            "battery" => "battery",
             _ => "balanced"
         };
     }

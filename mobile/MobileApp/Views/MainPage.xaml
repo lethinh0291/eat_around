@@ -79,6 +79,71 @@
                                                    HorizontalOptions="Fill"
                                                    VerticalOptions="Fill"/>
 
+                                          <VerticalStackLayout HorizontalOptions="Fill"
+                                                               VerticalOptions="Start"
+                                                               Margin="12,12,62,0"
+                                                               Spacing="8">
+                                                 <Border BackgroundColor="#FFFFFF"
+                                                         StrokeThickness="1"
+                                                         Stroke="#E8D6CA"
+                                                         StrokeShape="RoundRectangle 18">
+                                                        <SearchBar x:Name="PoiSearchBar"
+                                                                   Placeholder="Tìm quán ăn..."
+                                                                   BackgroundColor="Transparent"
+                                                                   TextColor="{StaticResource TextPrimary}"
+                                                                   PlaceholderColor="{StaticResource TextSecondary}"
+                                                                   SearchButtonPressed="OnPoiSearchButtonPressed"
+                                                                   TextChanged="OnPoiSearchTextChanged"/>
+                                                 </Border>
+
+                                                 <Border x:Name="PoiSearchSuggestionsBorder"
+                                                         BackgroundColor="#FFFFFF"
+                                                         StrokeThickness="1"
+                                                         Stroke="#E8D6CA"
+                                                         StrokeShape="RoundRectangle 18"
+                                                         IsVisible="False">
+                                                        <CollectionView x:Name="PoiSearchSuggestionsView"
+                                                                        SelectionMode="Single"
+                                                                        SelectionChanged="OnPoiSearchSuggestionSelected"
+                                                                        HeightRequest="220"
+                                                                        BackgroundColor="Transparent">
+                                                               <CollectionView.ItemTemplate>
+                                                                      <DataTemplate>
+                                                                             <Border Padding="12,10"
+                                                                                     BackgroundColor="#FFFDF9"
+                                                                                     StrokeThickness="0">
+                                                                                    <Grid ColumnDefinitions="Auto,*"
+                                                                                          ColumnSpacing="10">
+                                                                                           <Border WidthRequest="46"
+                                                                                                   HeightRequest="46"
+                                                                                                   StrokeThickness="0"
+                                                                                                   BackgroundColor="#F5E7DB"
+                                                                                                   StrokeShape="RoundRectangle 12">
+                                                                                                  <Image Source="{Binding ThumbnailSource}"
+                                                                                                         Aspect="AspectFill"/>
+                                                                                           </Border>
+
+                                                                                           <VerticalStackLayout Grid.Column="1"
+                                                                                                                Spacing="2"
+                                                                                                                VerticalOptions="Center">
+                                                                                                  <Label Text="{Binding Title}"
+                                                                                                         FontSize="13"
+                                                                                                         FontAttributes="Bold"
+                                                                                                         TextColor="{StaticResource TextPrimary}"/>
+                                                                                                  <Label Text="{Binding Subtitle}"
+                                                                                                         FontSize="11"
+                                                                                                         TextColor="{StaticResource TextSecondary}"
+                                                                                                         LineBreakMode="TailTruncation"/>
+                                                                                           </VerticalStackLayout>
+                                                                                    </Grid>
+                                                                             </Border>
+                                                                      </DataTemplate>
+                                                               </CollectionView.ItemTemplate>
+                                                        </CollectionView>
+                                                 </Border>
+
+                                          </VerticalStackLayout>
+
                                           <VerticalStackLayout HorizontalOptions="End"
                                                                VerticalOptions="Start"
                                                                Margin="0,14,12,0"
@@ -125,19 +190,46 @@
                                            StrokeThickness="0"
                                            BackgroundColor="#FFF9F6"
                                            StrokeShape="RoundRectangle 26,26,28,28"
-                                           Padding="16,14,16,16">
-                                          <VerticalStackLayout Spacing="12">
+                                           Padding="12,10,12,12">
+                                          <VerticalStackLayout Spacing="8">
+                                                 <Border x:Name="PoiFeaturedImageBorder"
+                                                         HeightRequest="108"
+                                                         BackgroundColor="#F5E7DB"
+                                                         StrokeThickness="0"
+                                                         StrokeShape="RoundRectangle 20">
+                                                        <Grid>
+                                                               <Image x:Name="PoiFeaturedImage"
+                                                                      Aspect="AspectFill"
+                                                                      IsVisible="False"/>
+
+                                                               <VerticalStackLayout x:Name="PoiFeaturedImagePlaceholder"
+                                                                                    HorizontalOptions="Center"
+                                                                                    VerticalOptions="Center"
+                                                                                    Spacing="4">
+                                                                      <Image Source="loading_logo.svg"
+                                                                             WidthRequest="70"
+                                                                             HeightRequest="70"
+                                                                             Aspect="AspectFit"/>
+                                                                      <Label Text="Ảnh quán ăn"
+                                                                             FontSize="11"
+                                                                             FontAttributes="Bold"
+                                                                             TextColor="#8E2F18"
+                                                                             HorizontalTextAlignment="Center"/>
+                                                               </VerticalStackLayout>
+                                                        </Grid>
+                                                 </Border>
+
                                                  <Grid ColumnDefinitions="Auto,*"
                                                        ColumnSpacing="10">
                                                         <Border StrokeThickness="0"
                                                                 BackgroundColor="#FFF1E8"
-                                                                Padding="12,7"
+                                                                Padding="10,6"
                                                                 StrokeShape="RoundRectangle 14">
                                                                <Label x:Name="PoiBadgeLabel"
                                                                       Text="ĐỊA ĐIỂM"
                                                                       FontAttributes="Bold"
                                                                       TextColor="#8E2F18"
-                                                                      FontSize="11"/>
+                                                                      FontSize="10"/>
                                                         </Border>
 
                                                         <VerticalStackLayout Grid.Column="1"
@@ -145,61 +237,56 @@
                                                                              VerticalOptions="Center">
                                                                <Label x:Name="LocationTitleLabel"
                                                                       Text="Địa điểm trên bản đồ"
-                                                                      FontSize="12"
+                                                                      FontSize="11"
                                                                       TextColor="{StaticResource TextSecondary}"/>
                                                                <Label x:Name="NowPlayingLabel"
                                                                       Text="Chạm vào bản đồ để chọn địa điểm"
-                                                                      FontSize="16"
+                                                                      FontSize="14"
                                                                       FontAttributes="Bold"
                                                                       TextColor="{StaticResource TextPrimary}"/>
                                                                <Label x:Name="AddressLabel"
                                                                       Text="Số nhà, đường: Chưa có thông tin"
-                                                                      FontSize="12"
+                                                                      FontSize="11"
                                                                       TextColor="{StaticResource TextSecondary}"/>
                                                                <Label x:Name="StoreTriggerStatusLabel"
                                                                       Text="Chưa vào vùng quán nào"
-                                                                      FontSize="11"
+                                                                      FontSize="10"
                                                                       FontAttributes="Bold"
                                                                       TextColor="#0F766E"/>
+                                                               <Label x:Name="StoreDebugDistanceLabel"
+                                                                      Text="Khoảng cách: --"
+                                                                      FontSize="9"
+                                                                      TextColor="{StaticResource TextSecondary}"/>
+                                                               <Label x:Name="StoreDebugRadiusLabel"
+                                                                      Text="Radius hiệu dụng: --"
+                                                                      FontSize="9"
+                                                                      TextColor="{StaticResource TextSecondary}"/>
+                                                               <Label x:Name="StoreDebugAccuracyLabel"
+                                                                      Text="Accuracy GPS: --"
+                                                                      FontSize="9"
+                                                                      TextColor="{StaticResource TextSecondary}"/>
                                                         </VerticalStackLayout>
                                                  </Grid>
 
-                                                 <Grid ColumnDefinitions="*,*"
+                                                 <Grid ColumnDefinitions="*"
                                                        ColumnSpacing="10">
                                                         <Border StrokeThickness="1"
                                                                 Stroke="#E8D6CA"
                                                                 BackgroundColor="#FFFFFF"
-                                                                Padding="10"
-                                                                StrokeShape="RoundRectangle 16">
+                                                                Padding="8"
+                                                                StrokeShape="RoundRectangle 14">
                                                                <Grid ColumnDefinitions="*,Auto"
                                                                      ColumnSpacing="8">
                                                                       <Label Text="Tự động phát"
                                                                              x:Name="AutoPlayLabel"
-                                                                             FontSize="12"
+                                                                             FontSize="11"
                                                                              TextColor="{StaticResource TextPrimary}"
                                                                              VerticalTextAlignment="Center"/>
                                                                       <Switch Grid.Column="1"
+                                                                              x:Name="AutoPlaySwitch"
+                                                                              Scale="0.9"
                                                                               IsToggled="True"
                                                                               Toggled="OnAutoPlayToggled"/>
-                                                               </Grid>
-                                                        </Border>
-
-                                                        <Border Grid.Column="1"
-                                                                StrokeThickness="1"
-                                                                Stroke="#E8D6CA"
-                                                                BackgroundColor="#FFFFFF"
-                                                                Padding="10"
-                                                                StrokeShape="RoundRectangle 16">
-                                                               <Grid ColumnDefinitions="*,Auto"
-                                                                     ColumnSpacing="8">
-                                                                      <Label Text="Tiết kiệm pin"
-                                                                             x:Name="BatterySaverLabel"
-                                                                             FontSize="12"
-                                                                             TextColor="{StaticResource TextPrimary}"
-                                                                             VerticalTextAlignment="Center"/>
-                                                                      <Switch Grid.Column="1"
-                                                                              IsToggled="False"
-                                                                              Toggled="OnBatteryOptimizedToggled"/>
                                                                </Grid>
                                                         </Border>
                                                  </Grid>

@@ -58,7 +58,6 @@ public partial class StoreManagementPage : ContentPage
         SelectOneBadgeLabel.Text = AppText.Get("StoreManagement_SelectOne");
         StoreInfoTitleLabel.Text = AppText.Get("StoreManagement_StoreInfoTitle");
         StoreInfoSubtitleLabel.Text = AppText.Get("StoreManagement_StoreInfoSubtitle");
-        AutoPointBadgeLabel.Text = AppText.Get("StoreManagement_AutoPoint");
         StoreNameEntry.Placeholder = AppText.Get("StoreManagement_StoreName");
         PhoneEntry.Placeholder = AppText.Get("StoreManagement_Phone");
         CategoryEntry.Placeholder = AppText.Get("StoreManagement_Category");
@@ -109,7 +108,10 @@ public partial class StoreManagementPage : ContentPage
         {
             StatusLabel.Text = AppText.Get("StoreManagement_CannotResolveOwner");
             RegistrationsCollection.ItemsSource = null;
+            RegistrationsCollection.IsVisible = false;
+            EmptyStateCard.IsVisible = true;
             ClearEditor();
+            await HideEditorModalAsync(false);
             return;
         }
 
@@ -153,13 +155,20 @@ public partial class StoreManagementPage : ContentPage
         if (_items.Count == 0)
         {
             StatusLabel.Text = AppText.Get("StoreManagement_NoRegistrations");
+            EmptyStateTitleLabel.Text = AppText.Get("StoreManagement_NoRegistrations");
+            EmptyStateSubtitleLabel.Text = "Hãy gửi đăng ký quán mới hoặc tải lại sau khi quán được duyệt.";
+            RegistrationsCollection.IsVisible = false;
+            EmptyStateCard.IsVisible = true;
             ClearEditor();
+            await HideEditorModalAsync(false);
             return;
         }
 
-        _selected = _items[0];
-        RegistrationsCollection.SelectedItem = _selected;
-        FillEditor(_selected);
+        RegistrationsCollection.IsVisible = true;
+        EmptyStateCard.IsVisible = false;
+        _selected = null;
+        ClearEditor();
+        await HideEditorModalAsync(false);
     }
 
     private void FillEditor(ApiService.ManagementStoreRegistration item)
@@ -579,6 +588,29 @@ public partial class StoreManagementPage : ContentPage
         await LoadMyStoresAsync();
     }
 
+    private async void OnEditStoreClicked(object? sender, EventArgs e)
+    {
+        if (sender is not Button button || button.CommandParameter is not ApiService.ManagementStoreRegistration item)
+        {
+            return;
+        }
+
+        _selected = item;
+        FillEditor(item);
+        await ShowEditorModalAsync();
+        await Task.CompletedTask;
+    }
+
+    private async void OnCloseEditorTapped(object? sender, TappedEventArgs e)
+    {
+        await HideEditorModalAsync();
+    }
+
+    private async void OnEditorBackdropTapped(object? sender, TappedEventArgs e)
+    {
+        await HideEditorModalAsync();
+    }
+
     private void OnRegistrationSelected(object? sender, SelectionChangedEventArgs e)
     {
         var item = e.CurrentSelection?.FirstOrDefault() as ApiService.ManagementStoreRegistration;
@@ -598,12 +630,6 @@ public partial class StoreManagementPage : ContentPage
         if (_selected is null)
         {
             StatusLabel.Text = AppText.Get("StoreManagement_SelectToUpdate");
-            return;
-        }
-
-        if (_selected.IsLivePoi)
-        {
-            StatusLabel.Text = "Quán đã được duyệt. Vui lòng chỉnh mô tả trong trang Chủ quán trên Admin Web.";
             return;
         }
 
@@ -643,13 +669,75 @@ public partial class StoreManagementPage : ContentPage
         _selected.ImageUrls = GetImageUrlsFromEditor();
         _selected.ImageUrl = GetPrimaryImageUrlFromEditor();
 
+        if (_selected.IsLivePoi)
+        {
+            var livePoi = await ResolveLivePoiForUpdateAsync(_selected);
+            if (livePoi is null)
+            {
+                StatusLabel.TextColor = Color.FromArgb("#B91C1C");
+                StatusLabel.Text = "Không tìm thấy quán đã duyệt để cập nhật.";
+                return;
+            }
+
+            var livePoiResult = await _apiService.UpdatePoiAsync(livePoi);
+            StatusLabel.TextColor = livePoiResult.Success ? Color.FromArgb("#8E2F18") : Color.FromArgb("#B91C1C");
+            StatusLabel.Text = livePoiResult.Message;
+
+            if (livePoiResult.Success)
+            {
+                await DisplayAlertAsync(
+                    "Thông báo",
+                    "Cập nhật thông tin quán thành công.",
+                    AppText.Get("Common_Ok"));
+                await HideEditorModalAsync();
+                await LoadMyStoresAsync();
+            }
+
+            return;
+        }
+
         var result = await _apiService.UpdateMyStoreRegistrationAsync(_selected, ownerName);
         StatusLabel.TextColor = result.Success ? Color.FromArgb("#8E2F18") : Color.FromArgb("#B91C1C");
         StatusLabel.Text = result.Message;
         if (result.Success)
         {
+            await DisplayAlertAsync(
+                "Thông báo",
+                "Cập nhật thông tin quán thành công.",
+                AppText.Get("Common_Ok"));
+            await HideEditorModalAsync();
             await LoadMyStoresAsync();
         }
+    }
+
+    private async Task<SharedLib.Models.POI?> ResolveLivePoiForUpdateAsync(ApiService.ManagementStoreRegistration registration)
+    {
+        var pois = await _apiService.GetPoisAsync();
+        var currentPoi = pois.FirstOrDefault(poi => poi.Id == registration.Id);
+        if (currentPoi is null)
+        {
+            return null;
+        }
+
+        currentPoi.Name = registration.StoreName;
+        currentPoi.ImageUrl = string.IsNullOrWhiteSpace(registration.ImageUrl) ? null : registration.ImageUrl.Trim();
+        currentPoi.Latitude = registration.Latitude ?? currentPoi.Latitude;
+        currentPoi.Longitude = registration.Longitude ?? currentPoi.Longitude;
+        currentPoi.Radius = registration.RadiusMeters is > 0 ? registration.RadiusMeters.Value : currentPoi.Radius;
+        currentPoi.Description = BuildPoiDescriptionForUpdate(registration);
+
+        return currentPoi;
+    }
+
+    private static string BuildPoiDescriptionForUpdate(ApiService.ManagementStoreRegistration registration)
+    {
+        var owner = string.IsNullOrWhiteSpace(registration.OwnerName) ? "Không rõ" : registration.OwnerName.Trim();
+        var phone = string.IsNullOrWhiteSpace(registration.Phone) ? "--" : registration.Phone.Trim();
+        var address = string.IsNullOrWhiteSpace(registration.Address) ? "Chưa có thông tin" : registration.Address.Trim();
+        var category = string.IsNullOrWhiteSpace(registration.Category) ? "Ẩm thực" : registration.Category.Trim();
+        var narration = string.IsNullOrWhiteSpace(registration.Description) ? "Chưa có mô tả" : registration.Description.Trim();
+
+        return $"Liên hệ: {owner} - {phone} | Địa chỉ: {address} | Loại hình: {category} | Mô tả: {narration}";
     }
 
     private async void OnDeleteClicked(object? sender, EventArgs e)
@@ -685,8 +773,53 @@ public partial class StoreManagementPage : ContentPage
 
         if (result.Success)
         {
+            await HideEditorModalAsync();
             await LoadMyStoresAsync();
         }
+    }
+
+    private async Task ShowEditorModalAsync()
+    {
+        if (StoreEditorOverlay.IsVisible)
+        {
+            return;
+        }
+
+        StoreEditorOverlay.Opacity = 0;
+        StoreEditorPanel.Opacity = 0;
+        StoreEditorPanel.TranslationY = 20;
+        StoreEditorOverlay.IsVisible = true;
+
+        await Task.WhenAll(
+            StoreEditorOverlay.FadeToAsync(1, 160, Easing.CubicOut),
+            StoreEditorPanel.FadeToAsync(1, 170, Easing.CubicOut),
+            StoreEditorPanel.TranslateToAsync(0, 0, 180, Easing.CubicOut)
+        );
+    }
+
+    private async Task HideEditorModalAsync(bool animated = true)
+    {
+        if (!StoreEditorOverlay.IsVisible)
+        {
+            return;
+        }
+
+        if (animated)
+        {
+            await Task.WhenAll(
+                StoreEditorOverlay.FadeToAsync(0, 120, Easing.CubicIn),
+                StoreEditorPanel.FadeToAsync(0, 120, Easing.CubicIn),
+                StoreEditorPanel.TranslateToAsync(0, 16, 120, Easing.CubicIn)
+            );
+        }
+        else
+        {
+            StoreEditorOverlay.Opacity = 0;
+            StoreEditorPanel.Opacity = 0;
+            StoreEditorPanel.TranslationY = 20;
+        }
+
+        StoreEditorOverlay.IsVisible = false;
     }
 
     private async void OnBackTapped(object? sender, TappedEventArgs e)

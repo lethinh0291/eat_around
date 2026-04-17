@@ -8,7 +8,22 @@ public class AuthService
 {
     private const string CurrentUserKey = "zes_current_user_v2";
     private const string MenuWelcomeImagePathKeyPrefix = "zes_menu_welcome_image_v1";
+    private const string MenuWelcomeCropXKeyPrefix = "zes_menu_welcome_crop_x_v1";
+    private const string MenuWelcomeCropYKeyPrefix = "zes_menu_welcome_crop_y_v1";
+    private const string BuiltInAssetPrefix = "asset:";
     private readonly ApiService _apiService;
+
+    private static readonly HashSet<string> BuiltInMenuWelcomeBackgroundAssets = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "menu_welcome_bg_aurora.svg",
+        "menu_welcome_bg_neon_grid.svg",
+        "menu_welcome_bg_sunset_glass.svg",
+        "menu_welcome_bg_soft_mesh.svg",
+        "menu_welcome_bg_ocean_wave.svg",
+        "menu_welcome_bg_urban_night.svg",
+        "menu_welcome_bg_mint_flow.svg",
+        "menu_welcome_bg_rose_tech.svg"
+    };
 
     public User? CurrentUser { get; private set; }
 
@@ -63,50 +78,6 @@ public class AuthService
         return (true, update.Message);
     }
 
-    public async Task<(bool Success, string Message)> UpdateMenuWelcomeImageAsync(byte[] imageBytes, string fileName)
-    {
-        if (CurrentUser is null)
-        {
-            return (false, "Bạn cần đăng nhập trước.");
-        }
-
-        if (imageBytes.Length == 0)
-        {
-            return (false, "Ảnh không hợp lệ.");
-        }
-
-        try
-        {
-            var key = BuildMenuWelcomeImagePreferenceKey(CurrentUser.Id);
-            var previousPath = Preferences.Default.Get(key, string.Empty);
-
-            var extension = Path.GetExtension(fileName)?.Trim().ToLowerInvariant();
-            if (string.IsNullOrWhiteSpace(extension) || extension.Length > 8)
-            {
-                extension = ".jpg";
-            }
-
-            var folderPath = Path.Combine(FileSystem.AppDataDirectory, "menu-welcome-images");
-            Directory.CreateDirectory(folderPath);
-
-            var filePath = Path.Combine(folderPath, $"user_{CurrentUser.Id}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}{extension}");
-            await File.WriteAllBytesAsync(filePath, imageBytes);
-
-            Preferences.Default.Set(key, filePath);
-
-            if (!string.IsNullOrWhiteSpace(previousPath) && !string.Equals(previousPath, filePath, StringComparison.OrdinalIgnoreCase) && File.Exists(previousPath))
-            {
-                File.Delete(previousPath);
-            }
-
-            return (true, "Đã cập nhật ảnh nền thẻ chào.");
-        }
-        catch (Exception ex)
-        {
-            return (false, $"Không thể lưu ảnh nền: {ex.Message}");
-        }
-    }
-
     public void ClearMenuWelcomeImage()
     {
         if (CurrentUser is null)
@@ -115,32 +86,83 @@ public class AuthService
         }
 
         var key = BuildMenuWelcomeImagePreferenceKey(CurrentUser.Id);
-        var filePath = Preferences.Default.Get(key, string.Empty);
+        var source = Preferences.Default.Get(key, string.Empty);
         Preferences.Default.Remove(key);
+        Preferences.Default.Remove(BuildMenuWelcomeCropXPreferenceKey(CurrentUser.Id));
+        Preferences.Default.Remove(BuildMenuWelcomeCropYPreferenceKey(CurrentUser.Id));
 
-        if (!string.IsNullOrWhiteSpace(filePath) && File.Exists(filePath))
-        {
-            try
-            {
-                File.Delete(filePath);
-            }
-            catch
-            {
-                // Ignore file cleanup errors to avoid breaking user flow.
-            }
-        }
+        DeleteLocalBackgroundFileIfNeeded(source, null);
     }
 
-    public string? GetMenuWelcomeImagePath()
+    public (string? Source, bool IsBuiltInAsset) GetMenuWelcomeImageSource()
     {
         if (CurrentUser is null)
         {
-            return null;
+            return (null, false);
         }
 
         var key = BuildMenuWelcomeImagePreferenceKey(CurrentUser.Id);
         var value = Preferences.Default.Get(key, string.Empty);
-        return string.IsNullOrWhiteSpace(value) ? null : value;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return (null, false);
+        }
+
+        if (value.StartsWith(BuiltInAssetPrefix, StringComparison.OrdinalIgnoreCase))
+        {
+            return (value[BuiltInAssetPrefix.Length..], true);
+        }
+
+        return (value, false);
+    }
+
+    public (bool Success, string Message) UseBuiltInMenuWelcomeImage(string assetFileName)
+    {
+        if (CurrentUser is null)
+        {
+            return (false, "Bạn cần đăng nhập trước.");
+        }
+
+        if (string.IsNullOrWhiteSpace(assetFileName) || !BuiltInMenuWelcomeBackgroundAssets.Contains(assetFileName))
+        {
+            return (false, "Mẫu nền không hợp lệ.");
+        }
+
+        var key = BuildMenuWelcomeImagePreferenceKey(CurrentUser.Id);
+        var previousSource = Preferences.Default.Get(key, string.Empty);
+
+        Preferences.Default.Set(key, $"{BuiltInAssetPrefix}{assetFileName}");
+        SetMenuWelcomeCropOffset(0f, 0f);
+        DeleteLocalBackgroundFileIfNeeded(previousSource, null);
+
+        return (true, "Đã áp dụng mẫu nền thẻ chào.");
+    }
+
+    public void SetMenuWelcomeCropOffset(float normalizedOffsetX, float normalizedOffsetY)
+    {
+        if (CurrentUser is null)
+        {
+            return;
+        }
+
+        var clampedX = Math.Clamp(normalizedOffsetX, -1f, 1f);
+        var clampedY = Math.Clamp(normalizedOffsetY, -1f, 1f);
+
+        Preferences.Default.Set(BuildMenuWelcomeCropXPreferenceKey(CurrentUser.Id), clampedX);
+        Preferences.Default.Set(BuildMenuWelcomeCropYPreferenceKey(CurrentUser.Id), clampedY);
+    }
+
+    public (float OffsetX, float OffsetY) GetMenuWelcomeCropOffset()
+    {
+        if (CurrentUser is null)
+        {
+            return (0f, 0f);
+        }
+
+        var offsetX = Preferences.Default.Get(BuildMenuWelcomeCropXPreferenceKey(CurrentUser.Id), 0f);
+        var offsetY = Preferences.Default.Get(BuildMenuWelcomeCropYPreferenceKey(CurrentUser.Id), 0f);
+
+        return (Math.Clamp(offsetX, -1f, 1f), Math.Clamp(offsetY, -1f, 1f));
     }
 
     public Task SignOutAsync()
@@ -189,5 +211,42 @@ public class AuthService
     private static string BuildMenuWelcomeImagePreferenceKey(int userId)
     {
         return $"{MenuWelcomeImagePathKeyPrefix}_{userId}";
+    }
+
+    private static string BuildMenuWelcomeCropXPreferenceKey(int userId)
+    {
+        return $"{MenuWelcomeCropXKeyPrefix}_{userId}";
+    }
+
+    private static string BuildMenuWelcomeCropYPreferenceKey(int userId)
+    {
+        return $"{MenuWelcomeCropYKeyPrefix}_{userId}";
+    }
+
+    private static void DeleteLocalBackgroundFileIfNeeded(string? sourceValue, string? keepPath)
+    {
+        if (string.IsNullOrWhiteSpace(sourceValue) || sourceValue.StartsWith(BuiltInAssetPrefix, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(keepPath) && string.Equals(sourceValue, keepPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        if (!File.Exists(sourceValue))
+        {
+            return;
+        }
+
+        try
+        {
+            File.Delete(sourceValue);
+        }
+        catch
+        {
+            // Ignore file cleanup errors to avoid breaking user flow.
+        }
     }
 }

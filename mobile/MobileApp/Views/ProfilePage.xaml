@@ -165,27 +165,202 @@
                                 HeightRequest="48"
                                 FontAttributes="Bold"/>
 
-                        <Grid ColumnDefinitions="*,*"
-                              ColumnSpacing="10">
-                            <Button x:Name="ChangeMenuWelcomeImageButton"
-                                    Text="Đổi ảnh nền thẻ chào"
-                                    Clicked="OnChangeMenuWelcomeImageClicked"
-                                    BackgroundColor="#FFEDD5"
-                                    TextColor="#9A3412"
-                                    CornerRadius="14"
-                                    HeightRequest="44"
-                                    FontAttributes="Bold"/>
+                        <Button x:Name="ResetMenuWelcomeImageButton"
+                                Text="Trả về nền cam"
+                                Clicked="OnResetMenuWelcomeImageClicked"
+                                BackgroundColor="#FFF7ED"
+                                TextColor="#9A3412"
+                                CornerRadius="14"
+                                HeightRequest="44"
+                                FontAttributes="Bold"/>
 
-                            <Button Grid.Column="1"
-                                    x:Name="ResetMenuWelcomeImageButton"
-                                    Text="Trả về nền cam"
-                                    Clicked="OnResetMenuWelcomeImageClicked"
-                                    BackgroundColor="#FFF7ED"
-                                    TextColor="#9A3412"
-                                    CornerRadius="14"
-                                    HeightRequest="44"
-                                    FontAttributes="Bold"/>
-                        </Grid>
+                        <Border x:Name="WelcomeBackgroundEditorBorder"
+                                IsVisible="False"
+                                StrokeThickness="1"
+                                Stroke="#F2D3B8"
+                                BackgroundColor="#FFF7ED"
+                                StrokeShape="RoundRectangle 18"
+                                Padding="12"
+                                Margin="0,2,0,0">
+                            <VerticalStackLayout Spacing="10">
+                                <Label x:Name="WelcomeEditorTitleLabel"
+                                       Text="Căn ảnh nền thẻ"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="#9A3412"/>
+                                <Label x:Name="WelcomeEditorHintLabel"
+                                       Text="Kéo ảnh trong khung để chỉnh vùng hiển thị trên thẻ chào"
+                                       FontSize="11"
+                                       TextColor="#7C2D12"/>
+
+                                <Border x:Name="WelcomePreviewHost"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#EA580C"
+                                        StrokeShape="RoundRectangle 18"
+                                        HeightRequest="148"
+                                        Padding="0">
+                                    <Grid IsClippedToBounds="True">
+                                        <Image x:Name="WelcomePreviewImage"
+                                               Aspect="AspectFill"
+                                               Scale="1.22"
+                                               IsVisible="False">
+                                            <Image.GestureRecognizers>
+                                                <PanGestureRecognizer PanUpdated="OnWelcomePreviewPanUpdated"/>
+                                            </Image.GestureRecognizers>
+                                        </Image>
+                                        <BoxView x:Name="WelcomePreviewOverlay"
+                                                 IsVisible="False"
+                                                 BackgroundColor="#29121B2A"/>
+                                        <HorizontalStackLayout HorizontalOptions="End"
+                                                               VerticalOptions="Start"
+                                                               Margin="8"
+                                                               Spacing="6">
+                                            <Border StrokeThickness="0"
+                                                    BackgroundColor="#E6FFFFFF"
+                                                    StrokeShape="RoundRectangle 999"
+                                                    Padding="10,4">
+                                                <Label x:Name="WelcomeEditorTipLabel"
+                                                       Text="Kéo ảnh"
+                                                       FontSize="10"
+                                                       TextColor="#7C2D12"
+                                                       FontAttributes="Bold"/>
+                                            </Border>
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </Border>
+
+                                <Label x:Name="WelcomePresetLabel"
+                                       Text="Mẫu nền hiện đại"
+                                       FontSize="12"
+                                       FontAttributes="Bold"
+                                       TextColor="#9A3412"/>
+
+                                <Grid ColumnDefinitions="*,*"
+                                      ColumnSpacing="8"
+                                      RowDefinitions="Auto,Auto,Auto,Auto"
+                                      RowSpacing="8">
+                                    <Border Grid.Row="0"
+                                            Grid.Column="0"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetAuroraTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_aurora.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border Grid.Row="0"
+                                            Grid.Column="1"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetNeonGridTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_neon_grid.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border Grid.Row="1"
+                                            Grid.Column="0"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetSunsetGlassTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_sunset_glass.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border Grid.Row="1"
+                                            Grid.Column="1"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetSoftMeshTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_soft_mesh.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border Grid.Row="2"
+                                            Grid.Column="0"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetOceanWaveTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_ocean_wave.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border Grid.Row="2"
+                                            Grid.Column="1"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetUrbanNightTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_urban_night.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border Grid.Row="3"
+                                            Grid.Column="0"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetMintFlowTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_mint_flow.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border Grid.Row="3"
+                                            Grid.Column="1"
+                                            StrokeThickness="1"
+                                            Stroke="#F2D3B8"
+                                            BackgroundColor="#FFFFFF"
+                                            StrokeShape="RoundRectangle 14"
+                                            Padding="4">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnApplyPresetRoseTechTapped"/>
+                                        </Border.GestureRecognizers>
+                                        <Image Source="menu_welcome_bg_rose_tech.svg"
+                                               HeightRequest="66"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
 
                         <Label x:Name="MessageLabel"
                                Text=""

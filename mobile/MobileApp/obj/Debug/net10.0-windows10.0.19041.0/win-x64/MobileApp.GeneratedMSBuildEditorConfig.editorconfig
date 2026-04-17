@@ -187,3 +187,13 @@ build_metadata.AdditionalFiles.Inflator = SourceGen
 build_metadata.AdditionalFiles.NoWarn = 
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
+
+[D:/CODE/C/mobile/MobileApp/Views/StoreRegistrationQrPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = MobileApp.Views.StoreRegistrationQrPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\StoreRegistrationQrPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\StoreRegistrationQrPage.xaml
+build_metadata.AdditionalFiles.Inflator = SourceGen
+build_metadata.AdditionalFiles.NoWarn = 
+build_metadata.AdditionalFiles.EnableDiagnostics = 
+build_metadata.AdditionalFiles.LineInfo = 

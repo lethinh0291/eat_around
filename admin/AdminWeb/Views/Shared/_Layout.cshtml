@@ -19,72 +19,105 @@
         var isAdmin = User.IsInRole("admin");
         var isSeller = User.IsInRole("seller");
         var brandController = isSeller ? "OwnerPortal" : "Home";
-    }
-    <header class="admin-header">
-        <nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
-            <div class="container-fluid px-4">
-                <a class="navbar-brand brand-mark" asp-area="" asp-controller="@brandController" asp-action="Index">
-                    <img src="~/images/logo.svg" alt="ZesTour" class="brand-logo" />
-                    ZesTour Admin
-                </a>
-                @if (isAuthenticated)
-                {
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav"
-                            aria-controls="adminNav" aria-expanded="false" aria-label="Menu">
-                        Menu
-                    </button>
-                    <div class="collapse navbar-collapse" id="adminNav">
-                        <ul class="navbar-nav ms-auto gap-2">
-                            @if (isAdmin)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="Home"
-                                       asp-action="Index">Dashboard</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="AdminManagement"
-                                       asp-action="Users">Users</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="AdminManagement"
-                                       asp-action="Stores">Quán ăn</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="Banners"
-                                       asp-action="Index">Banner</a>
-                                </li>
-                            }
-                            else if (isSeller)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link admin-nav-link" asp-area="" asp-controller="OwnerPortal"
-                                       asp-action="Index">Trang chủ quán</a>
-                                </li>
-                            }
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="nav-link admin-nav-link admin-nav-button">Đăng
-                                        xuất</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    }
-                </div>
-            </nav>
-        </header>
-        <main role="main" class="admin-main">
-            <div class="container-fluid px-4 py-4">
-                @RenderBody()
-            </div>
-        </main>
+        var currentController = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).ToLowerInvariant();
+        var currentAction = (ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty).ToLowerInvariant();
 
-        <footer class="admin-footer">
-            <div class="container-fluid px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <span>&copy; 2026 - ZesTour Admin</span>
-                <span class="admin-footer-note">Đồng bộ nội dung với ứng dụng mobile</span>
+        string ActiveIf(string controller, string? action = null)
+        {
+            var c = controller.ToLowerInvariant();
+            if (!string.Equals(currentController, c, StringComparison.OrdinalIgnoreCase))
+            {
+                return string.Empty;
+            }
+
+            if (string.IsNullOrWhiteSpace(action))
+            {
+                return "active";
+            }
+
+            return string.Equals(currentAction, action.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)
+                ? "active"
+                : string.Empty;
+        }
+    }
+    @if (isAuthenticated)
+    {
+        <div class="admin-shell">
+            <aside class="admin-sidebar" id="adminSidebar">
+                <a class="brand-mark" asp-area="" asp-controller="@brandController" asp-action="Index">
+                    <img src="~/images/logo.svg" alt="ZesTour" class="brand-logo" />
+                    <span>
+                        <span class="brand-title">ZesTour</span>
+                        <small class="brand-subtitle">Nền tảng quản trị</small>
+                    </span>
+                </a>
+
+                <div class="admin-sidebar-section">
+                    <div class="admin-sidebar-label">Điều hướng</div>
+                    @if (isAdmin)
+                    {
+                        <a class="admin-side-link @ActiveIf("Dashboard")" asp-controller="Dashboard"
+                           asp-action="Overview">Dashboard nâng cao</a>
+                        <a class="admin-side-link @ActiveIf("Poi")" asp-controller="Poi" asp-action="Index">Quản lý POI</a>
+                        <a class="admin-side-link @ActiveIf("AdminManagement", "Users")" asp-controller="AdminManagement"
+                           asp-action="Users">Người dùng</a>
+                        <a class="admin-side-link @ActiveIf("AdminManagement", "Stores")" asp-controller="AdminManagement"
+                           asp-action="Stores">Quán ăn</a>
+                        <a class="admin-side-link @ActiveIf("Banners")" asp-controller="Banners" asp-action="Index">Banner di
+                            động</a>
+                        }
+                    else if (isSeller)
+                        {
+                            <a class="admin-side-link @ActiveIf("OwnerPortal")" asp-controller="OwnerPortal"
+                               asp-action="Index">Trang chủ quán</a>
+                            <a class="admin-side-link @ActiveIf("Poi")" asp-controller="Poi" asp-action="Index">POI được gán</a>
+                        }
+                    </div>
+
+                    <div class="admin-sidebar-section mt-auto">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-grid">
+                            <button type="submit" class="btn btn-admin btn-admin-soft">Đăng xuất</button>
+                        </form>
+                    </div>
+                </aside>
+
+                <div class="admin-content">
+                    <header class="admin-topbar">
+                        <button id="adminMenuToggle" class="btn btn-admin btn-admin-soft admin-menu-toggle" type="button"
+                                aria-controls="adminSidebar" aria-expanded="false" aria-label="Open menu">
+                            Trình đơn
+                        </button>
+                        <div class="admin-topbar-title">
+                            <h1>@(ViewData["Title"] ?? "Admin")</h1>
+                            <p>Hệ thống quản trị nội dung và vận hành ZesTour</p>
+                        </div>
+                        <div class="admin-role-chip">@(isAdmin ? "Quản trị viên" : "Chủ quán")</div>
+                    </header>
+
+                    <main role="main" class="admin-main">
+                        <div class="container-fluid px-4 py-4">
+                            @RenderBody()
+                        </div>
+                    </main>
+
+                    <footer class="admin-footer">
+                        <div class="container-fluid px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span>&copy; 2026 - ZesTour Admin</span>
+                            <span class="admin-footer-note">Trải nghiệm quản trị mới, rõ ràng và dễ theo dõi hơn</span>
+                        </div>
+                    </footer>
+                </div>
             </div>
-        </footer>
+        }
+    else
+        {
+            <main role="main" class="admin-main">
+                <div class="container-fluid px-4 py-4">
+                    @RenderBody()
+                </div>
+            </main>
+        }
+
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>

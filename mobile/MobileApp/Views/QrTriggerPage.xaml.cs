@@ -106,6 +106,30 @@ public partial class QrTriggerPage : ContentPage
 
     private async Task<bool> HandleQrValueAsync(string rawValue)
     {
+        if (TryExtractMapUrl(rawValue, out var mapUrl))
+        {
+            try
+            {
+                await Launcher.Default.OpenAsync(mapUrl);
+                StatusLabel.Text = "Đã mở chỉ đường đến cửa hàng";
+                await DisplayAlertAsync(
+                    "Đã mở bản đồ",
+                    "Đang mở ứng dụng bản đồ để chỉ đường đến quán.",
+                    AppText.Get("Common_Ok"));
+                await Navigation.PopAsync();
+                return false;
+            }
+            catch
+            {
+                StatusLabel.Text = "Không mở được bản đồ";
+                await DisplayAlertAsync(
+                    "Lỗi mở bản đồ",
+                    "Không thể mở liên kết bản đồ từ mã QR.",
+                    AppText.Get("Common_Ok"));
+                return true;
+            }
+        }
+
         if (!TryExtractPayload(rawValue, out var payload))
         {
             StatusLabel.Text = AppText.Get("QrTrigger_Unsupported");
@@ -161,6 +185,45 @@ public partial class QrTriggerPage : ContentPage
             AppText.Get("Common_Ok"));
 
         await Navigation.PopAsync();
+        return false;
+    }
+
+    private static bool TryExtractMapUrl(string rawValue, out Uri mapUrl)
+    {
+        mapUrl = default!;
+
+        if (!Uri.TryCreate(rawValue, UriKind.Absolute, out var uri))
+        {
+            return false;
+        }
+
+        if (uri.Scheme.Equals("geo", StringComparison.OrdinalIgnoreCase))
+        {
+            mapUrl = uri;
+            return true;
+        }
+
+        if (!uri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) &&
+            !uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var host = uri.Host.ToLowerInvariant();
+        var path = uri.AbsolutePath.ToLowerInvariant();
+        if (host.Contains("google.") && path.Contains("/maps"))
+        {
+            mapUrl = uri;
+            return true;
+        }
+
+        var query = ParseQuery(uri.Query);
+        if (query.ContainsKey("query") && query.ContainsKey("api"))
+        {
+            mapUrl = uri;
+            return true;
+        }
+
         return false;
     }
 

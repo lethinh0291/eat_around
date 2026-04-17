@@ -1,0 +1,30 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="main" x1="120" y1="30" x2="1110" y2="660" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#7C2D12" />
+            <stop offset="0.47" stop-color="#EA580C" />
+            <stop offset="1" stop-color="#FB923C" />
+        </linearGradient>
+        <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.58" />
+            <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.06" />
+        </linearGradient>
+        <radialGradient id="light" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(870 180) rotate(20) scale(380 240)">
+            <stop stop-color="#FDE68A" stop-opacity="0.75" />
+            <stop offset="1" stop-color="#FDE68A" stop-opacity="0" />
+        </radialGradient>
+    </defs>
+
+    <rect width="1200" height="700" rx="40" fill="url(#main)" />
+    <rect width="1200" height="700" rx="40" fill="url(#light)" />
+
+    <path d="M-50 575C130 485 275 505 415 548C560 592 700 650 900 625C1040 609 1150 550 1260 470V700H-50V575Z"
+        fill="#FED7AA" fill-opacity="0.32" />
+
+    <rect x="88" y="110" width="460" height="250" rx="36" transform="rotate(-7 88 110)" fill="url(#glass)" />
+    <rect x="520" y="210" width="560" height="300" rx="40" transform="rotate(5 520 210)" fill="url(#glass)" />
+
+    <circle cx="985" cy="132" r="9" fill="#FFF7ED" fill-opacity="0.95" />
+    <circle cx="1032" cy="160" r="4" fill="#FFF7ED" fill-opacity="0.85" />
+</svg>

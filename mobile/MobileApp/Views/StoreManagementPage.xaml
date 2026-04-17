@@ -4,20 +4,20 @@
              x:Name="ManagementPage"
              x:Class="ZesTour.Views.StoreManagementPage"
              NavigationPage.HasNavigationBar="False"
-             BackgroundColor="{StaticResource AppBackground}">
+             BackgroundColor="#F6F8FB">
     <Grid>
         <Border StrokeThickness="0"
-                BackgroundColor="{StaticResource AppBackground}"/>
+                BackgroundColor="#F6F8FB"/>
 
-        <ScrollView>
-            <VerticalStackLayout Padding="16,28,16,20"
-                                 Spacing="12">
+        <ScrollView x:Name="ManagementScrollView">
+            <VerticalStackLayout Padding="16,26,16,20"
+                                 Spacing="14">
                 <Grid ColumnDefinitions="Auto,*"
                       ColumnSpacing="10">
                     <Border WidthRequest="44"
                             HeightRequest="44"
                             StrokeThickness="1"
-                            Stroke="#D6E1E9"
+                            Stroke="#DCE4EE"
                             BackgroundColor="#FFFFFF"
                             StrokeShape="RoundRectangle 15">
                         <Label Text="←"
@@ -35,47 +35,48 @@
                     <VerticalStackLayout Grid.Column="1"
                                          Spacing="2"
                                          VerticalOptions="Center">
-                           <Label x:Name="ManagementTitleLabel"
+                        <Label x:Name="ManagementTitleLabel"
                                Text="Quản lý cửa hàng"
-                               FontSize="22"
+                               FontSize="21"
                                FontAttributes="Bold"
-                               TextColor="{StaticResource TextPrimary}"/>
-                           <Label x:Name="ManagementSubtitleLabel"
+                               TextColor="#0F172A"/>
+                        <Label x:Name="ManagementSubtitleLabel"
                                Text="Sửa nhanh thông tin, ảnh, địa chỉ và tọa độ cho quán của bạn"
                                FontSize="12"
-                               TextColor="{StaticResource TextSecondary}"/>
+                               TextColor="#64748B"/>
                     </VerticalStackLayout>
                 </Grid>
 
-                <Border StrokeThickness="0"
-                        BackgroundColor="{StaticResource Primary}"
-                        StrokeShape="RoundRectangle 20"
+                <Border StrokeThickness="1"
+                        Stroke="#F1D8C6"
+                        BackgroundColor="#FFF8F2"
+                        StrokeShape="RoundRectangle 22"
                         Padding="14">
                     <VerticalStackLayout Spacing="10">
                         <VerticalStackLayout Spacing="6">
-                        <Label x:Name="EditRegistrationLabel"
-                            Text="Chỉnh sửa đăng ký"
+                            <Label x:Name="EditRegistrationLabel"
+                                   Text="Chỉnh sửa đăng ký"
                                    FontSize="13"
-                                   TextColor="#FFF7F1"
+                                   TextColor="#C2410C"
                                    FontAttributes="Bold"/>
-                        <Label x:Name="EditRegistrationTitleLabel"
-                            Text="Chọn một quán bên dưới rồi cập nhật từ form này."
-                                   FontSize="16"
+                            <Label x:Name="EditRegistrationTitleLabel"
+                                   Text="Chọn một quán bên dưới rồi cập nhật từ form này."
+                                   FontSize="15"
                                    FontAttributes="Bold"
-                                   TextColor="White"/>
-                        <Label x:Name="EditRegistrationHintLabel"
-                            Text="Có gợi ý địa chỉ, xem trước map và lưu ảnh chính."
+                                   TextColor="#7C2D12"/>
+                            <Label x:Name="EditRegistrationHintLabel"
+                                   Text="Có gợi ý địa chỉ, xem trước map và lưu ảnh chính."
                                    FontSize="11"
-                                   TextColor="#FFF7F1"/>
+                                   TextColor="#9A3412"/>
                         </VerticalStackLayout>
 
-                       <Button x:Name="RefreshButton"
-                            Text="Tải lại"
+                        <Button x:Name="RefreshButton"
+                                Text="Tải lại"
                                 Clicked="OnRefreshClicked"
                                 HeightRequest="42"
                                 CornerRadius="12"
-                                BackgroundColor="#FFF7F1"
-                                TextColor="{StaticResource PrimaryDark}"
+                                BackgroundColor="#FEE7D3"
+                                TextColor="#9A3412"
                                 FontAttributes="Bold"
                                 HorizontalOptions="Fill"/>
                     </VerticalStackLayout>
@@ -85,44 +86,44 @@
                        FontSize="12"
                        TextColor="#B91C1C"/>
 
-                <Border StrokeThickness="0"
+                <Border StrokeThickness="1"
+                        Stroke="#E4EAF1"
                         BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 20"
+                        StrokeShape="RoundRectangle 22"
                         Padding="14">
                     <VerticalStackLayout Spacing="10">
                         <Grid ColumnDefinitions="*,Auto"
                               ColumnSpacing="10">
                             <VerticalStackLayout Spacing="3">
                                 <Label x:Name="RegistrationsTitleLabel"
-                                    Text="Danh sách đăng ký"
+                                       Text="Danh sách đăng ký"
                                        FontSize="17"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"/>
                                 <Label x:Name="RegistrationsSubtitleLabel"
-                                    Text="Chạm vào một quán để chỉnh sửa ngay bên dưới."
+                                       Text="Bấm Chỉnh sửa ở từng quán để mở form cập nhật."
                                        FontSize="12"
                                        TextColor="#64748B"/>
                             </VerticalStackLayout>
 
                             <Border Grid.Column="1"
-                                    BackgroundColor="#FFF1E8"
+                                    BackgroundColor="#EFF6FF"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 999"
                                     Padding="10,6"
                                     VerticalOptions="Center">
-                                          <Label x:Name="SelectOneBadgeLabel"
-                                                    Text="Chọn 1"
+                                <Label x:Name="SelectOneBadgeLabel"
+                                       Text="Chọn 1"
                                        VerticalTextAlignment="Center"
                                        FontSize="11"
                                        FontAttributes="Bold"
-                                       TextColor="#8E2F18"/>
+                                       TextColor="#1D4ED8"/>
                             </Border>
                         </Grid>
 
                         <CollectionView x:Name="RegistrationsCollection"
-                                        SelectionMode="Single"
-                                        SelectionChanged="OnRegistrationSelected"
-                                        HeightRequest="178">
+                                        SelectionMode="None"
+                                        HeightRequest="218">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical"
                                                    ItemSpacing="10"/>
@@ -130,13 +131,13 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Border StrokeThickness="1"
-                                            Stroke="#E5E7EB"
+                                            Stroke="#E5ECF3"
                                             StrokeShape="RoundRectangle 16"
-                                            Padding="10"
-                                            BackgroundColor="#F8FAFC">
+                                            Padding="12,10"
+                                            BackgroundColor="#FBFCFE">
                                         <Grid ColumnDefinitions="6,*,Auto"
                                               ColumnSpacing="10">
-                                            <BoxView Color="#F59E0B"
+                                            <BoxView Color="#FDBA74"
                                                      WidthRequest="6"
                                                      CornerRadius="3"/>
                                             <VerticalStackLayout Grid.Column="1"
@@ -155,61 +156,135 @@
                                                        TextColor="#94A3B8"/>
                                             </VerticalStackLayout>
 
-                                            <Border Grid.Column="2"
-                                                    BackgroundColor="#FFF4EC"
-                                                    StrokeThickness="0"
-                                                    StrokeShape="RoundRectangle 999"
-                                                    Padding="10,6"
-                                                    VerticalOptions="Start">
-                                                <Label Text="{Binding Source={x:Reference ManagementPage}, Path=MyStoreBadgeText}"
-                                                       FontSize="10"
-                                                       FontAttributes="Bold"
-                                                       TextColor="{StaticResource PrimaryDark}"/>
-                                            </Border>
+                                            <VerticalStackLayout Grid.Column="2"
+                                                                 Spacing="6"
+                                                                 VerticalOptions="Start">
+                                                <Border BackgroundColor="#FFF4EC"
+                                                        StrokeThickness="0"
+                                                        StrokeShape="RoundRectangle 999"
+                                                        Padding="10,6"
+                                                        HorizontalOptions="End">
+                                                    <Label Text="{Binding Source={x:Reference ManagementPage}, Path=MyStoreBadgeText}"
+                                                           FontSize="10"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{StaticResource PrimaryDark}"/>
+                                                </Border>
+
+                                                <Button Text="Chỉnh sửa"
+                                                        FontSize="11"
+                                                        HeightRequest="32"
+                                                        CornerRadius="11"
+                                                        Padding="10,2"
+                                                        BackgroundColor="#EEF2FF"
+                                                        TextColor="#1E40AF"
+                                                        Clicked="OnEditStoreClicked"
+                                                        CommandParameter="{Binding .}"/>
+                                            </VerticalStackLayout>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
+
+                        <Border x:Name="EmptyStateCard"
+                                IsVisible="False"
+                                StrokeThickness="1"
+                                Stroke="#E5ECF3"
+                                BackgroundColor="#FBFCFE"
+                                StrokeShape="RoundRectangle 16"
+                                Padding="16,14">
+                            <VerticalStackLayout Spacing="6"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center">
+                                <Border WidthRequest="44"
+                                        HeightRequest="44"
+                                        BackgroundColor="#EEF2FF"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 14"
+                                        HorizontalOptions="Center">
+                                    <Label Text="🏪"
+                                           FontSize="20"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"/>
+                                </Border>
+                                <Label x:Name="EmptyStateTitleLabel"
+                                       Text="Bạn chưa có quán nào để quản lý"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="#0F172A"
+                                       HorizontalTextAlignment="Center"/>
+                                <Label x:Name="EmptyStateSubtitleLabel"
+                                       Text="Hãy gửi đăng ký quán mới hoặc tải lại sau khi quán được duyệt."
+                                       FontSize="11"
+                                       TextColor="#64748B"
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
                     </VerticalStackLayout>
                 </Border>
 
-                <Border StrokeThickness="0"
-                        BackgroundColor="#FFFFFF"
-                        StrokeShape="RoundRectangle 20"
-                        Padding="14">
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid x:Name="StoreEditorOverlay"
+              IsVisible="False"
+              Opacity="0"
+              BackgroundColor="#660F172A"
+              Padding="14,20,14,20"
+              ZIndex="20">
+            <BoxView Color="Transparent">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnEditorBackdropTapped"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+
+            <Border x:Name="StoreEditorPanel"
+                    StrokeThickness="1"
+                    Stroke="#E3EAF2"
+                    BackgroundColor="#FFFFFF"
+                    StrokeShape="RoundRectangle 24"
+                    Padding="16"
+                    Opacity="0"
+                    TranslationY="20"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    MaximumWidthRequest="680">
+                <ScrollView MaximumHeightRequest="760">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*,Auto"
                               ColumnSpacing="10">
                             <VerticalStackLayout Spacing="3">
                                 <Label x:Name="StoreInfoTitleLabel"
-                                    Text="Thông tin cửa hàng"
+                                       Text="Thông tin cửa hàng"
                                        FontSize="17"
                                        FontAttributes="Bold"
                                        TextColor="#0F172A"/>
                                 <Label x:Name="StoreInfoSubtitleLabel"
-                                    Text="Tách rõ thông tin, địa chỉ, ảnh và xem trước bản đồ."
+                                       Text="Tách rõ thông tin, địa chỉ, ảnh và xem trước bản đồ."
                                        FontSize="12"
                                        TextColor="#64748B"/>
                             </VerticalStackLayout>
 
                             <Border Grid.Column="1"
-                                    BackgroundColor="#FFF4EC"
+                                    BackgroundColor="#F1F5F9"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 999"
                                     Padding="10,6"
                                     VerticalOptions="Start">
-                                <Label x:Name="AutoPointBadgeLabel"
-                                    Text="Auto point"
-                                       FontSize="10"
+                                <Label Text="Đóng"
+                                       FontSize="11"
                                        FontAttributes="Bold"
-                                       TextColor="{StaticResource PrimaryDark}"/>
+                                       TextColor="#334155">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCloseEditorTapped"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
                             </Border>
                         </Grid>
 
                         <Border StrokeThickness="1"
-                                Stroke="#E5E7EB"
-                                BackgroundColor="#F8FAFC"
+                                Stroke="#DCE3EC"
+                                BackgroundColor="#FFFFFF"
                                 StrokeShape="RoundRectangle 16"
                                 Padding="12,10">
                             <Entry x:Name="StoreNameEntry"
@@ -221,8 +296,8 @@
                         <Grid RowDefinitions="Auto,Auto"
                               RowSpacing="10">
                             <Border StrokeThickness="1"
-                                    Stroke="#E5E7EB"
-                                    BackgroundColor="#F8FAFC"
+                                    Stroke="#DCE3EC"
+                                    BackgroundColor="#FFFFFF"
                                     StrokeShape="RoundRectangle 14"
                                     Padding="12,10">
                                 <Entry x:Name="PhoneEntry"
@@ -234,8 +309,8 @@
 
                             <Border Grid.Row="1"
                                     StrokeThickness="1"
-                                    Stroke="#E5E7EB"
-                                    BackgroundColor="#F8FAFC"
+                                    Stroke="#DCE3EC"
+                                    BackgroundColor="#FFFFFF"
                                     StrokeShape="RoundRectangle 14"
                                     Padding="12,10">
                                 <Entry x:Name="CategoryEntry"
@@ -246,13 +321,13 @@
                         </Grid>
 
                         <Border StrokeThickness="1"
-                                Stroke="#E5E7EB"
-                                BackgroundColor="#F8FAFC"
+                                Stroke="#DCE3EC"
+                                BackgroundColor="#FFFFFF"
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <VerticalStackLayout Spacing="8">
                                 <Label Text="Địa chỉ"
-                                        x:Name="AddressLabel"
+                                       x:Name="AddressLabel"
                                        FontSize="11"
                                        FontAttributes="Bold"
                                        TextColor="#475569"/>
@@ -267,7 +342,7 @@
                                         IsVisible="False"
                                         SelectionMode="Single"
                                         SelectionChanged="OnAddressSuggestionSelected"
-                                        HeightRequest="150">
+                                        HeightRequest="160">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical"
                                                    ItemSpacing="6"/>
@@ -275,7 +350,7 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Border StrokeThickness="1"
-                                            Stroke="#E5E7EB"
+                                            Stroke="#E4EAF1"
                                             BackgroundColor="#FFFFFF"
                                             StrokeShape="RoundRectangle 12"
                                             Padding="10,8">
@@ -292,7 +367,7 @@
                         <Border x:Name="AddressMapPreviewContainer"
                                 IsVisible="False"
                                 StrokeThickness="0"
-                                BackgroundColor="#F8FAFC"
+                                BackgroundColor="#F7FAFC"
                                 StrokeShape="RoundRectangle 18"
                                 Padding="8">
                             <VerticalStackLayout Spacing="6">
@@ -303,13 +378,13 @@
                                                FontSize="12"
                                                FontAttributes="Bold"
                                                TextColor="#0F172A"/>
-                                             <Label x:Name="AddressPreviewHintLabel"
-                                                 Text="Bản đồ xem trước sẽ bám theo địa chỉ đã chọn."
+                                        <Label x:Name="AddressPreviewHintLabel"
+                                               Text="Bản đồ xem trước sẽ bám theo địa chỉ đã chọn."
                                                FontSize="11"
                                                TextColor="#64748B"/>
                                     </VerticalStackLayout>
                                     <Border Grid.Column="1"
-                                            BackgroundColor="#E2E8F0"
+                                            BackgroundColor="#EEF2F7"
                                             StrokeThickness="0"
                                             StrokeShape="RoundRectangle 999"
                                             Padding="8,5"
@@ -322,7 +397,7 @@
                                     </Border>
                                 </Grid>
                                 <Border StrokeThickness="1"
-                                        Stroke="#E5E7EB"
+                                        Stroke="#E4EAF1"
                                         StrokeShape="RoundRectangle 14"
                                         BackgroundColor="#FFFFFF"
                                         Padding="4">
@@ -333,8 +408,8 @@
                         </Border>
 
                         <Border StrokeThickness="1"
-                                Stroke="#E5E7EB"
-                                BackgroundColor="#F8FAFC"
+                                Stroke="#DCE3EC"
+                                BackgroundColor="#FFFFFF"
                                 StrokeShape="RoundRectangle 14"
                                 Padding="12,10">
                             <Editor x:Name="DescriptionEditor"
@@ -353,11 +428,11 @@
                                     Clicked="OnAddImageUrlClicked"
                                     HeightRequest="42"
                                     CornerRadius="12"
-                                    BackgroundColor="#0F172A"
+                                    BackgroundColor="#334155"
                                     TextColor="White"
                                     FontAttributes="Bold"/>
                             <Label Grid.Column="1"
-                                x:Name="AddImageHintLabel"
+                                   x:Name="AddImageHintLabel"
                                    Text="Không nhập link tay, chỉ chọn ảnh trực tiếp."
                                    FontSize="10"
                                    TextColor="#94A3B8"
@@ -365,19 +440,19 @@
                         </Grid>
 
                         <Border StrokeThickness="0"
-                                BackgroundColor="#F8FAFC"
+                                BackgroundColor="#F7FAFC"
                                 StrokeShape="RoundRectangle 18"
                                 Padding="8">
                             <VerticalStackLayout Spacing="6">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <VerticalStackLayout Spacing="2">
-                                         <Label x:Name="AlbumPreviewTitleLabel"
-                                             Text="Xem trước album"
+                                        <Label x:Name="AlbumPreviewTitleLabel"
+                                               Text="Xem trước album"
                                                FontSize="12"
                                                FontAttributes="Bold"
                                                TextColor="#0F172A"/>
-                                         <Label x:Name="AlbumPreviewHintLabel"
-                                             Text="Các ảnh hợp lệ sẽ hiện ở đây để chọn nhanh ảnh chính."
+                                        <Label x:Name="AlbumPreviewHintLabel"
+                                               Text="Các ảnh hợp lệ sẽ hiện ở đây để chọn nhanh ảnh chính."
                                                FontSize="11"
                                                TextColor="#64748B"/>
                                     </VerticalStackLayout>
@@ -387,8 +462,8 @@
                                             StrokeShape="RoundRectangle 999"
                                             Padding="8,5"
                                             VerticalOptions="Start">
-                                         <Label x:Name="AlbumBadgeLabel"
-                                             Text="Ảnh đẹp hơn"
+                                        <Label x:Name="AlbumBadgeLabel"
+                                               Text="Ảnh đẹp hơn"
                                                FontSize="10"
                                                FontAttributes="Bold"
                                                TextColor="{StaticResource PrimaryDark}"/>
@@ -397,7 +472,7 @@
 
                                 <CollectionView x:Name="StoreImagePreviewCollection"
                                                 SelectionMode="None"
-                                                HeightRequest="140">
+                                                HeightRequest="148">
                                     <CollectionView.ItemsLayout>
                                         <LinearItemsLayout Orientation="Horizontal"
                                                            ItemSpacing="10"/>
@@ -407,7 +482,7 @@
                                             <Border WidthRequest="108"
                                                     HeightRequest="156"
                                                     StrokeThickness="1"
-                                                    Stroke="#E2E8F0"
+                                                    Stroke="#E4EAF1"
                                                     StrokeShape="RoundRectangle 16"
                                                     BackgroundColor="#FFFFFF"
                                                     Padding="6">
@@ -436,7 +511,7 @@
                                                           ColumnDefinitions="*,*"
                                                           ColumnSpacing="4">
                                                         <Button Grid.Column="0"
-                                                                Text="P"
+                                                                Text="Chính"
                                                                 FontSize="10"
                                                                 HeightRequest="28"
                                                                 CornerRadius="9"
@@ -445,7 +520,7 @@
                                                                 Clicked="OnSetImageUrlPrimaryClicked"
                                                                 CommandParameter="{Binding .}"/>
                                                         <Button Grid.Column="1"
-                                                                Text="D"
+                                                                Text="Xóa"
                                                                 FontSize="10"
                                                                 HeightRequest="28"
                                                                 CornerRadius="9"
@@ -485,8 +560,8 @@
                                     FontAttributes="Bold"/>
                         </Grid>
                     </VerticalStackLayout>
-                </Border>
-            </VerticalStackLayout>
-        </ScrollView>
+                </ScrollView>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

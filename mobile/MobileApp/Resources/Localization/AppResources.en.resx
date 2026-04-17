@@ -438,23 +438,11 @@
   <data name="Profile_ChangeAvatar" xml:space="preserve">
     <value>Change avatar</value>
   </data>
-  <data name="Profile_ChangeMenuWelcomeImage" xml:space="preserve">
-    <value>Change welcome card image</value>
-  </data>
   <data name="Profile_ResetMenuWelcomeImage" xml:space="preserve">
     <value>Reset to orange background</value>
   </data>
-  <data name="Profile_PickMenuWelcomeImage" xml:space="preserve">
-    <value>Pick a welcome card image</value>
-  </data>
-  <data name="Profile_MenuWelcomeImageUpdated" xml:space="preserve">
-    <value>Welcome card image updated.</value>
-  </data>
   <data name="Profile_MenuWelcomeImageReset" xml:space="preserve">
     <value>Restored the default orange background.</value>
-  </data>
-  <data name="Profile_UpdateMenuWelcomeImageFailed" xml:space="preserve">
-    <value>Unable to update welcome card image.</value>
   </data>
   <data name="Profile_QuickActions" xml:space="preserve">
     <value>Quick actions</value>

@@ -6,6 +6,9 @@ namespace ZesTour.Views;
 
 public partial class MenuPage : ContentPage
 {
+    private const double WelcomeImageScale = 1.02;
+    private const double WelcomeImagePanFraction = 0.08;
+
     private readonly AppNavigator _navigator;
     private readonly AuthService _authService;
     private readonly ApiService _apiService;
@@ -22,12 +25,12 @@ public partial class MenuPage : ContentPage
         ApplyLocalizedText();
         RefreshUserBinding();
         UpdateAvatarDisplay();
+        WelcomeCardHost.SizeChanged += OnWelcomeCardHostSizeChanged;
     }
 
     private void ApplyLocalizedText()
     {
         HelloLabel.Text = AppText.Get("Menu_Hello");
-        SearchEntry.Placeholder = AppText.Get("Menu_SearchPlaceholder");
         ExploreSectionLabel.Text = AppText.Get("Menu_ExploreSection");
         DiscoverTitleLabel.Text = AppText.Get("Menu_DiscoverTitle");
         DiscoverSubtitleLabel.Text = AppText.Get("Menu_DiscoverSubtitle");
@@ -85,86 +88,9 @@ public partial class MenuPage : ContentPage
         BannerSection.IsVisible = true;
     }
 
-    private async Task ShowComingSoonAsync(string featureName)
-    {
-        await DisplayAlertAsync(
-            AppText.Get("Menu_FeatureTitle"),
-            AppText.Format("Menu_ComingSoonFormat", featureName),
-            AppText.Get("Menu_Close"));
-    }
-
-    private async void OnSearchCompleted(object? sender, EventArgs e)
-    {
-        var keyword = SearchEntry.Text?.Trim() ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(keyword))
-        {
-            return;
-        }
-
-        if (keyword.Contains("bản đồ", StringComparison.OrdinalIgnoreCase) ||
-            keyword.Contains("chỉ đường", StringComparison.OrdinalIgnoreCase) ||
-            keyword.Contains("discover", StringComparison.OrdinalIgnoreCase))
-        {
-            await _navigator.ShowMainFromMenuAsync();
-            return;
-        }
-
-        if (keyword.Contains("hồ sơ", StringComparison.OrdinalIgnoreCase) ||
-            keyword.Contains("profile", StringComparison.OrdinalIgnoreCase))
-        {
-            await _navigator.ShowProfileAsync();
-            return;
-        }
-
-        if (keyword.Contains("cửa hàng", StringComparison.OrdinalIgnoreCase) ||
-            keyword.Contains("đăng ký", StringComparison.OrdinalIgnoreCase))
-        {
-            if (!IsSeller())
-            {
-                await DisplayAlertAsync(
-                    AppText.Get("Menu_RoleMismatchTitle"),
-                    AppText.Get("Menu_RoleMismatchSellerFeature"),
-                    AppText.Get("Common_Ok"));
-                return;
-            }
-
-            if (keyword.Contains("quản lý", StringComparison.OrdinalIgnoreCase))
-            {
-                await _navigator.ShowStoreManagementAsync();
-            }
-            else
-            {
-                await _navigator.ShowStoreRegistrationAsync();
-            }
-            return;
-        }
-
-        if (keyword.Contains("hành trình", StringComparison.OrdinalIgnoreCase) ||
-            keyword.Contains("trip", StringComparison.OrdinalIgnoreCase))
-        {
-            await _navigator.ShowMyTripsAsync();
-            return;
-        }
-
-        if (keyword.Contains("cài đặt", StringComparison.OrdinalIgnoreCase) ||
-            keyword.Contains("setting", StringComparison.OrdinalIgnoreCase))
-        {
-            await _navigator.ShowSettingsAsync();
-            return;
-        }
-
-        if (keyword.Contains("phản hồi", StringComparison.OrdinalIgnoreCase) ||
-            keyword.Contains("trợ giúp", StringComparison.OrdinalIgnoreCase))
-        {
-            await _navigator.ShowHelpFeedbackAsync();
-            return;
-        }
-
-        await ShowComingSoonAsync(AppText.Format("Menu_NotFoundFormat", keyword));
-    }
-
     private async void OnOpenMapTapped(object? sender, TappedEventArgs e)
     {
+        await AnimateCardPressedAsync(sender);
         await _navigator.ShowMainFromMenuAsync();
     }
 
@@ -298,41 +224,87 @@ public partial class MenuPage : ContentPage
 
     private void UpdateWelcomeCardBackground()
     {
-        var imagePath = _authService.GetMenuWelcomeImagePath();
-        if (!string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath))
+        var (sourceValue, isBuiltInAsset) = _authService.GetMenuWelcomeImageSource();
+        var hasCustomBackground = !string.IsNullOrWhiteSpace(sourceValue) &&
+                                  (isBuiltInAsset || File.Exists(sourceValue));
+
+        if (hasCustomBackground)
         {
-            WelcomeCardImage.Source = ImageSource.FromFile(imagePath);
+            WelcomeCardImage.Source = ImageSource.FromFile(sourceValue!);
             WelcomeCardImage.IsVisible = true;
             WelcomeCardOverlay.IsVisible = true;
-            WelcomeCardBorder.BackgroundColor = Color.FromArgb("#E85A2A");
+            WelcomeCardFallbackTint.IsVisible = false;
+            WelcomeCardBorder.BackgroundColor = Color.FromArgb("#DAB29A");
+            WelcomeCardImage.Scale = WelcomeImageScale;
+            ApplyWelcomeCardImageCrop();
             return;
         }
 
         WelcomeCardImage.Source = null;
         WelcomeCardImage.IsVisible = false;
         WelcomeCardOverlay.IsVisible = false;
+        WelcomeCardFallbackTint.IsVisible = true;
+        WelcomeCardImage.TranslationX = 0;
+        WelcomeCardImage.TranslationY = 0;
+        WelcomeCardImage.WidthRequest = -1;
+        WelcomeCardImage.HeightRequest = -1;
+        WelcomeCardImage.Scale = 1;
         WelcomeCardBorder.BackgroundColor = Application.Current?.Resources.TryGetValue("Primary", out var primaryColor) == true && primaryColor is Color color
             ? color
             : Color.FromArgb("#F55B23");
     }
 
+    private void OnWelcomeCardHostSizeChanged(object? sender, EventArgs e)
+    {
+        if (!WelcomeCardImage.IsVisible)
+        {
+            return;
+        }
+
+        ApplyWelcomeCardImageCrop();
+    }
+
+    private void ApplyWelcomeCardImageCrop()
+    {
+        var width = WelcomeCardHost.Width;
+        var height = WelcomeCardHost.Height;
+        if (width <= 1 || height <= 1)
+        {
+            return;
+        }
+
+        WelcomeCardImage.WidthRequest = width;
+        WelcomeCardImage.HeightRequest = height;
+
+        var (offsetX, offsetY) = _authService.GetMenuWelcomeCropOffset();
+        var maxX = width * WelcomeImagePanFraction;
+        var maxY = height * WelcomeImagePanFraction;
+
+        WelcomeCardImage.TranslationX = maxX * offsetX;
+        WelcomeCardImage.TranslationY = maxY * offsetY;
+    }
+
     private async void OnMyTripsTapped(object? sender, TappedEventArgs e)
     {
+        await AnimateCardPressedAsync(sender);
         await _navigator.ShowMyTripsAsync();
     }
 
     private async void OnAccountTapped(object? sender, TappedEventArgs e)
     {
-        await ShowComingSoonAsync(AppText.Get("Menu_AccountPayment"));
+        await AnimateCardPressedAsync(sender);
+        await _navigator.ShowProfileAsync();
     }
 
     private async void OnSettingsTapped(object? sender, TappedEventArgs e)
     {
+        await AnimateCardPressedAsync(sender);
         await _navigator.ShowSettingsAsync();
     }
 
     private async void OnSupportTapped(object? sender, TappedEventArgs e)
     {
+        await AnimateCardPressedAsync(sender);
         await _navigator.ShowHelpFeedbackAsync();
     }
 
@@ -343,11 +315,14 @@ public partial class MenuPage : ContentPage
 
     private async void OnQrTriggerTapped(object? sender, TappedEventArgs e)
     {
+        await AnimateCardPressedAsync(sender);
         await _navigator.ShowQrTriggerAsync();
     }
 
     private async void OnStoreRegistrationTapped(object? sender, TappedEventArgs e)
     {
+        await AnimateCardPressedAsync(sender);
+
         if (!IsSeller())
         {
             await DisplayAlertAsync(
@@ -362,6 +337,8 @@ public partial class MenuPage : ContentPage
 
     private async void OnStoreManagementTapped(object? sender, TappedEventArgs e)
     {
+        await AnimateCardPressedAsync(sender);
+
         if (!IsSeller())
         {
             await DisplayAlertAsync(
@@ -419,5 +396,35 @@ public partial class MenuPage : ContentPage
     {
         await _authService.SignOutAsync();
         await _navigator.ShowLoginAsync();
+    }
+
+    private static async Task AnimateCardPressedAsync(object? sender)
+    {
+        if (sender is not Border card)
+        {
+            return;
+        }
+
+        var originalScale = card.Scale;
+        var originalColor = card.BackgroundColor;
+        var pressedColor = BlendColor(card.BackgroundColor, Color.FromArgb("#0F172A"), 0.09f);
+
+        card.BackgroundColor = pressedColor;
+        await card.ScaleToAsync(0.985, 70, Easing.CubicOut);
+        await Task.Delay(30);
+        card.BackgroundColor = originalColor;
+        await card.ScaleToAsync(originalScale, 110, Easing.CubicIn);
+    }
+
+    private static Color BlendColor(Color baseColor, Color targetColor, float amount)
+    {
+        amount = Math.Clamp(amount, 0f, 1f);
+
+        var r = (baseColor.Red * (1f - amount)) + (targetColor.Red * amount);
+        var g = (baseColor.Green * (1f - amount)) + (targetColor.Green * amount);
+        var b = (baseColor.Blue * (1f - amount)) + (targetColor.Blue * amount);
+        var a = (baseColor.Alpha * (1f - amount)) + (targetColor.Alpha * amount);
+
+        return new Color(r, g, b, a);
     }
 }

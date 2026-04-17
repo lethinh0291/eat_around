@@ -182,7 +182,11 @@ public partial class StoreRegistrationPage : ContentPage
         await DisplayAlertAsync(AppText.Get("StoreRegistration_SubmitSuccessTitle"), result.Message, AppText.Get("Common_Ok"));
         ClearDraft();
         ClearSelectedImages();
-        await _navigator.ShowStoreManagementAsync();
+        await Navigation.PushAsync(new StoreRegistrationQrPage(
+            storeName,
+            address,
+            resolvedGeo.Value.Latitude,
+            resolvedGeo.Value.Longitude));
     }
 
     private async void OnPickImageClicked(object? sender, EventArgs e)
@@ -191,11 +195,7 @@ public partial class StoreRegistrationPage : ContentPage
 
         try
         {
-            var photos = await FilePicker.Default.PickMultipleAsync(new PickOptions
-            {
-                PickerTitle = AppText.Get("StoreRegistration_PickImages"),
-                FileTypes = FilePickerFileType.Images
-            });
+            var photos = await PickStoreImagesAsync();
 
             if (photos is null)
             {
@@ -224,12 +224,35 @@ public partial class StoreRegistrationPage : ContentPage
 
             EnsurePrimaryImageExists();
             UpdateSelectedImagesUi();
+
+            if (_selectedImages.Count == 0)
+            {
+                MessageLabel.Text = AppText.Get("StoreRegistration_PickImagesFailed");
+            }
         }
         catch (Exception ex)
         {
             MessageLabel.Text = AppText.Get("StoreRegistration_PickImagesFailed");
             Console.WriteLine($"Lỗi chọn ảnh: {ex.Message}");
         }
+    }
+
+    private async Task<IReadOnlyList<FileResult>?> PickStoreImagesAsync()
+    {
+        var pickerTitle = AppText.Get("StoreRegistration_PickImages");
+
+        // Prefer the media picker so Android opens the Photos/Gallery experience instead of a folder-oriented file browser.
+        var galleryPhotos = await MediaPicker.Default.PickPhotosAsync(new MediaPickerOptions
+        {
+            Title = pickerTitle
+        });
+
+        if (galleryPhotos is null || galleryPhotos.Count == 0)
+        {
+            return null;
+        }
+
+        return galleryPhotos;
     }
 
     private void OnRemoveSelectedImageClicked(object? sender, EventArgs e)

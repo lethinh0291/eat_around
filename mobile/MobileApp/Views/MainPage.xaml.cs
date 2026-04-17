@@ -30,9 +30,14 @@ public partial class MainPage : ContentPage
     private const double LeafletZoom = 16;
     private const string SettingsKey = "zes_settings_v1";
     private const string TripsHistoryKey = "zes_trip_history_v1";
+    private const string PoiPlaceholderImage = "loading_logo.svg";
     private const double DefaultStoreNarrationRadiusMeters = 140;
+    private const double StoreZoneMinBufferMeters = 45;
+    private const double StoreZoneBufferRatio = 0.25;
+    private const double StoreZoneRetentionBonusMeters = 40;
+    private const double MaxStoreAccuracyCompensationMeters = 65;
+    private const double MinStoreAccuracyCompensationMeters = 8;
     private bool _autoPlayEnabled = true;
-    private bool _batteryOptimized;
     private bool _storeNarrationEnabled = true;
     private string _gpsSensitivityCode = "balanced";
     private double _poiRadiusScale = 1.0;
@@ -46,6 +51,7 @@ public partial class MainPage : ContentPage
     private Task? _trackingTask;
     private List<POI> _allPois = new();
     private List<StoreNarrationPoint> _storeNarrationPoints = new();
+    private List<PoiSearchSuggestion> _poiSearchSuggestions = new();
     private POI? _currentPoi;
     private Location? _userLocation;
     private double? _selectedLat;
@@ -53,9 +59,12 @@ public partial class MainPage : ContentPage
     private string _selectedName = string.Empty;
     private string _selectedDescription = string.Empty;
     private bool _hasExplicitMapSelection;
+    private int? _activeStoreZoneId;
+    private string _lastStoreDebugDistanceText = "Khoảng cách: --";
+    private string _lastStoreDebugRadiusText = "Radius hiệu dụng: --";
+    private string _lastStoreDebugAccuracyText = "Accuracy GPS: --";
     private Location? _lastRenderedUserLocation;
     private static readonly TimeSpan NormalTrackingInterval = TimeSpan.FromSeconds(10);
-    private static readonly TimeSpan BatteryTrackingInterval = TimeSpan.FromSeconds(18);
     private static readonly TimeSpan UserMapRefreshMinInterval = TimeSpan.FromSeconds(4);
     private const double UserMapRefreshDistanceMeters = 12;
 
@@ -77,7 +86,6 @@ public partial class MainPage : ContentPage
         MapSubtitleLabel.Text = AppText.Get("Main_MapSubtitle");
         QrTriggerMapButtonLabel.Text = AppText.Get("Main_QrTriggerButton");
         AutoPlayLabel.Text = AppText.Get("Main_AutoPlay");
-        BatterySaverLabel.Text = AppText.Get("Main_BatterySaver");
         SidebarTitleLabel.Text = AppText.Get("Main_SidebarTitle");
         SidebarSubtitleLabel.Text = AppText.Get("Main_SidebarSubtitle");
         SidebarMapButton.Text = AppText.Get("Main_SidebarMapPage");
@@ -85,6 +93,10 @@ public partial class MainPage : ContentPage
         SidebarProfileButton.Text = AppText.Get("Main_SidebarProfile");
         SidebarRecenterButton.Text = AppText.Get("Main_SidebarRecenter");
         StoreTriggerStatusLabel.Text = AppText.Get("Main_StoreZoneIdle");
+        StoreDebugDistanceLabel.Text = _lastStoreDebugDistanceText;
+        StoreDebugRadiusLabel.Text = _lastStoreDebugRadiusText;
+        StoreDebugAccuracyLabel.Text = _lastStoreDebugAccuracyText;
+        PoiSearchSuggestionsView.ItemsSource = _poiSearchSuggestions;
     }
 
     private static string FormatAddressText(string address)
@@ -96,18 +108,16 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
 
-        if (_dataLoaded)
-        {
-            return;
-        }
-
         _loadingCts?.Cancel();
         _loadingCts = new CancellationTokenSource();
 
         LoadFeatureSettings();
 
-        // Render a lightweight default map immediately to avoid a blank first frame.
-        InitializeMap(null);
+        if (!_dataLoaded)
+        {
+            // Render a lightweight default map immediately to avoid a blank first frame.
+            InitializeMap(null);
+        }
 
         try
         {
@@ -139,17 +149,23 @@ public partial class MainPage : ContentPage
     {
         var locationTask = TryGetUserLocationAsync(cancellationToken);
 
-        var pois = await _databaseService.GetPOIsAsync();
+        var cachedPois = await _databaseService.GetPOIsAsync();
+        var pois = cachedPois;
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (pois.Count == 0)
+        if (Connectivity.Current.NetworkAccess == NetworkAccess.Internet)
         {
-            pois = await _apiService.GetPoisAsync();
+            var remotePois = await _apiService.GetPoisAsync();
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (pois.Count > 0)
+            if (remotePois.Count > 0)
             {
-                await _databaseService.SavePoisAsync(pois);
+                pois = remotePois;
+                await _databaseService.SavePoisAsync(remotePois);
+            }
+            else if (cachedPois.Count == 0)
+            {
+                pois = remotePois;
             }
         }
 
@@ -192,7 +208,7 @@ public partial class MainPage : ContentPage
             }
 
             var nearestPoi = FindNearestPoi(_allPois);
-            if (nearestPoi is not null)
+            if (nearestPoi is not null && !_hasExplicitMapSelection)
             {
                 _currentPoi = nearestPoi;
                 MainThread.BeginInvokeOnMainThread(() => BindPoi(nearestPoi));
@@ -239,6 +255,7 @@ public partial class MainPage : ContentPage
     {
         StoreNarrationPoint? nearest = null;
         var minDistance = double.MaxValue;
+        var accuracyCompensation = ResolveStoreAccuracyCompensation(userLocation);
 
         foreach (var store in _storeNarrationPoints)
         {
@@ -248,7 +265,8 @@ public partial class MainPage : ContentPage
                 store.Latitude,
                 store.Longitude);
 
-            var effectiveRadius = store.RadiusMeters * _poiRadiusScale;
+            var baseRadius = Math.Max(1, store.RadiusMeters);
+            var effectiveRadius = ResolveStoreDetectionRadiusMeters(baseRadius, accuracyCompensation);
             if (distance > effectiveRadius || distance >= minDistance)
             {
                 continue;
@@ -258,7 +276,109 @@ public partial class MainPage : ContentPage
             nearest = store;
         }
 
+        if (nearest is not null)
+        {
+            UpdateStoreDebugInfo(userLocation, nearest, accuracyCompensation, minDistance);
+            _activeStoreZoneId = nearest.Id;
+            return nearest;
+        }
+
+        if (!_activeStoreZoneId.HasValue)
+        {
+            UpdateStoreDebugInfo(userLocation, null, accuracyCompensation, null);
+            return null;
+        }
+
+        var previousStore = _storeNarrationPoints.FirstOrDefault(store => store.Id == _activeStoreZoneId.Value);
+        if (previousStore is null)
+        {
+            _activeStoreZoneId = null;
+            return null;
+        }
+
+        var previousDistance = _locationService.CalculateDistance(
+            userLocation.Latitude,
+            userLocation.Longitude,
+            previousStore.Latitude,
+            previousStore.Longitude);
+
+        var previousBaseRadius = Math.Max(1, previousStore.RadiusMeters);
+        var retentionRadius = ResolveStoreDetectionRadiusMeters(previousBaseRadius, accuracyCompensation) + StoreZoneRetentionBonusMeters;
+        if (previousDistance <= retentionRadius)
+        {
+            UpdateStoreDebugInfo(userLocation, previousStore, accuracyCompensation, previousDistance);
+            return previousStore;
+        }
+
+        _activeStoreZoneId = null;
+        UpdateStoreDebugInfo(userLocation, null, accuracyCompensation, null);
+
         return nearest;
+    }
+
+    private static double ResolveStoreAccuracyCompensation(Location userLocation)
+    {
+        if (userLocation.Accuracy is null || userLocation.Accuracy.Value <= 0)
+        {
+            return 0;
+        }
+
+        var compensation = userLocation.Accuracy.Value * 0.65;
+        return Math.Clamp(compensation, MinStoreAccuracyCompensationMeters, MaxStoreAccuracyCompensationMeters);
+    }
+
+    private static double ResolveStoreDetectionRadiusMeters(double baseRadiusMeters, double accuracyCompensationMeters)
+    {
+        var bufferMeters = Math.Max(StoreZoneMinBufferMeters, baseRadiusMeters * StoreZoneBufferRatio);
+        return baseRadiusMeters + bufferMeters + accuracyCompensationMeters;
+    }
+
+    private void UpdateStoreDebugInfo(Location userLocation, StoreNarrationPoint? store, double accuracyCompensationMeters, double? distanceMeters)
+    {
+        if (store is null)
+        {
+            _lastStoreDebugDistanceText = "Khoảng cách: --";
+            _lastStoreDebugRadiusText = "Radius hiệu dụng: --";
+            _lastStoreDebugAccuracyText = $"Accuracy GPS: {FormatMeters(userLocation.Accuracy)} | bù: {FormatMeters(accuracyCompensationMeters)}";
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                StoreDebugDistanceLabel.Text = _lastStoreDebugDistanceText;
+                StoreDebugRadiusLabel.Text = _lastStoreDebugRadiusText;
+                StoreDebugAccuracyLabel.Text = _lastStoreDebugAccuracyText;
+            });
+
+            return;
+        }
+
+        var baseRadius = Math.Max(1, store.RadiusMeters);
+        var effectiveRadius = ResolveStoreDetectionRadiusMeters(baseRadius, accuracyCompensationMeters);
+        var displayDistance = distanceMeters ?? _locationService.CalculateDistance(
+            userLocation.Latitude,
+            userLocation.Longitude,
+            store.Latitude,
+            store.Longitude);
+
+        _lastStoreDebugDistanceText = $"Khoảng cách: {FormatMeters(displayDistance)} / raw: {FormatMeters(baseRadius)}";
+        _lastStoreDebugRadiusText = $"Radius hiệu dụng: {FormatMeters(effectiveRadius)} (buffer {FormatMeters(Math.Max(StoreZoneMinBufferMeters, baseRadius * StoreZoneBufferRatio))})";
+        _lastStoreDebugAccuracyText = $"Accuracy GPS: {FormatMeters(userLocation.Accuracy)} | bù: {FormatMeters(accuracyCompensationMeters)}";
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            StoreDebugDistanceLabel.Text = _lastStoreDebugDistanceText;
+            StoreDebugRadiusLabel.Text = _lastStoreDebugRadiusText;
+            StoreDebugAccuracyLabel.Text = _lastStoreDebugAccuracyText;
+        });
+    }
+
+    private static string FormatMeters(double? meters)
+    {
+        if (!meters.HasValue || double.IsNaN(meters.Value) || double.IsInfinity(meters.Value))
+        {
+            return "--";
+        }
+
+        return $"{Math.Round(meters.Value)}m";
     }
 
     private async Task LoadStoreNarrationPointsAsync(CancellationToken cancellationToken)
@@ -355,6 +475,7 @@ public partial class MainPage : ContentPage
 
     private void BindPoi(POI poi)
     {
+        UpdateFeaturedPoiImage(poi.ImageUrl);
         PoiBadgeLabel.Text = AppText.Get("Main_BadgePlace");
         LocationTitleLabel.Text = AppText.Get("Main_CurrentViewing");
         NowPlayingLabel.Text = poi.Name;
@@ -362,6 +483,59 @@ public partial class MainPage : ContentPage
             ? FormatAddressText(AppText.Get("Main_NoAddress"))
             : FormatAddressText(poi.Description);
         SetStoreTriggerStatus(null);
+    }
+
+    private void UpdateFeaturedPoiImage(string? imageUrl)
+    {
+        if (TryResolveImageSource(imageUrl, out var imageSource))
+        {
+            PoiFeaturedImage.Source = imageSource;
+            PoiFeaturedImage.IsVisible = true;
+            PoiFeaturedImagePlaceholder.IsVisible = false;
+            return;
+        }
+
+        PoiFeaturedImage.Source = null;
+        PoiFeaturedImage.IsVisible = false;
+        PoiFeaturedImagePlaceholder.IsVisible = true;
+    }
+
+    private static bool TryResolveImageSource(string? imageUrl, out ImageSource? imageSource)
+    {
+        imageSource = null;
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return false;
+        }
+
+        if (!Uri.TryCreate(imageUrl.Trim(), UriKind.Absolute, out var uri))
+        {
+            return false;
+        }
+
+        if (uri.Scheme is not ("http" or "https"))
+        {
+            return false;
+        }
+
+        imageSource = ImageSource.FromUri(uri);
+        return true;
+    }
+
+    private static string ResolveSuggestionThumbnail(string? imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return PoiPlaceholderImage;
+        }
+
+        if (Uri.TryCreate(imageUrl.Trim(), UriKind.Absolute, out var uri) &&
+            (uri.Scheme == "http" || uri.Scheme == "https"))
+        {
+            return uri.AbsoluteUri;
+        }
+
+        return PoiPlaceholderImage;
     }
 
     private static bool IsInsideVinhKhanhBounds(POI poi)
@@ -866,7 +1040,6 @@ public partial class MainPage : ContentPage
         return _gpsSensitivityCode switch
         {
             "high" => (GeolocationAccuracy.Best, 35, TimeSpan.FromSeconds(8)),
-            "battery" => (GeolocationAccuracy.Low, 120, TimeSpan.FromSeconds(5)),
             _ => (GeolocationAccuracy.Medium, 75, TimeSpan.FromSeconds(6))
         };
     }
@@ -908,12 +1081,13 @@ public partial class MainPage : ContentPage
                 }
 
                 var latestLocation = await TryGetUserLocationAsync(cancellationToken, preferFreshLocation: true);
-                if (latestLocation is null)
+                if (latestLocation is null && !TryResolveFallbackTrackingLocation(out latestLocation))
                 {
                     await DelayTrackingAsync(cancellationToken);
                     continue;
                 }
 
+                latestLocation = ClampToVinhKhanhBounds(latestLocation);
                 _userLocation = latestLocation;
 
                 await TryRefreshUserPositionOnMapAsync(latestLocation);
@@ -937,6 +1111,37 @@ public partial class MainPage : ContentPage
                 await DelayTrackingAsync(cancellationToken);
             }
         }
+    }
+
+    private bool TryResolveFallbackTrackingLocation(out Location location)
+    {
+        if (_userLocation is not null)
+        {
+            location = _userLocation;
+            return true;
+        }
+
+        if (_selectedLat.HasValue && _selectedLng.HasValue)
+        {
+            location = new Location(_selectedLat.Value, _selectedLng.Value);
+            return true;
+        }
+
+        location = default!;
+        return false;
+    }
+
+    private static Location ClampToVinhKhanhBounds(Location location)
+    {
+        var lat = Math.Min(VinhKhanhMaxLat, Math.Max(VinhKhanhMinLat, location.Latitude));
+        var lng = Math.Min(VinhKhanhMaxLng, Math.Max(VinhKhanhMinLng, location.Longitude));
+
+        if (Math.Abs(lat - location.Latitude) < 0.0000001 && Math.Abs(lng - location.Longitude) < 0.0000001)
+        {
+            return location;
+        }
+
+        return new Location(lat, lng);
     }
 
     private async Task TryRefreshUserPositionOnMapAsync(Location latestLocation)
@@ -978,7 +1183,7 @@ public partial class MainPage : ContentPage
 
     private bool ShouldSkipTracking()
     {
-        return !_autoPlayEnabled || (_allPois.Count == 0 && (!_storeNarrationEnabled || _storeNarrationPoints.Count == 0));
+        return _allPois.Count == 0 && _storeNarrationPoints.Count == 0;
     }
 
     private async Task DelayTrackingAsync(CancellationToken cancellationToken)
@@ -991,7 +1196,7 @@ public partial class MainPage : ContentPage
         var candidateStore = FindNearestStoreInRange(latestLocation);
         if (candidateStore is null)
         {
-            SetStoreTriggerStatus(null);
+            await MainThread.InvokeOnMainThreadAsync(() => SetStoreTriggerStatus(null));
             if (!_storeNarrationEnabled)
             {
                 return false;
@@ -1000,7 +1205,7 @@ public partial class MainPage : ContentPage
             return false;
         }
 
-        SetStoreTriggerStatus(candidateStore.Name);
+        await MainThread.InvokeOnMainThreadAsync(() => SetStoreTriggerStatus(candidateStore.Name));
 
         if (!_storeNarrationEnabled)
         {
@@ -1091,6 +1296,16 @@ public partial class MainPage : ContentPage
 
     private async Task TryNarrateNearbyPoiAsync(Location latestLocation, CancellationToken cancellationToken)
     {
+        if (!_autoPlayEnabled)
+        {
+            return;
+        }
+
+        if (_hasExplicitMapSelection)
+        {
+            return;
+        }
+
         var poisForNarration = _allPois;
         if (Math.Abs(_poiRadiusScale - 1.0) > 0.001)
         {
@@ -1127,7 +1342,7 @@ public partial class MainPage : ContentPage
 
     private TimeSpan GetTrackingInterval()
     {
-        return _batteryOptimized ? BatteryTrackingInterval : NormalTrackingInterval;
+        return NormalTrackingInterval;
     }
 
     private async void OnMenuTapped(object? sender, TappedEventArgs e)
@@ -1236,7 +1451,7 @@ public partial class MainPage : ContentPage
         await _navigator.ShowProfileAsync();
     }
 
-    private void OnMapNavigating(object? sender, WebNavigatingEventArgs e)
+    private async void OnMapNavigating(object? sender, WebNavigatingEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(e.Url) || !e.Url.StartsWith("app://selected", StringComparison.OrdinalIgnoreCase))
         {
@@ -1246,7 +1461,7 @@ public partial class MainPage : ContentPage
         e.Cancel = true;
 
         var selection = ParseMapSelection(new Uri(e.Url));
-        ApplyMapSelection(selection);
+        await ApplyMapSelectionAsync(selection);
     }
 
     private MapSelection ParseMapSelection(Uri uri)
@@ -1280,7 +1495,7 @@ public partial class MainPage : ContentPage
             hasCoordinates ? parsedLng : null);
     }
 
-    private void ApplyMapSelection(MapSelection selection)
+    private async Task ApplyMapSelectionAsync(MapSelection selection)
     {
         if (selection.Latitude.HasValue && selection.Longitude.HasValue)
         {
@@ -1308,6 +1523,48 @@ public partial class MainPage : ContentPage
         LocationTitleLabel.Text = AppText.Get("Main_SelectedLocation");
         NowPlayingLabel.Text = selection.Name;
         AddressLabel.Text = FormatAddressText(selection.Address);
+
+        await TryNarrateSelectedStoreAsync(selection);
+    }
+
+    private async Task TryNarrateSelectedStoreAsync(MapSelection selection)
+    {
+        if (!_storeNarrationEnabled)
+        {
+            return;
+        }
+
+        var narrationText = ExtractStoreNarrationText(selection.Description);
+        if (string.IsNullOrWhiteSpace(narrationText))
+        {
+            return;
+        }
+
+        var noAddress = AppText.Get("Main_NoAddress");
+        var noDescription = AppText.Get("Main_NoDescription");
+        if (string.Equals(narrationText, noAddress, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(narrationText, noDescription, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        await _locationService.NarrateTextAsync(
+            BuildMapSelectionNarrationKey(selection),
+            narrationText,
+            "vi",
+            CancellationToken.None);
+    }
+
+    private static string BuildMapSelectionNarrationKey(MapSelection selection)
+    {
+        if (selection.Latitude.HasValue && selection.Longitude.HasValue)
+        {
+            var roundedLat = Math.Round(selection.Latitude.Value, 6);
+            var roundedLng = Math.Round(selection.Longitude.Value, 6);
+            return FormattableString.Invariant($"map-select:{roundedLat}:{roundedLng}");
+        }
+
+        return $"map-select:{selection.Name.Trim().ToLowerInvariant()}";
     }
 
     private static Dictionary<string, string> ParseQuery(string query)
@@ -1420,6 +1677,98 @@ public partial class MainPage : ContentPage
         await _navigator.ShowQrTriggerAsync();
     }
 
+    private void OnPoiSearchTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        UpdatePoiSearchSuggestions(e.NewTextValue);
+    }
+
+    private async void OnPoiSearchButtonPressed(object? sender, EventArgs e)
+    {
+        if (_poiSearchSuggestions.Count == 0)
+        {
+            return;
+        }
+
+        await SelectPoiFromSearchAsync(_poiSearchSuggestions[0]);
+    }
+
+    private async void OnPoiSearchSuggestionSelected(object? sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is not PoiSearchSuggestion selected)
+        {
+            return;
+        }
+
+        PoiSearchSuggestionsView.SelectedItem = null;
+        await SelectPoiFromSearchAsync(selected);
+    }
+
+    private void UpdatePoiSearchSuggestions(string? query)
+    {
+        var suggestions = BuildPoiSearchSuggestions(query);
+        _poiSearchSuggestions = suggestions;
+
+        PoiSearchSuggestionsView.ItemsSource = _poiSearchSuggestions;
+        PoiSearchSuggestionsBorder.IsVisible = _poiSearchSuggestions.Count > 0;
+    }
+
+    private List<PoiSearchSuggestion> BuildPoiSearchSuggestions(string? query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return new List<PoiSearchSuggestion>();
+        }
+
+        var normalized = query.Trim();
+        return _allPois
+            .Select(poi => new PoiSearchSuggestion(poi))
+            .Where(item => item.Matches(normalized))
+            .OrderBy(item => item.GetRank(normalized))
+            .ThenBy(item => item.Title, StringComparer.OrdinalIgnoreCase)
+            .Take(6)
+            .ToList();
+    }
+
+    private async Task SelectPoiFromSearchAsync(PoiSearchSuggestion suggestion)
+    {
+        var poi = suggestion.Poi;
+        _hasExplicitMapSelection = true;
+        _currentPoi = poi;
+        _selectedLat = poi.Latitude;
+        _selectedLng = poi.Longitude;
+        _selectedName = poi.Name;
+        _selectedDescription = poi.Description ?? AppText.Get("Main_NoDescription");
+
+        SaveTripSelection(poi.Name, poi.Description ?? AppText.Get("Main_NoDescription"));
+
+        PoiSearchBar.Text = poi.Name;
+        PoiSearchSuggestionsBorder.IsVisible = false;
+        PoiSearchSuggestionsView.SelectedItem = null;
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            BindPoi(poi);
+            InitializeMap(poi);
+        });
+
+        await AnimatePoiFeaturedCardAsync();
+
+        PoiSearchBar.Unfocus();
+    }
+
+    private async Task AnimatePoiFeaturedCardAsync()
+    {
+        try
+        {
+            await PoiFeaturedImageBorder.ScaleToAsync(1.04, 120, Easing.CubicOut);
+            await PoiFeaturedImageBorder.ScaleToAsync(1.0, 120, Easing.CubicIn);
+        }
+        catch
+        {
+            // Ignore transient animation interruptions (layout refresh, navigation).
+        }
+    }
+
     private async Task RecenterCurrentUserAsync()
     {
         // Prevent repeated rapid taps causing back-to-back geolocation requests.
@@ -1454,14 +1803,8 @@ public partial class MainPage : ContentPage
     private void OnAutoPlayToggled(object? sender, ToggledEventArgs e)
     {
         _autoPlayEnabled = e.Value;
+        SaveAutoPlaySetting(e.Value);
         PoiBadgeLabel.Text = e.Value ? AppText.Get("Main_BadgeAuto") : AppText.Get("Main_BadgeManual");
-    }
-
-    private void OnBatteryOptimizedToggled(object? sender, ToggledEventArgs e)
-    {
-        _batteryOptimized = e.Value;
-        var text = _batteryOptimized ? AppText.Get("Main_BatteryModeOptimized") : AppText.Get("Main_BatteryModeNormal");
-        PoiBadgeLabel.Text = text.ToUpperInvariant();
     }
 
     private void LoadFeatureSettings()
@@ -1469,6 +1812,7 @@ public partial class MainPage : ContentPage
         var json = Preferences.Default.Get(SettingsKey, string.Empty);
         if (string.IsNullOrWhiteSpace(json))
         {
+            ApplyRealtimeTrackingSwitchState();
             return;
         }
 
@@ -1481,7 +1825,6 @@ public partial class MainPage : ContentPage
             }
 
             _autoPlayEnabled = data.AutoPlay;
-            _batteryOptimized = data.BatteryOptimized;
             _storeNarrationEnabled = data.StoreNarrationEnabled;
             _gpsSensitivityCode = NormalizeGpsSensitivityCode(data.GpsSensitivityCode);
             _poiRadiusScale = NormalizePoiRadiusScale(data.PoiRadiusScale);
@@ -1491,7 +1834,38 @@ public partial class MainPage : ContentPage
             // Ignore invalid settings.
         }
 
+        ApplyRealtimeTrackingSwitchState();
         _locationService.PoiRadiusScale = _poiRadiusScale;
+    }
+
+    private void ApplyRealtimeTrackingSwitchState()
+    {
+        AutoPlaySwitch.IsToggled = _autoPlayEnabled;
+    }
+
+    private void SaveAutoPlaySetting(bool enabled)
+    {
+        var json = Preferences.Default.Get(SettingsKey, string.Empty);
+        SettingData data;
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            data = new SettingData();
+        }
+        else
+        {
+            try
+            {
+                data = JsonSerializer.Deserialize<SettingData>(json) ?? new SettingData();
+            }
+            catch
+            {
+                data = new SettingData();
+            }
+        }
+
+        data.AutoPlay = enabled;
+        Preferences.Default.Set(SettingsKey, JsonSerializer.Serialize(data));
     }
 
     private static string NormalizeGpsSensitivityCode(string? code)
@@ -1504,7 +1878,6 @@ public partial class MainPage : ContentPage
         return code.Trim().ToLowerInvariant() switch
         {
             "high" => "high",
-            "battery" => "battery",
             _ => "balanced"
         };
     }
@@ -1527,7 +1900,6 @@ public partial class MainPage : ContentPage
     private sealed class SettingData
     {
         public bool AutoPlay { get; set; }
-        public bool BatteryOptimized { get; set; }
         public bool NotificationEnabled { get; set; }
         public bool StoreNarrationEnabled { get; set; } = true;
         public string GpsSensitivityCode { get; set; } = "balanced";
@@ -1555,6 +1927,58 @@ public partial class MainPage : ContentPage
         public double Latitude { get; }
         public double Longitude { get; }
         public double RadiusMeters { get; }
+    }
+
+    private sealed class PoiSearchSuggestion
+    {
+        public PoiSearchSuggestion(POI poi)
+        {
+            Poi = poi;
+            Title = poi.Name.Trim();
+            Subtitle = BuildSubtitle(poi);
+            ThumbnailSource = ResolveSuggestionThumbnail(poi.ImageUrl);
+        }
+
+        public POI Poi { get; }
+        public string Title { get; }
+        public string Subtitle { get; }
+        public string ThumbnailSource { get; }
+
+        public bool Matches(string query)
+        {
+            return Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                   (!string.IsNullOrWhiteSpace(Poi.Description) && Poi.Description.Contains(query, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public int GetRank(string query)
+        {
+            if (Title.StartsWith(query, StringComparison.OrdinalIgnoreCase))
+            {
+                return 0;
+            }
+
+            if (Title.Contains(query, StringComparison.OrdinalIgnoreCase))
+            {
+                return 1;
+            }
+
+            if (!string.IsNullOrWhiteSpace(Poi.Description) && Poi.Description.Contains(query, StringComparison.OrdinalIgnoreCase))
+            {
+                return 2;
+            }
+
+            return 3;
+        }
+
+        private static string BuildSubtitle(POI poi)
+        {
+            var description = string.IsNullOrWhiteSpace(poi.Description)
+                ? AppText.Get("Main_NoDescription")
+                : poi.Description.Trim();
+
+            var radius = Math.Round(Math.Max(1, poi.Radius));
+            return $"{description} | Phạm vi: {radius}m";
+        }
     }
 
     private sealed class NominatimGeoResult

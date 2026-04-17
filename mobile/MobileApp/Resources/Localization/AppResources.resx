@@ -151,7 +151,7 @@
     <value>Tạo tài khoản mới</value>
   </data>
   <data name="Menu_Hello" xml:space="preserve">
-    <value>Xin chào</value>
+    <value>Xin chào</value> 
   </data>
   <data name="Menu_RoleCustomer" xml:space="preserve">
     <value>Khách hàng</value>
@@ -190,7 +190,7 @@
     <value>Tài khoản</value>
   </data>
   <data name="Menu_AccountPayment" xml:space="preserve">
-    <value>Tài khoản và thanh toán</value>
+    <value>Hồ sơ người dùng</value>
   </data>
   <data name="Menu_SellerSection" xml:space="preserve">
     <value>Dành cho người bán</value>
@@ -438,23 +438,26 @@
   <data name="Profile_ChangeAvatar" xml:space="preserve">
     <value>Đổi ảnh đại diện</value>
   </data>
-  <data name="Profile_ChangeMenuWelcomeImage" xml:space="preserve">
-    <value>Đổi ảnh nền thẻ chào</value>
-  </data>
   <data name="Profile_ResetMenuWelcomeImage" xml:space="preserve">
     <value>Trả về nền cam</value>
   </data>
-  <data name="Profile_PickMenuWelcomeImage" xml:space="preserve">
-    <value>Chọn ảnh nền thẻ chào</value>
+  <data name="Profile_WelcomeEditorTitle" xml:space="preserve">
+    <value>Căn ảnh nền thẻ</value>
   </data>
-  <data name="Profile_MenuWelcomeImageUpdated" xml:space="preserve">
-    <value>Đã cập nhật ảnh nền thẻ chào.</value>
+  <data name="Profile_WelcomeEditorHint" xml:space="preserve">
+    <value>Kéo ảnh trong khung để chỉnh vùng hiển thị trên thẻ chào</value>
+  </data>
+  <data name="Profile_WelcomeEditorPanTip" xml:space="preserve">
+    <value>Kéo ảnh</value>
+  </data>
+  <data name="Profile_WelcomePresets" xml:space="preserve">
+    <value>Mẫu nền hiện đại</value>
+  </data>
+  <data name="Profile_MenuWelcomePresetApplied" xml:space="preserve">
+    <value>Đã áp dụng mẫu nền thẻ chào.</value>
   </data>
   <data name="Profile_MenuWelcomeImageReset" xml:space="preserve">
     <value>Đã khôi phục nền cam mặc định.</value>
-  </data>
-  <data name="Profile_UpdateMenuWelcomeImageFailed" xml:space="preserve">
-    <value>Không thể cập nhật ảnh nền thẻ chào.</value>
   </data>
   <data name="Profile_QuickActions" xml:space="preserve">
     <value>Hành động nhanh</value>

@@ -26,7 +26,6 @@ D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\scopedcss\bundle\AdminWeb.styles.css
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\scopedcss\projectbundle\AdminWeb.bundle.scp.css
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\mdht74z7iq-{0}-61n19gt1b8-61n19gt1b8.gz
-D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\hj7m8stuzi-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\i1gxjfhvv6-{0}-c2jlpeoesf-c2jlpeoesf.gz
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\f7zxyc2aog-{0}-aexeepp0ev-aexeepp0ev.gz
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\xw8427cxcx-{0}-ausgxo2sd3-ausgxo2sd3.gz
@@ -223,4 +222,5 @@ D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\3j9oonoyz1-{0}-d6nrnj6jjx-
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\bvqzp4ozqg-{0}-m9qm4tazc0-m9qm4tazc0.gz
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\wiubaoeumw-{0}-jjsuc0puko-jjsuc0puko.gz
 D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\ydvrvgxagj-{0}-9vr69e8ynj-9vr69e8ynj.gz
-D:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\9uhfwwg3ek-{0}-58rdhz416v-58rdhz416v.gz
+d:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\9uhfwwg3ek-{0}-zv4skdkheg-zv4skdkheg.gz
+d:\CODE\C\admin\AdminWeb\obj\Debug\net10.0\compressed\hj7m8stuzi-{0}-l8om5yfjmd-l8om5yfjmd.gz

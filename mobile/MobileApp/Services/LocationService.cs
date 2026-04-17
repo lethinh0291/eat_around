@@ -8,20 +8,18 @@ namespace MobileApp.Services;
 public class LocationService
 {
     private const string SettingsKey = "zes_settings_v1";
+    private const double EntryBoundaryGraceMeters = 18;
+    private const double MaxAccuracyCompensationMeters = 65;
+    private const double MinimumAccuracyCompensationMeters = 8;
     private readonly ApiService _apiService;
     private readonly AudioPlaybackService _audioPlaybackService;
     private readonly TranslationService _translationService;
     private readonly Dictionary<int, DateTime> _lastNarratedAtByPoi = new();
     private readonly Dictionary<string, DateTime> _lastNarratedAtByKey = new(StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<string, DateTime> _lastAutoNarrationAttemptAtByKey = new(StringComparer.OrdinalIgnoreCase);
     private readonly SemaphoreSlim _speakLock = new(1, 1);
     private string? _activeAutoPoiKey;
-    private string? _pendingAutoPoiKey;
-    private DateTime _pendingAutoPoiSinceUtc;
 
     public TimeSpan NarrationCooldown { get; set; } = TimeSpan.FromMinutes(2);
-    public TimeSpan AutoNarrationDebounce { get; set; } = TimeSpan.FromSeconds(3);
-    public TimeSpan AutoNarrationRetryDelay { get; set; } = TimeSpan.FromSeconds(10);
     public double PoiRadiusScale { get; set; } = 1.0;
 
     public LocationService(ApiService apiService, AudioPlaybackService audioPlaybackService, TranslationService translationService)
@@ -48,12 +46,13 @@ public class LocationService
     {
         POI? selected = null;
         var bestDistance = double.MaxValue;
+        var accuracyCompensation = GetLocationAccuracyCompensation(userLoc);
 
         foreach (var poi in allPois)
         {
             var distance = CalculateDistance(userLoc.Latitude, userLoc.Longitude, poi.Latitude, poi.Longitude);
 
-            var effectiveRadius = Math.Max(1, poi.Radius * PoiRadiusScale);
+            var effectiveRadius = Math.Max(1, poi.Radius * PoiRadiusScale) + EntryBoundaryGraceMeters + accuracyCompensation;
             if (distance > effectiveRadius)
             {
                 continue;
@@ -76,6 +75,17 @@ public class LocationService
         }
 
         return selected;
+    }
+
+    private static double GetLocationAccuracyCompensation(Location userLoc)
+    {
+        if (userLoc.Accuracy is null || userLoc.Accuracy.Value <= 0)
+        {
+            return 0;
+        }
+
+        var compensation = userLoc.Accuracy.Value * 0.65;
+        return Math.Clamp(compensation, MinimumAccuracyCompensationMeters, MaxAccuracyCompensationMeters);
     }
 
     public bool CanNarrate(POI poi, DateTime nowUtc)
@@ -125,33 +135,7 @@ public class LocationService
         var narrationKey = GetAutoNarrationKey(candidate.Id);
         var nowUtc = DateTime.UtcNow;
 
-        if (!string.Equals(_activeAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(_pendingAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase))
-        {
-            _pendingAutoPoiKey = narrationKey;
-            _pendingAutoPoiSinceUtc = nowUtc;
-            return null;
-        }
-
-        if (!string.Equals(_pendingAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase))
-        {
-            _pendingAutoPoiKey = narrationKey;
-            _pendingAutoPoiSinceUtc = nowUtc;
-            return null;
-        }
-
-        if (nowUtc - _pendingAutoPoiSinceUtc < AutoNarrationDebounce)
-        {
-            return null;
-        }
-
         if (string.Equals(_activeAutoPoiKey, narrationKey, StringComparison.OrdinalIgnoreCase))
-        {
-            return null;
-        }
-
-        if (_lastAutoNarrationAttemptAtByKey.TryGetValue(narrationKey, out var lastAttemptAtUtc) &&
-            nowUtc - lastAttemptAtUtc < AutoNarrationRetryDelay)
         {
             return null;
         }
@@ -162,8 +146,6 @@ public class LocationService
             return null;
         }
 
-        _lastAutoNarrationAttemptAtByKey[narrationKey] = nowUtc;
-
         var narrated = await NarratePoiAsync(candidate, userLocation, cancellationToken, preferredLanguageOverride);
         if (!narrated)
         {
@@ -171,8 +153,6 @@ public class LocationService
         }
 
         _activeAutoPoiKey = narrationKey;
-        _pendingAutoPoiKey = narrationKey;
-        _pendingAutoPoiSinceUtc = nowUtc;
         return candidate;
     }
 
@@ -325,32 +305,51 @@ public class LocationService
         var normalizedLanguage = NormalizeLanguageCode(languageCode);
         var preferredTtsVoiceCode = GetPreferredTtsVoiceCode();
 
-        var locales = await TextToSpeech.Default.GetLocalesAsync();
-        if (!string.IsNullOrWhiteSpace(preferredTtsVoiceCode) &&
-            !string.Equals(preferredTtsVoiceCode, "auto", StringComparison.OrdinalIgnoreCase))
+        try
         {
-            var preferredLocale = locales.FirstOrDefault(candidate =>
-                candidate.Language.Equals(preferredTtsVoiceCode, StringComparison.OrdinalIgnoreCase));
-
-            if (preferredLocale is not null)
+            var locales = await TextToSpeech.Default.GetLocalesAsync();
+            if (!string.IsNullOrWhiteSpace(preferredTtsVoiceCode) &&
+                !string.Equals(preferredTtsVoiceCode, "auto", StringComparison.OrdinalIgnoreCase))
             {
-                options.Locale = preferredLocale;
+                var preferredLocale = locales.FirstOrDefault(candidate =>
+                    candidate.Language.Equals(preferredTtsVoiceCode, StringComparison.OrdinalIgnoreCase));
+
+                if (preferredLocale is not null)
+                {
+                    options.Locale = preferredLocale;
+                }
             }
+
+            if (options.Locale is null && !string.IsNullOrWhiteSpace(normalizedLanguage))
+            {
+                var locale = locales.FirstOrDefault(candidate =>
+                    candidate.Language.StartsWith(normalizedLanguage, StringComparison.OrdinalIgnoreCase));
+
+                if (locale is not null)
+                {
+                    options.Locale = locale;
+                }
+            }
+
+            await MainThread.InvokeOnMainThreadAsync(() => TextToSpeech.Default.SpeakAsync(text, options, cancellationToken));
+            return true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"TTS speak failed with locale selection: {ex.Message}");
         }
 
-        if (options.Locale is null && !string.IsNullOrWhiteSpace(normalizedLanguage))
+        try
         {
-            var locale = locales.FirstOrDefault(candidate =>
-                candidate.Language.StartsWith(normalizedLanguage, StringComparison.OrdinalIgnoreCase));
-
-            if (locale is not null)
-            {
-                options.Locale = locale;
-            }
+            options.Locale = null;
+            await MainThread.InvokeOnMainThreadAsync(() => TextToSpeech.Default.SpeakAsync(text, options, cancellationToken));
+            return true;
         }
-
-        await TextToSpeech.Default.SpeakAsync(text, options, cancellationToken);
-        return true;
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"TTS fallback speak failed: {ex.Message}");
+            return false;
+        }
     }
 
     private static string GetPreferredLanguageCode()
@@ -461,8 +460,6 @@ public class LocationService
     private void ResetAutoNarrationState()
     {
         _activeAutoPoiKey = null;
-        _pendingAutoPoiKey = null;
-        _pendingAutoPoiSinceUtc = default;
     }
 
     private static string GetAutoNarrationKey(int poiId)
